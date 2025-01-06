@@ -1,5 +1,8 @@
 package com.example.allesinordnungfx;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Book {
     private String title;
     private String firstName;
