@@ -12,12 +12,11 @@ public class Book {
 
     // Konstruktor mit Jackson-Annotations, um die Felder zu initialisieren
     @JsonCreator
-    public Book(@JsonCreator("title") String title,
-                @JsonCreator("firstName") String firstName,
-                @JsonCreator("lastName") String lastName,
-                @JsonCreator("publicationYear") int publicationYear,
-                @JsonCreator("isbn") long isbn) {
-
+    public Book(@JsonProperty("title") String title,
+                @JsonProperty("firstName") String firstName,
+                @JsonProperty("lastName") String lastName,
+                @JsonProperty("publicationYear") int publicationYear,
+                @JsonProperty("isbn") long isbn) {
         this.title = title;
         this.firstName = firstName;
         this.lastName = lastName;

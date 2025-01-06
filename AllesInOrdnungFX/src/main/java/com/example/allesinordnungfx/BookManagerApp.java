@@ -25,6 +25,10 @@ public class BookManagerApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+
+        //Lädt die Bücher aus der bestehenden YAML-Datei zur Anzeige der Bücher beim Starten des Programms
+        bookListData.addAll(collectionManager.getAllBooks());
+
         TableView<Book> bookTableView = new TableView<>();
 
         TableColumn<Book, String> titleColumn = new TableColumn<>("Title");
