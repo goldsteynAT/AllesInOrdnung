@@ -1,0 +1,21 @@
+---
+- title: "Titel 1"
+  firstName: "First 1"
+  lastName: "Last 1"
+  publicationYear: 1212
+  isbn: 123123
+- title: "Titel 2"
+  firstName: "First 2"
+  lastName: "Last 2"
+  publicationYear: 1234
+  isbn: 1234
+- title: "ardg"
+  firstName: "sdfg"
+  lastName: "sdfg"
+  publicationYear: 24
+  isbn: 24
+- title: "Titel 1"
+  firstName: "Name 1"
+  lastName: "LASt 1"
+  publicationYear: 123
+  isbn: 4123
