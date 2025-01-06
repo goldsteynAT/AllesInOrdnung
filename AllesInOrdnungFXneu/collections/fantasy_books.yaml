@@ -1,0 +1,22 @@
+!!com.example.allesinordnungfx.CollectionManager$CollectionWrapper
+books:
+- {comment: Episch!, firstName: J.R.R., isbn: 1234567890, lastName: Tolkien, publicationYear: 1954,
+  rating: '3', read: true, title: Der Herr der Ringe}
+- {comment: Magisch!, firstName: J.K., isbn: 1234567891, lastName: Rowling, publicationYear: 1997,
+  rating: '5', read: true, title: Harry Potter}
+- {comment: Drachen!, firstName: Christopher, isbn: 1234567892, lastName: Paolini,
+  publicationYear: 2002, rating: '4', read: true, title: Eragon}
+- {comment: '', firstName: Markus, isbn: 1234567893, lastName: Heitz, publicationYear: 2003,
+  rating: '', read: false, title: Die Zwerge}
+- {comment: Meisterhaft!, firstName: Patrick, isbn: 1234567894, lastName: Rothfuss,
+  publicationYear: 2007, rating: '5', read: true, title: Der Name des Windes}
+- {comment: Komplex!, firstName: George R.R., isbn: 1234567895, lastName: Martin,
+  publicationYear: 1996, rating: '5', read: true, title: Das Lied von Eis und Feuer}
+- {comment: '', firstName: Veronica, isbn: 1234567896, lastName: Roth, publicationYear: 2011,
+  rating: '', read: false, title: Die Bestimmung}
+- {comment: Phantasievoll!, firstName: Philip, isbn: 1234567897, lastName: Pullman,
+  publicationYear: 1995, rating: '4', read: true, title: Der goldene Kompass}
+- {comment: Klassiker!, firstName: J.R.R., isbn: 1234567898, lastName: Tolkien, publicationYear: 1937,
+  rating: '5', read: true, title: Der Hobbit}
+- {comment: Zeitlos!, firstName: C.S., isbn: 1234567999, lastName: Lewis, publicationYear: 1950,
+  rating: '3', read: false, title: Die Chroniken von Narnia}

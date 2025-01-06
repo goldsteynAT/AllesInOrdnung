@@ -1,0 +1,21 @@
+!!com.example.allesinordnungfx.CollectionManager$CollectionWrapper
+books:
+- {comment: '', firstName: Fjodor, isbn: 3866474776, lastName: Dostojewski, publicationYear: 2010,
+  rating: '1', read: true, title: Die Brüder Karamasow}
+- {comment: '', firstName: Nassim Nicholas, isbn: 141038225, lastName: Taleb, publicationYear: 2013,
+  rating: '3', read: true, title: 'Antifragile: Things that Gain from Disorder'}
+- {comment: 'ASIN: ‎B077ZCGT8N', firstName: Daniel, isbn: 0, lastName: Lieberman,
+  publicationYear: 2018, rating: '3', read: true, title: The Molecule of More}
+- {comment: 'ASIN: B01A7YX4TW', firstName: Robert, isbn: 0, lastName: Sapolsky, publicationYear: 2017,
+  rating: '1', read: true, title: 'Behave: The Biology of Humans at Our Best and Worst'}
+- {comment: 'ASIN: B01N5AX61W', firstName: James, isbn: 0, lastName: Clear, publicationYear: 2018,
+  rating: '', read: true, title: Atomic Habits}
+- {comment: '', firstName: Franz, isbn: 9783868205572, lastName: Kafka, publicationYear: 1912,
+  rating: '3', read: true, title: Die Verwandlung}
+- {comment: '', firstName: Clive, isbn: 0, lastName: Hamilton, publicationYear: 2010,
+  rating: '2', read: true, title: 'Die lautlose Eroberung: Wie China westliche Demokratien
+    unterwandert und die Welt neu ordnet'}
+- {comment: '', firstName: Viktor, isbn: 9781846046384, lastName: Frankl, publicationYear: 1946,
+  rating: '3', read: true, title: Man's Search for Meaning}
+- {comment: '', firstName: Phil, isbn: 1471146726, lastName: Knight, publicationYear: 2018,
+  rating: '3', read: true, title: Shoe Dog}

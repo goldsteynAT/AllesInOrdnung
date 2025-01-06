@@ -1,0 +1,22 @@
+!!com.example.allesinordnungfx.CollectionManager$CollectionWrapper
+books:
+- {comment: Bewegend!, firstName: Bernhard, isbn: 2234567890, lastName: Schlink, publicationYear: 1995,
+  rating: '5', read: true, title: Der Vorleser}
+- {comment: Klassiker!, firstName: Günter, isbn: 2234567891, lastName: Grass, publicationYear: 1959,
+  rating: '5', read: true, title: Die Blechtrommel}
+- {comment: Einzigartig!, firstName: Patrick, isbn: 2234567892, lastName: Süskind,
+  publicationYear: 1985, rating: '5', read: true, title: Das Parfum}
+- {comment: '', firstName: Theodor, isbn: 2234567893, lastName: Fontane, publicationYear: 1894,
+  rating: '', read: false, title: Effi Briest}
+- {comment: Familiengeschichte!, firstName: Thomas, isbn: 2234567894, lastName: Mann,
+  publicationYear: 1901, rating: '4', read: true, title: Buddenbrooks}
+- {comment: Surreal!, firstName: Franz, isbn: 2234567895, lastName: Kafka, publicationYear: 1915,
+  rating: '5', read: true, title: Die Verwandlung}
+- {comment: '', firstName: Franz, isbn: 2234567896, lastName: Kafka, publicationYear: 1925,
+  rating: '', read: false, title: Der Prozess}
+- {comment: Philosophisch!, firstName: Thomas, isbn: 2234567897, lastName: Mann, publicationYear: 1924,
+  rating: '5', read: true, title: Der Zauberberg}
+- {comment: Drama!, firstName: Friedrich, isbn: 2234567898, lastName: Schiller, publicationYear: 1781,
+  rating: '4', read: true, title: Die Räuber}
+- {comment: Klassiker!, firstName: Johann Wolfgang, isbn: 2234567899, lastName: Goethe,
+  publicationYear: 1808, rating: '5', read: true, title: Faust}
