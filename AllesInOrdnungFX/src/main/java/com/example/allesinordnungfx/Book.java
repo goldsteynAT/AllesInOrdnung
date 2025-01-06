@@ -10,7 +10,14 @@ public class Book {
     private int publicationYear;
     private long isbn;
 
-    public Book(String title, String firstName, String lastName, int publicationYear, long isbn) {
+    // Konstruktor mit Jackson-Annotations, um die Felder zu initialisieren
+    @JsonCreator
+    public Book(@JsonCreator("title") String title,
+                @JsonCreator("firstName") String firstName,
+                @JsonCreator("lastName") String lastName,
+                @JsonCreator("publicationYear") int publicationYear,
+                @JsonCreator("isbn") long isbn) {
+
         this.title = title;
         this.firstName = firstName;
         this.lastName = lastName;
