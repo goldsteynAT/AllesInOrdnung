@@ -68,4 +68,7 @@ public class Collection {
     public String toString() {
         return name;
     }
+
+    public void setAdditionalInfo(String userDirectoryPath) {
+    }
 }

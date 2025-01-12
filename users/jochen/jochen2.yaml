@@ -1,0 +1,4 @@
+!!com.example.allesinordnungfx.CollectionManager$CollectionWrapper
+books:
+- {comment: '', firstName: sdf, isbn: 0, lastName: sdafvs, publicationYear: 123, rating: '',
+  read: false, title: asdasdf}

@@ -20,10 +20,31 @@ import java.util.List;
 // und Export der Daten
 
 public class CollectionManager {
+
     private List<String> collectionNames; // Liste der Collection-Namen
+    private String userDirectoryPath; // Pfad des Benutzerverzeichnisses
+    //private static final String COLLECTIONS_DIRECTORY = "collections"; // Standardverzeichnis
+
+    public CollectionManager(String userDirectoryPath) {
+        this.collectionNames = new ArrayList<>();
+        this.userDirectoryPath = userDirectoryPath;
+        ensureUserDirectoryExists(); // Sicherstellen, dass das Benutzerverzeichnis existiert
+    }
 
     public CollectionManager() {
-        this.collectionNames = new ArrayList<>();
+        this("collections");
+    }
+
+    private void ensureUserDirectoryExists() {
+        File directory = new File(userDirectoryPath);
+        if (!directory.exists()) {
+            boolean created = directory.mkdirs();
+            if (created) {
+                System.out.println("Benutzerverzeichnis erstellt: " + userDirectoryPath);
+            } else {
+                System.err.println("Fehler beim Erstellen des Benutzerverzeichnisses: " + userDirectoryPath);
+            }
+        }
     }
 
     // Getter und Setter für collectionNames
@@ -35,12 +56,11 @@ public class CollectionManager {
         this.collectionNames = collectionNames;
     }
 
-    // Lädt die Collection-Namen aus collections.yaml.
-    public void loadCollectionNames(String filePath) {
+    public void loadCollectionNames(String fileName) {
+        String filePath = userDirectoryPath + "/" + fileName; // Benutzerverzeichnis verwenden
         File file = new File(filePath);
         if (!file.exists()) {
-            // Datei noch nicht vorhanden -> nichts laden
-            return;
+            return; // Wenn die Datei fehlt, gibt es nichts zu laden
         }
 
         Yaml yaml = new Yaml(new Constructor(CollectionsWrapper.class));
@@ -48,8 +68,8 @@ public class CollectionManager {
             CollectionsWrapper wrapper = yaml.load(reader);
             if (wrapper != null && wrapper.getCollections() != null) {
                 collectionNames.clear();
-                collectionNames.addAll(wrapper.getCollections()); // alle Namen aus der YAML Datei in die Liste collectionNames kopieren
-                System.out.println("Loaded collection names from YAML: " + filePath);
+                collectionNames.addAll(wrapper.getCollections()); // Laden der Collection-Namen
+                System.out.println("Loaded collection names from YAML in " + filePath);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -59,10 +79,12 @@ public class CollectionManager {
     /**
      * Speichert die Collection-Namen in collections.yaml.
      */
-    public void saveCollectionNames(String filePath) {
+    public void saveCollectionNames(String fileName) {
+        String filePath = userDirectoryPath + "/" + fileName; // Benutzerverzeichnis verwenden
         Yaml yaml = new Yaml();
         CollectionsWrapper wrapper = new CollectionsWrapper();
         wrapper.setCollections(collectionNames);
+
         try (FileWriter writer = new FileWriter(filePath)) {
             yaml.dump(wrapper, writer);
             System.out.println("Saved collection names to YAML: " + filePath);
@@ -75,11 +97,11 @@ public class CollectionManager {
      * Lädt die Bücher für eine spezifische Collection aus <collectionName>.yaml.
      */
     public Collection loadBooksForCollection(String collectionName) {
-        String filePath = "collections/" + collectionName + ".yaml";
+        String filePath = userDirectoryPath + "/" + collectionName + ".yaml"; // Benutzerverzeichnis verwenden
         File file = new File(filePath);
+
         if (!file.exists()) {
-            // Datei noch nicht vorhanden -> leere Collection erstellen
-            return new Collection(collectionName);
+            return new Collection(collectionName); // Leere Collection zurückgeben
         }
 
         Yaml yaml = new Yaml(new Constructor(CollectionWrapper.class));
@@ -88,7 +110,7 @@ public class CollectionManager {
             if (wrapper != null && wrapper.getBooks() != null) {
                 Collection collection = new Collection(collectionName);
                 collection.setBooks(wrapper.getBooks());
-                System.out.println("Loaded books for collection '" + collectionName + "' from YAML: " + filePath);
+                System.out.println("Loaded books for collection '" + collectionName + "' from YAML in " + filePath);
                 return collection;
             }
         } catch (IOException e) {
@@ -101,17 +123,128 @@ public class CollectionManager {
      * Speichert die Bücher einer spezifischen Collection in <collectionName>.yaml.
      */
     public void saveBooksForCollection(Collection collection) {
-        String filePath = "collections/" + collection.getName() + ".yaml";
+        String filePath = userDirectoryPath + "/" + collection.getName() + ".yaml"; // Benutzerverzeichnis verwenden
         Yaml yaml = new Yaml();
         CollectionWrapper wrapper = new CollectionWrapper();
         wrapper.setBooks(collection.getBooks());
+
         try (FileWriter writer = new FileWriter(filePath)) {
             yaml.dump(wrapper, writer);
-            System.out.println("Saved books for collection '" + collection.getName() + "' to YAML: " + filePath);
+            System.out.println("Saved books for collection '" + collection.getName() + "' in YAML: " + filePath);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+    // =========================
+    // Hinzugefügte Methoden:
+    // =========================
+
+    // Neue Methode 1: Neue Collection hinzufügen
+
+    public void addNewCollection(String collectionName) {
+        addNewCollection(collectionName, "defaultUserDirectory"); // Standardwerte
+    }
+
+    public void addNewCollection(String collectionName, String userDirectoryPath) {
+        // Sicherstellen, dass das Benutzerverzeichnis existiert
+        ensureUserDirectoryExists();
+
+        // Prüfen, ob der Collection-Name bereits existiert
+        if (collectionNames.contains(collectionName)) {
+            System.out.println("Collection mit dem Namen '" + collectionName + "' existiert bereits.");
+            return;
+        }
+
+        // Sammlung zur Liste hinzufügen und Namen speichern
+        collectionNames.add(collectionName);
+        saveCollectionNames("collections.yaml");
+
+        // Leere Collection im Benutzerverzeichnis anlegen
+        Collection newCollection = new Collection(collectionName);
+        newCollection.setAdditionalInfo(userDirectoryPath);
+        saveBooksForCollection(newCollection);
+
+        System.out.println("Neue Collection hinzugefügt: " + collectionName);
+    }
+/*
+    // Neue Methode 2: Collections-Verzeichnis sicherstellen
+    public void ensureCollectionsDirectoryExists() {
+        File directory = new File(COLLECTIONS_DIRECTORY);
+        if (!directory.exists()) {
+            boolean created = directory.mkdirs();
+            if (created) {
+                System.out.println("Das Verzeichnis für Collections wurde erstellt: " + COLLECTIONS_DIRECTORY);
+            } else {
+                System.err.println("Fehler beim Erstellen des Verzeichnisses: " + COLLECTIONS_DIRECTORY);
+            }
+        }
+    }
+*/
+    // Neue Methode 3: Bestehende Collection umbenennen
+    public boolean renameSelectedCollection(String oldName, String newName) {
+        // Prüfen, ob alte Collection existiert und neue noch frei ist
+        if (!collectionNames.contains(oldName)) {
+            System.out.println("Die Collection '" + oldName + "' existiert nicht.");
+            return false;
+        }
+        if (collectionNames.contains(newName)) {
+            System.out.println("Eine Collection mit dem neuen Namen '" + newName + "' existiert bereits.");
+            return false;
+        }
+
+        // Datei umbenennen
+        String oldFilePath = userDirectoryPath + "/" + oldName + ".yaml";
+        String newFilePath = userDirectoryPath + "/" + newName + ".yaml";
+
+        File oldFile = new File(oldFilePath);
+        File newFile = new File(newFilePath);
+
+        if (oldFile.exists()) {
+            boolean renamed = oldFile.renameTo(newFile);
+            if (!renamed) {
+                return false;
+            }
+        }
+
+        // Namen in der Liste aktualisieren
+        collectionNames.remove(oldName);
+        collectionNames.add(newName);
+        saveCollectionNames("collections.yaml");
+
+        System.out.println("Collection wurde umbenannt: " + oldName + " zu " + newName);
+        return true;
+    }
+
+    // Neue Methode 4: Eine Collection löschen
+    public boolean deleteSelectedCollection(String collectionName) {
+        if (!collectionNames.contains(collectionName)) {
+            System.out.println("Die Collection '" + collectionName + "' existiert nicht.");
+            return false;
+        }
+
+        String filePath = userDirectoryPath + "/" + collectionName + ".yaml"; // Benutzerverzeichnis verwenden
+        File file = new File(filePath);
+        if (file.exists() && !file.delete()) {
+            System.out.println("Fehler beim Löschen der Datei '" + collectionName + "'.");
+            return false;
+        }
+
+        // Namen aus der Liste entfernen und speichern
+        collectionNames.remove(collectionName);
+        saveCollectionNames("collections.yaml");
+
+        System.out.println("Collection gelöscht: " + collectionName);
+        return true;
+    }
+
+    public void setUserDirectoryPath(String userDirectoryPath) {
+        this.userDirectoryPath = userDirectoryPath;
+        ensureUserDirectoryExists(); // Sicherstellen, dass das Verzeichnis existiert
+    }
+
+
+
+
 
     /**
      * Methode zum Umbenennen einer Collection.
@@ -126,12 +259,16 @@ public class CollectionManager {
         }
 
         // Datei umbenennen
-        File oldFile = new File("collections/" + oldName + ".yaml");
-        File newFile = new File("collections/" + newName + ".yaml");
+        String oldFilePath = userDirectoryPath + "/" + oldName + ".yaml";
+        String newFilePath = userDirectoryPath + "/" + newName + ".yaml";
+
+        File oldFile = new File(oldFilePath);
+        File newFile = new File(newFilePath);
+
         if (oldFile.exists()) {
             boolean renamed = oldFile.renameTo(newFile);
             if (!renamed) {
-                return false; // Datei konnte nicht umbenannt werden
+                return false;
             }
         }
 

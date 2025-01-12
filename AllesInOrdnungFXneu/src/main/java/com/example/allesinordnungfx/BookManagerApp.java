@@ -43,29 +43,55 @@ public class BookManagerApp extends Application {
         launch(args);
     }
 
+    public void startWithUser(Stage primaryStage, String userDirectoryPath) {
+        this.collectionManager = new CollectionManager(userDirectoryPath);
+        this.collectionsFilePath = userDirectoryPath + "/collections.yaml"; // Angepasst für Benutzer
+
+        collectionManager.loadCollectionNames("collections.yaml"); // Collection-Namen aus der Datei laden
+
+        start(primaryStage); // Hauptfenster starten
+    }
+
+
     @Override
     public void start(Stage primaryStage) {
         // Sicherstellen, dass das Verzeichnis existiert
-        ensureCollectionsDirectoryExists();
+        //ensureCollectionsDirectoryExists();
 
         // Vorhandene Collection-Namen laden
         collectionManager.loadCollectionNames(collectionsFilePath);
 
-        // Wenn keine Collections vorhanden sind, eine Standard-Collection erstellen
-        if (collectionManager.getCollectionNames().isEmpty()) {
-            String defaultName = "default";
-            collectionManager.getCollectionNames().add(defaultName);
-            collectionManager.saveCollectionNames(collectionsFilePath);
-            collectionManager.saveBooksForCollection(new Collection(defaultName));
-        }
-
         // Initialisiere das ObservableList mit den Collection-Namen
         collectionsObservableList = FXCollections.observableArrayList(collectionManager.getCollectionNames());
+
+        // Wenn keine Collections vorhanden sind, eine Standard-Collection erstellen
+        if (collectionsObservableList.isEmpty()) {
+            String defaultName = "default";
+            collectionsObservableList.add(defaultName);
+            collectionManager.addNewCollection(defaultName); // Default-Collection auch abspeichern
+        }
 
         // GUI-Komponenten für die erste Zeile (Collection-Auswahl und Add Collection)
         collectionComboBox = new ComboBox<>(collectionsObservableList);
         collectionComboBox.setPrefWidth(150);
         collectionComboBox.setPromptText("Select Collection");
+
+        // Wähle standardmäßig die erste Collection aus (z. B. Default)
+        if (!collectionsObservableList.isEmpty()) {
+            String firstCollection = collectionsObservableList.get(0); // Nimm die erste Collection
+            collectionComboBox.getSelectionModel().select(firstCollection); // Setze die Auswahl in der ComboBox
+            currentCollection = collectionManager.loadBooksForCollection(firstCollection); // Lade Bücher der ersten Collection
+            bookListData.setAll(currentCollection.getBooks()); // Aktualisiere die Buch-Liste (Tabelle)
+        }
+
+        // ComboBox-Listener: Aktualisiere `currentCollection`, wenn sich die Auswahl ändert
+        collectionComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                currentCollection = collectionManager.loadBooksForCollection(newVal); // Lade Bücher der neuen Collection
+                bookListData.setAll(currentCollection.getBooks()); // Zeige die Bücher der neuen Collection in der Tabelle
+                System.out.println("Collection gewechselt zu: " + newVal);
+            }
+        });
 
         // Button zum Hinzufügen einer neuen Collection
         Button addCollectionButton = new Button("Add Collection");
@@ -449,6 +475,19 @@ public class BookManagerApp extends Application {
                 collectionManager.saveBooksForCollection(collection);
             }
         });
+        primaryStage.setOnCloseRequest(event -> {
+            // Speichere die aktuelle Collection, wenn sie existiert
+            if (currentCollection != null) {
+                collectionManager.saveBooksForCollection(currentCollection); // Speichert die Bücher in der aktuellen Collection
+            }
+
+            // Speichere auch die Liste aller Collection-Namen
+            collectionManager.saveCollectionNames(collectionsFilePath); // Speichert die Collection-Namen in der YAML-Datei
+            System.out.println("Sammlungen wurden vor dem Beenden gespeichert.");
+        });
+
+
+
     }
 
     /**
@@ -463,29 +502,13 @@ public class BookManagerApp extends Application {
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(name -> {
             String trimmedName = name.trim();
-            if (!trimmedName.isEmpty()) {
-                if (!collectionManager.getCollectionNames().contains(trimmedName)) {
-                    if (isValidFileName(trimmedName)) {
-                        collectionManager.getCollectionNames().add(trimmedName);
-                        collectionManager.saveCollectionNames(collectionsFilePath);
-                        collectionManager.saveBooksForCollection(new Collection(trimmedName));
-
-                        // Füge die neue Collection zum ObservableList hinzu
-                        collectionsObservableList.add(trimmedName);
-
-                        // Wähle die neu hinzugefügte Collection aus
-                        collectionComboBox.getSelectionModel().select(trimmedName);
-
-                        showInfo("Collection Added", "Collection '" + trimmedName + "' wurde erfolgreich hinzugefügt.");
-                        System.out.println("Added and selected new collection: " + trimmedName);
-                    } else {
-                        showAlert("Invalid Name", "Collection name contains invalid characters.");
-                    }
-                } else {
-                    showAlert("Duplicate Collection", "A collection with this name already exists.");
-                }
+            if (!trimmedName.isEmpty() && isValidFileName(trimmedName)) {
+                collectionManager.addNewCollection(trimmedName); // Methode im CollectionManager aufrufen
+                collectionsObservableList.add(trimmedName); // ObservableList aktualisieren
+                collectionComboBox.getSelectionModel().select(trimmedName);
+                showInfo("Collection Added", "Collection '" + trimmedName + "' wurde erfolgreich hinzugefügt.");
             } else {
-                showAlert("Invalid Name", "Collection name cannot be empty.");
+                showAlert("Invalid Name", "Collection name cannot be empty or contains invalid characters.");
             }
         });
     }
@@ -508,22 +531,13 @@ public class BookManagerApp extends Application {
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(newName -> {
             String trimmedName = newName.trim();
-            if (trimmedName.isEmpty()) {
-                showAlert("Invalid Name", "Der Name darf nicht leer sein.");
-                return;
-            }
-            if (!isValidFileName(trimmedName)) {
-                showAlert("Invalid Name", "Der Name enthält ungültige Zeichen.");
-                return;
-            }
-            if (collectionManager.getCollectionNames().contains(trimmedName)) {
-                showAlert("Duplicate Name", "Eine Collection mit diesem Namen existiert bereits.");
+            if (trimmedName.isEmpty() || !isValidFileName(trimmedName)) {
+                showAlert("Invalid Name", "Invalid or empty name.");
                 return;
             }
 
-            boolean success = collectionManager.renameCollection(selectedCollection, trimmedName);
+            boolean success = collectionManager.renameSelectedCollection(selectedCollection, trimmedName); // Neue Methode aufrufen
             if (success) {
-                // Aktualisiere das ObservableList
                 collectionsObservableList.set(collectionsObservableList.indexOf(selectedCollection), trimmedName);
                 collectionComboBox.getSelectionModel().select(trimmedName);
                 showInfo("Renamed Successfully", "Die Collection wurde erfolgreich umbenannt.");
@@ -543,39 +557,17 @@ public class BookManagerApp extends Application {
             return;
         }
 
-        // Optional: Verhindere das Löschen der Standard-Collection
-        if (selectedCollection.equals("default")) {
-            showAlert("Cannot Delete", "Die Standard-Collection 'default' kann nicht gelöscht werden.");
-            return;
-        }
-
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
         confirmation.setTitle("Delete Collection");
-        confirmation.setHeaderText(null);
         confirmation.setContentText("Are you sure you want to delete the collection '" + selectedCollection + "'? This action cannot be undone.");
 
         Optional<ButtonType> result = confirmation.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            boolean success = collectionManager.deleteCollection(selectedCollection);
+            boolean success = collectionManager.deleteSelectedCollection(selectedCollection); // Neue Methode aufrufen
             if (success) {
-                collectionsObservableList.remove(selectedCollection);
+                collectionsObservableList.remove(selectedCollection); // ObservableList aktualisieren
                 showInfo("Deleted Successfully", "Die Collection wurde erfolgreich gelöscht.");
-
-                // Wähle die erste verfügbare Collection aus, falls die gelöschte Collection aktuell war
-                if (currentCollection.getName().equals(selectedCollection)) {
-                    if (!collectionsObservableList.isEmpty()) {
-                        collectionComboBox.getSelectionModel().selectFirst();
-                    } else {
-                        // Falls keine Collections mehr existieren, erstelle eine Standard-Collection
-                        String defaultName = "default";
-                        collectionManager.getCollectionNames().add(defaultName);
-                        collectionManager.saveCollectionNames(collectionsFilePath);
-                        collectionManager.saveBooksForCollection(new Collection(defaultName));
-                        collectionsObservableList.add(defaultName);
-                        collectionComboBox.getSelectionModel().select(defaultName);
-                        showInfo("Default Collection Created", "Eine neue Standard-Collection 'default' wurde erstellt.");
-                    }
-                }
+                collectionComboBox.getSelectionModel().selectFirst(); // Wähle die erste Collection aus
             } else {
                 showAlert("Delete Failed", "Die Collection konnte nicht gelöscht werden.");
             }
@@ -614,16 +606,11 @@ public class BookManagerApp extends Application {
     /**
      * Stellt sicher, dass das Verzeichnis "collections" existiert.
      */
+    /*
     private void ensureCollectionsDirectoryExists() {
-        File collectionsDir = new File("collections");
-        if (!collectionsDir.exists()) {
-            boolean created = collectionsDir.mkdirs();
-            if (!created) {
-                showAlert("Fehler", "Konnte das Verzeichnis 'collections' nicht erstellen.");
-            }
-        }
+        collectionManager.ensureCollectionsDirectoryExists(); // Direkt die Methode aus CollectionManager verwenden
     }
-
+*/
     /**
      * Lädt die Bücher für die aktuell ausgewählte Collection.
      */
