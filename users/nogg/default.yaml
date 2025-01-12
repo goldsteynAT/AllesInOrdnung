@@ -2,3 +2,5 @@
 books:
 - {comment: '', firstName: weqr, isbn: 0, lastName: qwerweq, publicationYear: 2023,
   rating: '2', read: true, title: jochen}
+- {comment: '', firstName: sadf, isbn: 4351135, lastName: asdf, publicationYear: 2025,
+  rating: '', read: false, title: asdf}

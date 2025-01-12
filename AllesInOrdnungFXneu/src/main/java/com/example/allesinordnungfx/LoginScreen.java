@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -85,6 +86,9 @@ public class LoginScreen extends Application {
 
         VBox wrappedLayout = new VBox(layout); // Layout in einen neuen Container einbinden
         wrappedLayout.setBorder(new Border(borderStroke));
+        wrappedLayout.setBackground(new Background(
+                new BackgroundFill(Color.web("#66a3a4"), new CornerRadii(15), null)
+        ));
 /*
         // Bildpfad (relativ zum Ressourcen-Ordner)
         String imagePath = "/images/1594205764210.png";
@@ -102,17 +106,6 @@ public class LoginScreen extends Application {
         wrappedLayout.setBackground(new Background(backgroundImage));
 
 */
-
-
-
-
-
-        wrappedLayout.setBackground(new Background(
-                new BackgroundFill(Color.web("#66a3a4"), new CornerRadii(15), null)
-        ));
-
-
-
 
 
         /* Login-Formular (GridPane)
@@ -139,6 +132,7 @@ public class LoginScreen extends Application {
         VBox layout = new VBox(10, titleLabel, infoLine1, infoLine2, loginGrid);
         layout.setStyle("-fx-padding: 20; -fx-alignment: center;");
 */
+        /* alte Login Logik
         // Login-Logik
         loginButton.setOnAction(e -> {
             String username = userField.getText().trim();
@@ -164,7 +158,48 @@ public class LoginScreen extends Application {
                 showAlert("Registration Error", "Username already exists or invalid input.");
             }
         });
+*/
+        // Login-Logik ausführen
+        Runnable loginAction = () -> {
+            String username = userField.getText().trim();
+            String password = passField.getText().trim();
 
+            if (validateLogin(username, password)) {
+                String userDirectoryPath = "users/" + username;
+                BookManagerApp app = new BookManagerApp();
+                app.startWithUser(primaryStage, userDirectoryPath);
+            } else {
+                showAlert("Login Error", "Invalid username or password.");
+            }
+        };
+
+        // Hinzufügen von Enter-Taste für die Felder
+        userField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                passField.requestFocus(); // Fokus auf das Passwort-Feld legen
+            }
+        });
+
+        passField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                loginAction.run(); // Login ausführen
+            }
+        });
+
+        // Login-Button
+        loginButton.setOnAction(e -> loginAction.run());
+
+        // Registrierung-Logik
+        registerButton.setOnAction(e -> {
+            String username = userField.getText().trim();
+            String password = passField.getText().trim();
+
+            if (registerUser(username, password)) {
+                showInfo("Registration Successful", "You can now log in with your credentials.");
+            } else {
+                showAlert("Registration Error", "Username already exists or invalid input.");
+            }
+        });
         // Szene erstellen und anzeigen
         Scene scene = new Scene(wrappedLayout, 500, 400); // Breite x Höhe
         primaryStage.setScene(scene);

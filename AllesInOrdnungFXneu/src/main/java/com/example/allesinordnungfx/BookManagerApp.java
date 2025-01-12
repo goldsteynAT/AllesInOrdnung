@@ -699,7 +699,7 @@ public class BookManagerApp extends Application {
 
     /**
      * Zeigt ein Book-Formular (Add oder Edit) in einem neuen Dialogfenster.
-     */
+
     private void openBookForm(Book book, boolean isNew) {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
@@ -824,11 +824,176 @@ public class BookManagerApp extends Application {
         Scene scene = new Scene(grid, 500, 400);
         stage.setScene(scene);
         stage.showAndWait();
+    } */
+    // Methode zur Steuerung, welcher Element den Fokus bei "Enter" erhält
+    private void setEnterKeyTraversal(TextField currentField, Control nextField) {
+        currentField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                nextField.requestFocus(); // Nächstes Feld erhält den Fokus
+            }
+        });
     }
 
     /**
      * Öffnet ein Fenster zur Anzeige der Book-Details.
      */
+
+    private void openBookForm(Book book, boolean isNew) {
+        Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setTitle(isNew ? "Add Book" : "Edit Book");
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(10));
+
+        // Felder mit ID für Debugging konfigurieren
+        Label titleLabel = new Label("Title:");
+        TextField titleField = new TextField(book.getTitle());
+        titleField.setId("titleField"); // ID setzen für Debugging
+
+        Label firstNameLabel = new Label("First Name:");
+        TextField firstNameField = new TextField(book.getFirstName());
+        firstNameField.setId("firstNameField");
+
+        Label lastNameLabel = new Label("Last Name:");
+        TextField lastNameField = new TextField(book.getLastName());
+        lastNameField.setId("lastNameField");
+
+        Label yearLabel = new Label("Year:");
+        TextField yearField = new TextField(String.valueOf(
+                book.getPublicationYear() > 0 ? book.getPublicationYear() : Year.now().getValue()));
+        yearField.setId("yearField");
+
+        // Formatter für numerische Eingabe (nur Zahlen erlauben)
+        TextFormatter<Integer> yearFormatter = new TextFormatter<>(
+                new IntegerStringConverter(),
+                book.getPublicationYear() > 0 ? book.getPublicationYear() : Year.now().getValue(),
+                change -> change.getControlNewText().matches("\\d*") ? change : null // Nur Ziffern erlauben
+        );
+        yearField.setTextFormatter(yearFormatter);
+
+        Label isbnLabel = new Label("ISBN:");
+        TextField isbnField = new TextField(String.valueOf(book.getIsbn()));
+        isbnField.setId("isbnField");
+
+        Label readLabel = new Label("Read:");
+        CheckBox readCheckBox = new CheckBox();
+        readCheckBox.setSelected(book.isRead());
+
+        Label ratingLabel = new Label("Rating:");
+        ComboBox<String> ratingComboBox = new ComboBox<>();
+        ratingComboBox.getItems().addAll("1", "2", "3");
+        ratingComboBox.setValue(book.getRating() == null ? "" : book.getRating());
+        ratingComboBox.setId("ratingComboBox"); // ID setzen für Debugging
+
+        Label commentLabel = new Label("Comment:");
+        TextArea commentArea = new TextArea(book.getComment());
+        commentArea.setId("commentArea");
+
+        Button saveButton = new Button("Save");
+        saveButton.setOnAction(e -> {
+            try {
+                String title = titleField.getText().trim();
+                String firstName = firstNameField.getText().trim();
+                String lastName = lastNameField.getText().trim();
+                int year = Integer.parseInt(yearField.getText().trim());
+                long isbn = Long.parseLong(isbnField.getText().trim());
+
+                if (title.isEmpty() || firstName.isEmpty() || lastName.isEmpty()) {
+                    showAlert("Invalid Input", "Title, First Name, and Last Name cannot be empty.");
+                    return;
+                }
+
+                if (!isValidYear(String.valueOf(year))) {
+                    showAlert("Invalid Year", "The year must be a valid number between 1000 and current year.");
+                    return;
+                }
+
+                // Buch-Daten aktualisieren
+                book.setTitle(title);
+                book.setFirstName(firstName);
+                book.setLastName(lastName);
+                book.setPublicationYear(year);
+                book.setIsbn(isbn);
+
+                book.setRead(readCheckBox.isSelected());
+                book.setRating(ratingComboBox.getValue());
+                book.setComment(commentArea.getText());
+
+                if (isNew) {
+                    currentCollection.addBook(book);
+                    bookListData.add(book);
+                    System.out.println("Added book to collection '" + currentCollection.getName() + "': " + book);
+                } else {
+                    // Aktualisiere Anzeige für bestehendes Buch
+                    int index = bookListData.indexOf(book); // Index des Buchs finden
+                    if (index >= 0) {
+                        bookListData.set(index, book); // Aktualisiere Eintrag
+                    }
+                }
+
+                // Speichern der aktuellen Collection
+                collectionManager.saveBooksForCollection(currentCollection);
+
+                stage.close(); // Fenster schließen
+            } catch (NumberFormatException ex) {
+                showAlert("Invalid Input", "Please enter valid numerical values for Year and ISBN.");
+            }
+        });
+
+        // Fokus-Reihenfolge setzen
+        setEnterKeyTraversal(titleField, firstNameField);
+        setEnterKeyTraversal(firstNameField, lastNameField);
+        setEnterKeyTraversal(lastNameField, yearField);
+        setEnterKeyTraversal(yearField, isbnField);
+        setEnterKeyTraversal(isbnField, saveButton);
+
+        ratingComboBox.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                System.out.println("Enter gedrückt in: " + ratingComboBox.getId());
+                commentArea.requestFocus(); // Springe zur Kommentarbox bei Enter
+            }
+        });
+
+        commentArea.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                System.out.println("Enter gedrückt in: " + commentArea.getId());
+                saveButton.requestFocus(); // Springe zum Save-Button
+            }
+        });
+
+        // Anordnung von Elementen im Grid
+        grid.add(titleLabel, 0, 0);
+        grid.add(titleField, 1, 0, 3, 1);
+
+        grid.add(firstNameLabel, 0, 1);
+        grid.add(firstNameField, 1, 1);
+        grid.add(lastNameLabel, 2, 1);
+        grid.add(lastNameField, 3, 1);
+
+        grid.add(yearLabel, 0, 2);
+        grid.add(yearField, 1, 2);
+        grid.add(isbnLabel, 2, 2);
+        grid.add(isbnField, 3, 2);
+
+        grid.add(readLabel, 0, 3);
+        grid.add(readCheckBox, 1, 3);
+        grid.add(ratingLabel, 2, 3);
+        grid.add(ratingComboBox, 3, 3);
+
+        grid.add(commentLabel, 0, 4);
+        grid.add(commentArea, 1, 4, 3, 1);
+
+        grid.add(saveButton, 0, 5, 4, 1);
+
+        // Szene und Fenster anzeigen
+        Scene scene = new Scene(grid, 500, 400);
+        stage.setScene(scene);
+        stage.showAndWait();
+    }
+
     private void openShowWindow(Book book) {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
@@ -880,6 +1045,19 @@ public class BookManagerApp extends Application {
         Button closeButton = new Button("Close");
         closeButton.setOnAction(e -> stage.close());
 
+        // Fokusreihenfolge für das Formular setzen
+        setEnterKeyTraversal(titleField, firstNameField);
+        setEnterKeyTraversal(firstNameField, lastNameField);
+        setEnterKeyTraversal(lastNameField, yearField);
+        setEnterKeyTraversal(yearField, isbnField);
+        setEnterKeyTraversal(isbnField, ratingComboBox);
+        ratingComboBox.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                commentArea.requestFocus(); // Springe zur Kommentarbox
+            }
+        });
+
+
         // Anordnung
         grid.add(titleLabel, 0, 0);
         grid.add(titleField, 1, 0, 3, 1);
@@ -908,4 +1086,5 @@ public class BookManagerApp extends Application {
         stage.setScene(scene);
         stage.showAndWait();
     }
+
 }

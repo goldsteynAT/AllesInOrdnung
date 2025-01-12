@@ -1,6 +1,10 @@
 !!com.example.allesinordnungfx.CollectionManager$CollectionWrapper
 books:
-- {comment: '', firstName: '324234', isbn: 0, lastName: awsaf1, publicationYear: 13,
+- {comment: '', firstName: asdf, isbn: 0, lastName: awsaf1, publicationYear: 2022,
   rating: '', read: false, title: nogg}
-- {comment: '', firstName: sdf, isbn: 234234, lastName: sfg, publicationYear: 2025,
-  rating: '', read: false, title: agsdjhf}
+- {comment: '', firstName: asdfsad, isbn: 0, lastName: sdafasdf, publicationYear: 2025,
+  rating: '', read: false, title: asdfasd}
+- {comment: '', firstName: sdfasdf, isbn: 0, lastName: sdfgdsfg, publicationYear: 2025,
+  rating: '', read: false, title: asdf}
+- {comment: '', firstName: sdfg, isbn: 123, lastName: asdffa, publicationYear: 2025,
+  rating: '1', read: true, title: sfasdf}
