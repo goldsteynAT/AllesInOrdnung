@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
@@ -464,10 +465,12 @@ public class BookManagerApp extends Application {
                     openEditWindow(book);
                 });
             }
+
             @Override
-            protected void updateItem(Void item, boolean empty) {
+            public void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
                 setGraphic(empty ? null : editButton);
+                setAlignment(Pos.CENTER);
             }
         });
 
@@ -497,6 +500,7 @@ public class BookManagerApp extends Application {
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
                 setGraphic(empty ? null : deleteButton);
+                setAlignment(Pos.CENTER);
             }
         });
 
@@ -505,6 +509,8 @@ public class BookManagerApp extends Application {
                 titleColumn, authorColumn, yearColumn, isbnColumn,
                 readColumn, ratingColumn, commentColumn, editColumn, deleteColumn
         );
+        editColumn.setSortable(false);
+        deleteColumn.setSortable(false);
 
         // VBox, die beide HBoxes enthält
         // VBox topContainer = new VBox(5, collectionBox, actionBox);
