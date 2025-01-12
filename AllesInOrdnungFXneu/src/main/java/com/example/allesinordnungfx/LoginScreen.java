@@ -3,6 +3,8 @@ package com.example.allesinordnungfx;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -12,6 +14,8 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.control.Label;
 import javafx.geometry.Insets;
+import javafx.scene.image.Image;
+
 
 import java.io.File;
 import java.io.FileReader;
@@ -33,7 +37,7 @@ public class LoginScreen extends Application {
         /* Untertitel
         Label subtitle = new Label("Projekt für Programmieren 1, WS 2024/25\n"
                 + "Autor*Innen: Jochen Schmidtberger, Corinna Jäger, Christina Seidl und Daniel Essl");
-        subtitle.setStyle("-fx-font-size: 14;");
+        subtitle.setStyle("-fx-font-size: 14;");Color.web("#66a3a4")
 */
         // Zwei weitere Zeilen
         Label infoLine1 = new Label("Projekt für Programmieren 1, WS 2024/25");
@@ -64,6 +68,7 @@ public class LoginScreen extends Application {
         loginGrid.add(passField, 1, 1);
         loginGrid.add(loginButton, 0, 2);
         loginGrid.add(registerButton, 1, 2);
+        loginGrid.setAlignment(Pos.CENTER);
 
         // Kombinierte Layouts (Text oben, Login unten)
         VBox layout = new VBox(20, textContainer, loginGrid);
@@ -72,7 +77,7 @@ public class LoginScreen extends Application {
 
         // Rahmen und Hintergrund
         BorderStroke borderStroke = new BorderStroke(
-                Color.DARKBLUE,  // Rahmenfarbe
+                Color.web("#6c2a5a"),  // Rahmenfarbe
                 BorderStrokeStyle.SOLID, // Rahmenstil
                 new CornerRadii(5),      // Eckenradius
                 new BorderWidths(20)     // Rahmenbreite
@@ -80,8 +85,30 @@ public class LoginScreen extends Application {
 
         VBox wrappedLayout = new VBox(layout); // Layout in einen neuen Container einbinden
         wrappedLayout.setBorder(new Border(borderStroke));
+/*
+        // Bildpfad (relativ zum Ressourcen-Ordner)
+        String imagePath = "/images/1594205764210.png";
+
+        // Hintergrundbild definieren
+        BackgroundImage backgroundImage = new BackgroundImage(
+                new Image(getClass().getResource(imagePath).toExternalForm()), // Bild aus Ressourcen laden
+                BackgroundRepeat.NO_REPEAT,  // Keine Wiederholung horizontal
+                BackgroundRepeat.NO_REPEAT,  // Keine Wiederholung vertikal
+                BackgroundPosition.DEFAULT,  // Standard-Position (zentriert)
+                BackgroundSize.DEFAULT       // Standard-Größe (entsprechend Bildgröße)
+        );
+
+        // Hintergrund auf das Layout setzen
+        wrappedLayout.setBackground(new Background(backgroundImage));
+
+*/
+
+
+
+
+
         wrappedLayout.setBackground(new Background(
-                new BackgroundFill(Color.LIGHTBLUE, CornerRadii.EMPTY, null)
+                new BackgroundFill(Color.web("#66a3a4"), new CornerRadii(15), null)
         ));
 
 

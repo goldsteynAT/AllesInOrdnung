@@ -25,6 +25,7 @@ import javafx.geometry.Insets;
 import javafx.scene.layout.GridPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import java.time.Year;
 
 import java.io.File;
 import java.util.Optional;
@@ -104,6 +105,17 @@ public class BookManagerApp extends Application {
         // Button zum Löschen einer Collection
         Button deleteCollectionButton = new Button("Delete Collection");
         deleteCollectionButton.setOnAction(e -> deleteSelectedCollection());
+
+        // Logout-Button
+        Button logoutButton = new Button("Logout");
+        logoutButton.setOnAction(e -> {
+            LoginScreen loginScreen = new LoginScreen(); // Instanziere den LoginScreen
+            try {
+                loginScreen.start(primaryStage); // Setze die Szene auf den LoginScreen
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
 
 
 
@@ -223,7 +235,7 @@ public class BookManagerApp extends Application {
         HBox.setHgrow(spacer1, javafx.scene.layout.Priority.ALWAYS);
 
         // HBox für Collection-Auswahl und Buttons (erste Zeile)
-        HBox collectionBox = new HBox(10, collectionComboBox, addCollectionButton, renameCollectionButton, deleteCollectionButton, spacer1, importButton);
+        HBox collectionBox = new HBox(10, collectionComboBox, addCollectionButton, renameCollectionButton, deleteCollectionButton, logoutButton, spacer1, importButton);
         collectionBox.setPadding(new Insets(5));
 
         // Spacer für die zweite Zeile
@@ -328,12 +340,39 @@ public class BookManagerApp extends Application {
         yearColumn.setCellValueFactory(cd ->
                 new SimpleIntegerProperty(cd.getValue().getPublicationYear()).asObject());
         yearColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-        yearColumn.setOnEditCommit(event -> {
+
+        /*yearColumn.setOnEditCommit(event -> {
             Book book = event.getRowValue();
             book.setPublicationYear(event.getNewValue());
             collectionManager.saveBooksForCollection(currentCollection);
         });
-        yearColumn.setEditable(true);
+        yearColumn.setOnEditCommit(event -> {
+                    Book book = event.getRowValue();
+                    int newYear = event.getNewValue();
+
+                    // Validierung der Jahreszahl
+                    if (isValidYear(String.valueOf(newYear))) {
+                        book.setPublicationYear(newYear);
+                        collectionManager.saveBooksForCollection(currentCollection);
+                    } else {
+                        showAlert("Invalid Year", "The year must be a valid number between 1000 and 9999.");
+                        loadBooksForCurrentCollection(); // Zurücksetzen auf alten Wert
+                    }
+        });*/
+
+        yearColumn.setOnEditCommit(event -> {
+            Book book = event.getRowValue();
+            int newYear = event.getNewValue();
+
+            // Validierung der Jahreszahl (falls Tabelle direkt bearbeitet wird)
+            if (isValidYear(String.valueOf(newYear))) {
+                book.setPublicationYear(newYear);
+                collectionManager.saveBooksForCollection(currentCollection); // Speichern
+            } else {
+                showAlert("Invalid Year", "The year must be a valid number between 1000 and the current year.");
+                loadBooksForCurrentCollection(); // Zurücksetzen, wenn ungültig
+            }
+        });
 
         TableColumn<Book, Long> isbnColumn = new TableColumn<>("ISBN");
         isbnColumn.setCellValueFactory(cd ->
@@ -489,6 +528,19 @@ public class BookManagerApp extends Application {
 
 
     }
+
+    //Überprüft ob die Eingabe der Jahreszahl valide ist
+    private boolean isValidYear(String yearString) {
+        //if (year.isEmpty()) return false;
+        try {
+            int intYear = Integer.parseInt(yearString);
+            int currentYear = Year.now().getValue(); // Aktuelles Jahr ermitteln
+            return intYear >= 1000 && intYear <= currentYear; // Sicherstellen, dass das Jahr zwischen 1000 und dem aktuellen Jahr liegt
+        } catch (NumberFormatException e) {
+            return false; // Keine gültige Zahl
+        }
+    }
+
 
     /**
      * Fügt eine neue Collection hinzu.
@@ -667,7 +719,19 @@ public class BookManagerApp extends Application {
         TextField lastNameField = new TextField(book.getLastName());
 
         Label yearLabel = new Label("Year:");
-        TextField yearField = new TextField(String.valueOf(book.getPublicationYear()));
+
+        TextField yearField = new TextField(String.valueOf(book.getPublicationYear() > 0 ? book.getPublicationYear() : Year.now().getValue()));
+
+        //TextField yearField = new TextField(String.valueOf(book.getPublicationYear()));
+
+        //Formatter für die numerische Eingabe
+        TextFormatter<Integer> yearFormatter = new TextFormatter<>(
+                new IntegerStringConverter(),
+                book.getPublicationYear() > 0 ? book.getPublicationYear() : Year.now().getValue(),
+                change -> change.getControlNewText().matches("\\d*") ? change : null // Akzeptiere nur Ziffern oder Leerzeichen
+        );
+        yearField.setTextFormatter(yearFormatter);
+
         Label isbnLabel = new Label("ISBN:");
         TextField isbnField = new TextField(String.valueOf(book.getIsbn()));
 
@@ -697,6 +761,11 @@ public class BookManagerApp extends Application {
                     return;
                 }
 
+                if (!isValidYear(String.valueOf(year))) {
+                    showAlert("Invalid Year", "The year must be a valid number between 1000 and current year.");
+                    return;
+                }
+
                 book.setTitle(title);
                 book.setFirstName(firstName);
                 book.setLastName(lastName);
@@ -711,6 +780,12 @@ public class BookManagerApp extends Application {
                     currentCollection.addBook(book);
                     bookListData.add(book);
                     System.out.println("Added book to collection '" + currentCollection.getName() + "': " + book);
+                }else {
+                    // Aktualisiere die Anzeige für bestehendes Buch
+                    int index = bookListData.indexOf(book); // Index des Buchs
+                    if (index >= 0) {
+                        bookListData.set(index, book); // Aktualisiere den Eintrag
+                    }
                 }
 
                 // Speichern der aktuellen Collection
@@ -777,8 +852,11 @@ public class BookManagerApp extends Application {
         lastNameField.setDisable(true);
 
         Label yearLabel = new Label("Year:");
-        TextField yearField = new TextField(String.valueOf(book.getPublicationYear()));
-        yearField.setDisable(true);
+        TextField yearField = new TextField(String.valueOf(book.getPublicationYear() > 0 ?
+                book.getPublicationYear() :
+                Year.now().getValue()));
+        /*TextField yearField = new TextField(String.valueOf(book.getPublicationYear()));
+        yearField.setDisable(true);*/
 
         Label isbnLabel = new Label("ISBN:");
         TextField isbnField = new TextField(String.valueOf(book.getIsbn()));

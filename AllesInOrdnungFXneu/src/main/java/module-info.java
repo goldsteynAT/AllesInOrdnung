@@ -5,8 +5,7 @@ module com.example.allesinordnungfx {
     requires org.apache.poi.ooxml;
     requires java.net.http;
     requires org.json;
-
-
+    requires java.desktop;
 
 
     exports com.example.allesinordnungfx;
