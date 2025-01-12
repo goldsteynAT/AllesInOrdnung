@@ -32,6 +32,13 @@ import java.util.Optional;
 
 public class BookManagerApp extends Application {
 
+    @Override
+    public void start(Stage primaryStage) {
+        // Placeholder implementation to fulfill the abstract method requirements
+        // The proper initialization can take place within the start(Stage, String) method
+        startWithUser(primaryStage, System.getProperty("user.dir"), "DefaultUser");
+    }
+
     private CollectionManager collectionManager = new CollectionManager();
     private ObservableList<Book> bookListData = FXCollections.observableArrayList();
     private String collectionsFilePath = "collections.yaml"; // Pfad zu collections.yaml
@@ -44,18 +51,19 @@ public class BookManagerApp extends Application {
         launch(args);
     }
 
-    public void startWithUser(Stage primaryStage, String userDirectoryPath) {
+    public void startWithUser(Stage primaryStage, String userDirectoryPath, String username) {
         this.collectionManager = new CollectionManager(userDirectoryPath);
         this.collectionsFilePath = userDirectoryPath + "/collections.yaml"; // Angepasst für Benutzer
 
         collectionManager.loadCollectionNames("collections.yaml"); // Collection-Namen aus der Datei laden
 
-        start(primaryStage); // Hauptfenster starten
+        start(primaryStage, username); // Hauptfenster starten
     }
 
 
-    @Override
-    public void start(Stage primaryStage) {
+    //@Override
+    public void start(Stage primaryStage, String username) {
+
         // Sicherstellen, dass das Verzeichnis existiert
         //ensureCollectionsDirectoryExists();
 
@@ -71,6 +79,19 @@ public class BookManagerApp extends Application {
             collectionsObservableList.add(defaultName);
             collectionManager.addNewCollection(defaultName); // Default-Collection auch abspeichern
         }
+
+        // Label zur Anzeige des eingeloggten Benutzers
+        Label loggedInUserLabel = new Label("Logged in as: " + username); // "Benutzername" durch den echten Usernamen ersetzen
+        loggedInUserLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;"); // Beispielstil
+
+// Platzhalter für den Benutzer (kann angepasst oder überschrieben werden)
+        //String currentUsername = "AktuellerBenutzer"; // Dies könnte aus einer Login-Logik kommen
+        //loggedInUserLabel.setText("Logged in als: " + currentUsername);
+
+// HBox für den User-Display oben
+        HBox userDisplayBox = new HBox(loggedInUserLabel);
+        userDisplayBox.setStyle("-fx-padding: 5; -fx-background-color: #f0f0f0; -fx-alignment: center-left;");
+        userDisplayBox.setPadding(new Insets(5, 10, 5, 10));
 
         // GUI-Komponenten für die erste Zeile (Collection-Auswahl und Add Collection)
         collectionComboBox = new ComboBox<>(collectionsObservableList);
@@ -249,7 +270,11 @@ public class BookManagerApp extends Application {
 
 
         // VBox, die beide HBoxes enthält
-        VBox topContainer = new VBox(0, collectionBox, actionBox);
+        //VBox topContainer = new VBox(0, collectionBox, actionBox);
+
+        // VBox, die LogIn-Info und bestehende HBoxes (Collections, Actions) enthält
+        VBox topContainer = new VBox(10, userDisplayBox, collectionBox, actionBox);
+        topContainer.setPadding(new Insets(10));
 
         // TableView
         TableView<Book> bookTableView = new TableView<>();

@@ -15,7 +15,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.control.Label;
 import javafx.geometry.Insets;
-import javafx.scene.image.Image;
+//import javafx.scene.image.Image;
 
 
 import java.io.File;
@@ -56,10 +56,10 @@ public class LoginScreen extends Application {
 
         Label passLabel = new Label("Password:");
         PasswordField passField = new PasswordField();
-
+/*
         Button loginButton = new Button("Login");
         Button registerButton = new Button("Register");
-
+*/
         GridPane loginGrid = new GridPane();
         loginGrid.setHgap(10);
         loginGrid.setVgap(10);
@@ -67,12 +67,23 @@ public class LoginScreen extends Application {
         loginGrid.add(userField, 1, 0);
         loginGrid.add(passLabel, 0, 1);
         loginGrid.add(passField, 1, 1);
-        loginGrid.add(loginButton, 0, 2);
-        loginGrid.add(registerButton, 1, 2);
+        //loginGrid.add(loginButton, 0, 2);
+        //loginGrid.add(registerButton, 1, 2);
         loginGrid.setAlignment(Pos.CENTER);
 
+        // Login- und Register-Buttons in eine eigene HBox
+        Button loginButton = new Button("Login");
+        Button registerButton = new Button("Register");
+
+        HBox buttonBox = new HBox(20, loginButton, registerButton);
+        buttonBox.setAlignment(Pos.CENTER);
+
+        // Komplette Login-Formular (Eingabefelder + Buttons)
+        VBox loginLayout = new VBox(15, loginGrid, buttonBox);
+        loginLayout.setAlignment(Pos.CENTER);
+
         // Kombinierte Layouts (Text oben, Login unten)
-        VBox layout = new VBox(20, textContainer, loginGrid);
+        VBox layout = new VBox(20, textContainer, loginLayout);
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(20));
 
@@ -167,7 +178,7 @@ public class LoginScreen extends Application {
             if (validateLogin(username, password)) {
                 String userDirectoryPath = "users/" + username;
                 BookManagerApp app = new BookManagerApp();
-                app.startWithUser(primaryStage, userDirectoryPath);
+                app.startWithUser(primaryStage, userDirectoryPath, username);
             } else {
                 showAlert("Login Error", "Invalid username or password.");
             }
