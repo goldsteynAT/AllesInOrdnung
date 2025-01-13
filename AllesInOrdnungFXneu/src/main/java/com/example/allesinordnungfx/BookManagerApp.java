@@ -76,7 +76,7 @@ public class BookManagerApp extends Application {
 
         // Wenn keine Collections vorhanden sind, eine Standard-Collection erstellen
         if (collectionsObservableList.isEmpty()) {
-            String defaultName = "default";
+            String defaultName = "New Collection";
             collectionsObservableList.add(defaultName);
             collectionManager.addNewCollection(defaultName); // Default-Collection auch abspeichern
         }
@@ -280,6 +280,8 @@ public class BookManagerApp extends Application {
         // TableView
         TableView<Book> bookTableView = new TableView<>();
         bookTableView.setEditable(true);
+        Label placeholderLabel = new Label("No content in table");
+        bookTableView.setPlaceholder(placeholderLabel);
 
         // RowFactory + ContextMenu (Show / Edit / Delete)
         bookTableView.setRowFactory(tv -> {
@@ -315,6 +317,7 @@ public class BookManagerApp extends Application {
                     collectionManager.saveBooksForCollection(currentCollection);
                 }
             });
+
 
             contextMenu.getItems().addAll(showItem, editItem, deleteItem);
 
@@ -532,7 +535,7 @@ public class BookManagerApp extends Application {
 
         Scene scene = new Scene(new VBox(10, topContainer, bookTableView), 1000, 600);
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Book Collection Manager");
+        primaryStage.setTitle("Book Collection Manager - Alles in Ordnung");
         primaryStage.show();
 
         // Beim Schließen -> Speichern aller Collections
