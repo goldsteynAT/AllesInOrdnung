@@ -40,9 +40,9 @@ public class CollectionManager {
         if (!directory.exists()) {
             boolean created = directory.mkdirs();
             if (created) {
-                System.out.println("Benutzerverzeichnis erstellt: " + userDirectoryPath);
+                System.out.println("Directory created: " + userDirectoryPath);
             } else {
-                System.err.println("Fehler beim Erstellen des Benutzerverzeichnisses: " + userDirectoryPath);
+                System.err.println("Error while creating the directory: " + userDirectoryPath);
             }
         }
     }
@@ -151,7 +151,7 @@ public class CollectionManager {
 
         // Prüfen, ob der Collection-Name bereits existiert
         if (collectionNames.contains(collectionName)) {
-            System.out.println("Collection mit dem Namen '" + collectionName + "' existiert bereits.");
+            System.out.println("A collection with name '" + collectionName + "' already exists.");
             return;
         }
 
@@ -164,7 +164,7 @@ public class CollectionManager {
         newCollection.setAdditionalInfo(userDirectoryPath);
         saveBooksForCollection(newCollection);
 
-        System.out.println("Neue Collection hinzugefügt: " + collectionName);
+        System.out.println("A new collection has been added: " + collectionName);
     }
 /*
     // Neue Methode 2: Collections-Verzeichnis sicherstellen
@@ -184,11 +184,11 @@ public class CollectionManager {
     public boolean renameSelectedCollection(String oldName, String newName) {
         // Prüfen, ob alte Collection existiert und neue noch frei ist
         if (!collectionNames.contains(oldName)) {
-            System.out.println("Die Collection '" + oldName + "' existiert nicht.");
+            System.out.println("The collection '" + oldName + "' does not exist.");
             return false;
         }
         if (collectionNames.contains(newName)) {
-            System.out.println("Eine Collection mit dem neuen Namen '" + newName + "' existiert bereits.");
+            System.out.println("A collection with the name '" + newName + "' already exists.");
             return false;
         }
 
@@ -211,21 +211,21 @@ public class CollectionManager {
         collectionNames.add(newName);
         saveCollectionNames("collections.yaml");
 
-        System.out.println("Collection wurde umbenannt: " + oldName + " zu " + newName);
+        System.out.println("Collection renamed successfully: " + oldName + " zu " + newName);
         return true;
     }
 
     // Neue Methode 4: Eine Collection löschen
     public boolean deleteSelectedCollection(String collectionName) {
         if (!collectionNames.contains(collectionName)) {
-            System.out.println("Die Collection '" + collectionName + "' existiert nicht.");
+            System.out.println("The collection '" + collectionName + "' does not exist.");
             return false;
         }
 
         String filePath = userDirectoryPath + "/" + collectionName + ".yaml"; // Benutzerverzeichnis verwenden
         File file = new File(filePath);
         if (file.exists() && !file.delete()) {
-            System.out.println("Fehler beim Löschen der Datei '" + collectionName + "'.");
+            System.out.println("Error while deleting file '" + collectionName + "'.");
             return false;
         }
 
@@ -233,7 +233,7 @@ public class CollectionManager {
         collectionNames.remove(collectionName);
         saveCollectionNames("collections.yaml");
 
-        System.out.println("Collection gelöscht: " + collectionName);
+        System.out.println("Collection deleted successfully: " + collectionName);
         return true;
     }
 

@@ -556,7 +556,7 @@ public class BookManagerApp extends Application {
 
             // Speichere auch die Liste aller Collection-Namen
             collectionManager.saveCollectionNames(collectionsFilePath); // Speichert die Collection-Namen in der YAML-Datei
-            System.out.println("Sammlungen wurden vor dem Beenden gespeichert.");
+            System.out.println("Collection were saved while shutting down.");
         });
 
 
@@ -592,7 +592,7 @@ public class BookManagerApp extends Application {
                 collectionManager.addNewCollection(trimmedName); // Methode im CollectionManager aufrufen
                 collectionsObservableList.add(trimmedName); // ObservableList aktualisieren
                 collectionComboBox.getSelectionModel().select(trimmedName);
-                showInfo("Collection Added", "Collection '" + trimmedName + "' wurde erfolgreich hinzugefügt.");
+                showInfo("Collection Added", "Collection '" + trimmedName + "' was added successfully.");
             } else {
                 showAlert("Invalid Name", "Collection name cannot be empty or contains invalid characters.");
             }
@@ -605,7 +605,7 @@ public class BookManagerApp extends Application {
     private void renameSelectedCollection() {
         String selectedCollection = collectionComboBox.getSelectionModel().getSelectedItem();
         if (selectedCollection == null) {
-            showAlert("No Collection Selected", "Bitte wähle eine Collection aus, die du umbenennen möchtest.");
+            showAlert("No Collection Selected", "Please select a collection first.");
             return;
         }
 
@@ -626,9 +626,9 @@ public class BookManagerApp extends Application {
             if (success) {
                 collectionsObservableList.set(collectionsObservableList.indexOf(selectedCollection), trimmedName);
                 collectionComboBox.getSelectionModel().select(trimmedName);
-                showInfo("Renamed Successfully", "Die Collection wurde erfolgreich umbenannt.");
+                showInfo("Renamed Successfully", "Collection '" + selectedCollection + "' was renamed to '" + trimmedName + "'.");
             } else {
-                showAlert("Rename Failed", "Die Collection konnte nicht umbenannt werden.");
+                showAlert("Rename Failed", "Collection '" + selectedCollection + "' could not be renamed.");
             }
         });
     }
@@ -639,7 +639,7 @@ public class BookManagerApp extends Application {
     private void deleteSelectedCollection() {
         String selectedCollection = collectionComboBox.getSelectionModel().getSelectedItem();
         if (selectedCollection == null) {
-            showAlert("No Collection Selected", "Bitte wähle eine Collection aus, die du löschen möchtest.");
+            showAlert("No Collection Selected", "Please select a collection first.");
             return;
         }
 
@@ -652,10 +652,10 @@ public class BookManagerApp extends Application {
             boolean success = collectionManager.deleteSelectedCollection(selectedCollection); // Neue Methode aufrufen
             if (success) {
                 collectionsObservableList.remove(selectedCollection); // ObservableList aktualisieren
-                showInfo("Deleted Successfully", "Die Collection wurde erfolgreich gelöscht.");
+                showInfo("Deleted Successfully", "Collection '" + selectedCollection + "' was deleted successfully.");
                 collectionComboBox.getSelectionModel().selectFirst(); // Wähle die erste Collection aus
             } else {
-                showAlert("Delete Failed", "Die Collection konnte nicht gelöscht werden.");
+                showAlert("Delete Failed", "Collection '" + selectedCollection + "' could not be deleted.");
             }
         }
     }
@@ -986,14 +986,14 @@ public class BookManagerApp extends Application {
 
         ratingComboBox.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                System.out.println("Enter gedrückt in: " + ratingComboBox.getId());
+                System.out.println("Enter pressed in: " + ratingComboBox.getId());
                 commentArea.requestFocus(); // Springe zur Kommentarbox bei Enter
             }
         });
 
         commentArea.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                System.out.println("Enter gedrückt in: " + commentArea.getId());
+                System.out.println("Enter pressed in: " + commentArea.getId());
                 saveButton.requestFocus(); // Springe zum Save-Button
             }
         });
