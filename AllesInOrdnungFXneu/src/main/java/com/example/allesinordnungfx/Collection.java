@@ -9,6 +9,14 @@ public class Collection {
     private String name; // welchen Namen soll die Sammlung haben?
     private List<Book> books;
 
+    // Callback-Schnittstelle zur UI-Benachrichtigung
+    private java.util.function.Consumer<String> notificationCallback;
+
+    // Setter für die Callback-Methode
+    public void setNotificationCallback(java.util.function.Consumer<String> notificationCallback) {
+        this.notificationCallback = notificationCallback;
+    }
+
     // ohne Argumente für SnakeYAML
     public Collection() {
         this.books = new ArrayList<>();
@@ -47,7 +55,11 @@ public class Collection {
     }
 
     private void notifyUI(String message) {
-        System.out.println(message);
+        if (notificationCallback != null) {
+            notificationCallback.accept(message); // Zeigt die Nachricht in der UI an
+        } else {
+            System.out.println(message); // Fallback für Logging
+        }
     }
 
     public void removeBook(String title) {
