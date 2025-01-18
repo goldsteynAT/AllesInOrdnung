@@ -5,7 +5,7 @@ books:
 - {comment: juhuuu, firstName: lkjö, isbn: 978315268, lastName: ölkjölk, publicationYear: 2025,
   rating: '3', read: true, title: hello}
 - {comment: '', firstName: lkjfa, isbn: 4351135, lastName: lkajdf, publicationYear: 2025,
-  rating: '', read: false, title: ölaskjdf}
+  rating: '2', read: false, title: ölaskjdf}
 - {comment: '', firstName: as, isbn: 123, lastName: adf, publicationYear: 2025, rating: '2',
   read: true, title: ölkajdf}
 - {comment: '', firstName: lk, isbn: 123, lastName: lkj, publicationYear: 2025, rating: '',

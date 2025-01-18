@@ -357,6 +357,8 @@ public class BookManagerApp extends Application {
         });
         titleColumn.setEditable(true);
 
+
+
         TableColumn<Book, String> authorColumn = new TableColumn<>("Author");
         authorColumn.setCellValueFactory(cd ->
                 new SimpleStringProperty(
@@ -377,6 +379,17 @@ public class BookManagerApp extends Application {
             collectionManager.saveBooksForCollection(currentCollection);
         });
         authorColumn.setEditable(true);
+
+        TableColumn<Book, String> genreColumn = new TableColumn<>("Genre");
+        genreColumn.setCellValueFactory(cd ->
+                new SimpleStringProperty(cd.getValue().getGenre()));
+        genreColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        genreColumn.setOnEditCommit(event -> {
+            Book book = event.getRowValue();
+            book.setGenre(event.getNewValue());
+            collectionManager.saveBooksForCollection(currentCollection);
+        });
+        genreColumn.setEditable(true);
 
         TableColumn<Book, Integer> yearColumn = new TableColumn<>("Publication Year");
         yearColumn.setCellValueFactory(cd ->
@@ -555,7 +568,7 @@ public class BookManagerApp extends Application {
 
         // Spalten zur Tabelle hinzufügen
         bookTableView.getColumns().addAll(
-                titleColumn, authorColumn, yearColumn, isbnColumn,
+                titleColumn, authorColumn, genreColumn, yearColumn, isbnColumn,
                 readColumn, ratingColumn, commentColumn, editColumn, deleteColumn
         );
         editColumn.setSortable(false);
@@ -579,7 +592,7 @@ public class BookManagerApp extends Application {
         // Daten an die Tabelle binden
         bookTableView.setItems(bookListData);
 
-        Scene scene = new Scene(new VBox(10, topContainer, bookTableView), WINDOW_WIDTH, WINDOW_HEIGHT);
+        Scene scene = new Scene(new VBox(20, topContainer, bookTableView), WINDOW_WIDTH, WINDOW_HEIGHT);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Book Collection Manager - Alles in Ordnung");
         primaryStage.show();
@@ -767,7 +780,7 @@ public class BookManagerApp extends Application {
      * Öffnet ein Fenster, um ein neues Book anzulegen.
      */
     private void openAddBookWindow() {
-        openBookForm(new Book("", "", "", 0, 0), true);
+        openBookForm(new Book("", "", "","", 0, 0), true);
     }
 
     /**
@@ -923,10 +936,13 @@ public class BookManagerApp extends Application {
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setTitle(isNew ? "Add Book" : "Edit Book");
 
+        stage.setHeight(480);
+        stage.setWidth(720);
+        stage.setResizable(false);
         GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(10));
+        grid.setHgap(5);
+        grid.setVgap(5);
+        grid.setPadding(new Insets(5));
 
         // Felder mit ID für Debugging konfigurieren
         Label titleLabel = new Label("Title:");
@@ -940,6 +956,10 @@ public class BookManagerApp extends Application {
         Label lastNameLabel = new Label("Last Name:");
         TextField lastNameField = new TextField(book.getLastName());
         lastNameField.setId("lastNameField");
+
+        Label genreLabel = new Label("Genre:");
+        TextField genreField = new TextField(book.getGenre());
+        genreField.setId("genreField");
 
         Label yearLabel = new Label("Year:");
         TextField yearField = new TextField(String.valueOf(
@@ -978,6 +998,7 @@ public class BookManagerApp extends Application {
                 String title = titleField.getText().trim();
                 String firstName = firstNameField.getText().trim();
                 String lastName = lastNameField.getText().trim();
+                String genre = genreField.getText().trim();
                 int year = Integer.parseInt(yearField.getText().trim());
                 long isbn = Long.parseLong(isbnField.getText().trim());
 
@@ -997,6 +1018,7 @@ public class BookManagerApp extends Application {
                 book.setTitle(title);
                 book.setFirstName(firstName);
                 book.setLastName(lastName);
+                book.setGenre(genre);
                 book.setPublicationYear(year);
                 book.setIsbn(isbn);
 
@@ -1077,6 +1099,8 @@ public class BookManagerApp extends Application {
         grid.add(firstNameField, 1, 1);
         grid.add(lastNameLabel, 2, 1);
         grid.add(lastNameField, 3, 1);
+        grid.add(genreLabel, 4,1);
+        grid.add(genreField, 5,1);
 
         grid.add(yearLabel, 0, 2);
         grid.add(yearField, 1, 2);
@@ -1120,6 +1144,10 @@ public class BookManagerApp extends Application {
         Label lastNameLabel = new Label("Last Name:");
         TextField lastNameField = new TextField(book.getLastName());
         lastNameField.setDisable(true);
+
+        Label genreLabel = new Label("Genre");
+        TextField genreField = new TextField(book.getGenre());
+        genreField.setDisable(true);
 
         Label yearLabel = new Label("Year:");
         TextField yearField = new TextField(String.valueOf(book.getPublicationYear() > 0 ?
@@ -1171,6 +1199,8 @@ public class BookManagerApp extends Application {
         grid.add(firstNameField, 1, 1);
         grid.add(lastNameLabel, 2, 1);
         grid.add(lastNameField, 3, 1);
+        grid.add(genreLabel, 4,1);
+        grid.add(genreField, 5,1);
 
         grid.add(yearLabel, 0, 2);
         grid.add(yearField, 1, 2);

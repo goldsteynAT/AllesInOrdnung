@@ -442,6 +442,7 @@ public class CollectionManager {
                     String title = row.getCell(0).getStringCellValue();
                     String firstName = row.getCell(1).getStringCellValue();
                     String lastName = row.getCell(2).getStringCellValue();
+                    String genre = row.getCell(3).getStringCellValue();
                     int year = (int) row.getCell(3).getNumericCellValue();
                     long isbn = (long) row.getCell(4).getNumericCellValue();
                     boolean read = row.getCell(5).getBooleanCellValue();
@@ -449,7 +450,7 @@ public class CollectionManager {
                     String comment = row.getCell(7).getStringCellValue();
 
                     // Buch erstellen und hinzufügen
-                    Book book = new Book(title, firstName, lastName, year, isbn);
+                    Book book = new Book(title, firstName, lastName, genre, year, isbn);
                     book.setRead(read);
                     book.setRating(rating);
                     book.setComment(comment);
