@@ -441,14 +441,47 @@ public class BookManagerApp extends Application {
         TableColumn<Book, String> ratingColumn = new TableColumn<>("Rating");
         ratingColumn.setCellValueFactory(cd ->
                 new SimpleStringProperty(cd.getValue().getRating()));
-        ObservableList<String> ratingOptions = FXCollections.observableArrayList("1", "2", "3");
-        ratingColumn.setCellFactory(ComboBoxTableCell.forTableColumn(ratingOptions));
-        ratingColumn.setOnEditCommit(event -> {
-            Book book = event.getRowValue();
-            book.setRating(event.getNewValue());
-            collectionManager.saveBooksForCollection(currentCollection);
+
+        ratingColumn.setCellFactory(column -> new TableCell<>() {
+            private final ComboBox<String> comboBox = new ComboBox<>(
+                    FXCollections.observableArrayList("1", "2", "3")
+            );
+
+            private final Tooltip disabledTooltip = new Tooltip("Mark as read to enable rating");
+
+            @Override
+            protected void updateItem(String rating, boolean empty) {
+                super.updateItem(rating, empty);
+
+                if (empty || getTableRow() == null || getTableRow().getItem() == null) {
+                    setGraphic(null);
+                    return;
+                }
+
+                // Zugriff auf das zugehörige Buch
+                Book book = (Book) getTableRow().getItem();
+
+                if (!book.isRead()) {
+                    // ComboBox deaktivieren und Tooltip hinzufügen
+                    comboBox.setDisable(true);
+                    Tooltip.install(comboBox, disabledTooltip); // Tooltip für Info
+                } else {
+                    // ComboBox aktivieren und Tooltip entfernen
+                    comboBox.setDisable(false);
+                    Tooltip.uninstall(comboBox, disabledTooltip);
+                    comboBox.setValue(rating); // Setze aktuelles Rating
+                }
+
+                // Listener: Bei Änderung den Wert im Buch speichern
+                comboBox.setOnAction(event -> {
+                    String newValue = comboBox.getValue();
+                    book.setRating(newValue); // Neues Rating speichern
+                    collectionManager.saveBooksForCollection(currentCollection); // Sammlung speichern
+                });
+
+                setGraphic(comboBox);
+            }
         });
-        ratingColumn.setEditable(true);
 
         TableColumn<Book, String> commentColumn = new TableColumn<>("Comment");
         commentColumn.setCellValueFactory(cd ->

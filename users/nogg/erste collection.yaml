@@ -1,13 +1,13 @@
 !!com.example.allesinordnungfx.CollectionManager$CollectionWrapper
 books:
 - {comment: '', firstName: sadf, isbn: 4351135, lastName: asdf, publicationYear: 2025,
-  rating: '', read: false, title: asdf}
+  rating: '3', read: false, title: asdf}
 - {comment: juhuuu, firstName: lkjö, isbn: 978315268, lastName: ölkjölk, publicationYear: 2025,
   rating: '3', read: true, title: hello}
 - {comment: '', firstName: lkjfa, isbn: 4351135, lastName: lkajdf, publicationYear: 2025,
   rating: '', read: false, title: ölaskjdf}
-- {comment: '', firstName: as, isbn: 123, lastName: adf, publicationYear: 2025, rating: '',
-  read: false, title: ölkajdf}
+- {comment: '', firstName: as, isbn: 123, lastName: adf, publicationYear: 2025, rating: '2',
+  read: true, title: ölkajdf}
 - {comment: '', firstName: lk, isbn: 123, lastName: lkj, publicationYear: 2025, rating: '',
   read: false, title: lkasjf}
 - {comment: '', firstName: ads, isbn: 123, lastName: asd, publicationYear: 2025, rating: '',
