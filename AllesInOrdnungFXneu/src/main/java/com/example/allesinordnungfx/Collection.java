@@ -38,12 +38,13 @@ public class Collection {
     }
 
     // Methoden zum Hinzufügen und Entfernen von Büchern
-    public void addBook(Book book) {
+    public boolean addBook(Book book) {
         if(isDuplicate(book)) {
             notifyUI("Duplicate found " + book.getTitle());
-            return;
+            return false;
         }
         books.add(book);
+        return true;
     }
 
     private void notifyUI(String message) {
@@ -74,6 +75,13 @@ public class Collection {
         return books.stream()
                 .anyMatch(book -> book.getTitle().equalsIgnoreCase(newBook.getTitle()) &&
                         book.getIsbn() == (newBook.getIsbn()));
+    }
+
+    public boolean isDuplicateExcept(Book updateBook) {
+        return books.stream()
+                .anyMatch(book -> !book.equals(updateBook) &&
+                        book.getTitle().equalsIgnoreCase(updateBook.getTitle()) &&
+                        book.getIsbn() == updateBook.getIsbn());
     }
 
 

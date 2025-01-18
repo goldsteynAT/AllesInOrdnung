@@ -948,6 +948,8 @@ public class BookManagerApp extends Application {
                     return;
                 }
 
+
+
                 // Buch-Daten aktualisieren
                 book.setTitle(title);
                 book.setFirstName(firstName);
@@ -959,16 +961,39 @@ public class BookManagerApp extends Application {
                 book.setRating(ratingComboBox.getValue());
                 book.setComment(commentArea.getText());
 
+//                if (isNew) {
+//                    currentCollection.addBook(book);
+//                    bookListData.add(book);
+//                    System.out.println("Added book to collection '" + currentCollection.getName() + "': " + book);
+//                } else {
+//                    // Aktualisiere Anzeige für bestehendes Buch
+//                    int index = bookListData.indexOf(book); // Index des Buchs finden
+//                    if (index >= 0) {
+//                        bookListData.set(index, book); // Aktualisiere Eintrag
+//                    }
+//                }
+
                 if (isNew) {
-                    currentCollection.addBook(book);
-                    bookListData.add(book);
-                    System.out.println("Added book to collection '" + currentCollection.getName() + "': " + book);
-                } else {
-                    // Aktualisiere Anzeige für bestehendes Buch
-                    int index = bookListData.indexOf(book); // Index des Buchs finden
-                    if (index >= 0) {
-                        bookListData.set(index, book); // Aktualisiere Eintrag
+                    boolean success = currentCollection.addBook(book);
+                    if (success) {
+                        bookListData.add(book); // Aktualisieren, wenn erfolgreich
+                        System.out.println("Added new book: " + book);
+                    } else {
+                        showAlert("Duplicate Book", "A book with the same title or ISBN already exists.");
+                        return;
                     }
+                } else {
+                    if (currentCollection.isDuplicateExcept(book)) {
+                        showAlert("Duplicate Book", "A book with the same title or ISBN already exists.");
+                        return;
+                    }
+
+                    // Aktualisieren der bestehenden Buchanzeige
+                    int index = bookListData.indexOf(book);
+                    if (index >= 0) {
+                        bookListData.set(index, book);
+                    }
+
                 }
 
                 // Speichern der aktuellen Collection
