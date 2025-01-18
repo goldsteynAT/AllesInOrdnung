@@ -84,6 +84,16 @@ public class BookManagerApp extends Application {
             collectionManager.addNewCollection(defaultName); // Default-Collection auch abspeichern
         }
 
+        // Verbindung zwischen Collection und UI-Benachrichtigung herstellen
+
+        if (currentCollection != null) { // Sicherstellen, dass currentCollection gesetzt ist
+            currentCollection.setNotificationCallback(message -> {
+                showAlert("Duplicate Book", message);
+            });
+        } else {
+            System.err.println("Error: currentCollection is null");
+        }
+
         // Label zur Anzeige des eingeloggten Benutzers
         Label loggedInUserLabel = new Label("Logged in as: " + username); // "Benutzername" durch den echten Usernamen ersetzen
         loggedInUserLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;"); // Beispielstil
