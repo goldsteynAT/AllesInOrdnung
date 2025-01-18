@@ -40,10 +40,14 @@ public class Collection {
     // Methoden zum Hinzufügen und Entfernen von Büchern
     public void addBook(Book book) {
         if(isDuplicate(book)) {
-            System.out.println("Duplicate found. The book was not added.");
+            notifyUI("Duplicate found " + book.getTitle());
             return;
         }
         books.add(book);
+    }
+
+    private void notifyUI(String message) {
+        System.out.println(message);
     }
 
     public void removeBook(String title) {
