@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="AllesInOrdnungFX (2)" />
         <module name="AllesInOrdnungFX" />
         <module name="AllesInOrdnungFX (1)" />
       </profile>

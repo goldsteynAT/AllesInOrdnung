@@ -39,6 +39,10 @@ public class Collection {
 
     // Methoden zum Hinzufügen und Entfernen von Büchern
     public void addBook(Book book) {
+        if(isDuplicate(book)) {
+            System.out.println("Duplicate found. The book was not added.");
+            return;
+        }
         books.add(book);
     }
 
@@ -60,6 +64,12 @@ public class Collection {
             }
         }
         return results;
+    }
+
+    public boolean isDuplicate(Book newBook) {
+        return books.stream()
+                .anyMatch(book -> book.getTitle().equalsIgnoreCase(newBook.getTitle()) &&
+                        book.getIsbn() == (newBook.getIsbn()));
     }
 
 
