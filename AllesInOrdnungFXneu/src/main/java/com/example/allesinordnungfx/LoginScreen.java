@@ -15,9 +15,6 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.control.Label;
 import javafx.geometry.Insets;
-//import javafx.scene.image.Image;
-
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -35,14 +32,9 @@ public class LoginScreen extends Application {
         Label titleLabel = new Label("Alles In Ordnung");
         titleLabel.setStyle("-fx-font-size: 24; -fx-font-weight: bold;");
 
-        /* Untertitel
-        Label subtitle = new Label("Projekt für Programmieren 1, WS 2024/25\n"
-                + "Autor*Innen: Jochen Schmidtberger, Corinna Jäger, Christina Seidl und Daniel Essl");
-        subtitle.setStyle("-fx-font-size: 14;");Color.web("#66a3a4")
-*/
         // Zwei weitere Zeilen
         Label infoLine1 = new Label("Projekt für Programmieren 1, WS 2024/25");
-        Label infoLine2 = new Label("Autor*Innen: Jochen Schmidtberger, Corinna Jäger, Christina Seidl und Daniel Essl");
+        Label infoLine2 = new Label("Autor*Innen: Daniel Essl, Corinna Jäger, Jochen Schmidtberger und Christina Seidl");
         infoLine1.setStyle("-fx-font-size: 16px;");
         infoLine2.setStyle("-fx-font-size: 16px;");
 
@@ -56,10 +48,7 @@ public class LoginScreen extends Application {
 
         Label passLabel = new Label("Password:");
         PasswordField passField = new PasswordField();
-/*
-        Button loginButton = new Button("Login");
-        Button registerButton = new Button("Register");
-*/
+
         GridPane loginGrid = new GridPane();
         loginGrid.setHgap(10);
         loginGrid.setVgap(10);
@@ -67,8 +56,6 @@ public class LoginScreen extends Application {
         loginGrid.add(userField, 1, 0);
         loginGrid.add(passLabel, 0, 1);
         loginGrid.add(passField, 1, 1);
-        //loginGrid.add(loginButton, 0, 2);
-        //loginGrid.add(registerButton, 1, 2);
         loginGrid.setAlignment(Pos.CENTER);
 
         // Login- und Register-Buttons in eine eigene HBox
@@ -212,7 +199,7 @@ public class LoginScreen extends Application {
             }
         });
         // Szene erstellen und anzeigen
-        Scene scene = new Scene(wrappedLayout, 500, 400); // Breite x Höhe
+        Scene scene = new Scene(wrappedLayout, BookManagerApp.WINDOW_WIDTH, BookManagerApp.WINDOW_HEIGHT); // Breite x Höhe
         primaryStage.setScene(scene);
         primaryStage.setTitle("Login-Screen");
         primaryStage.show();

@@ -40,6 +40,9 @@ public class BookManagerApp extends Application {
         startWithUser(primaryStage, System.getProperty("user.dir"), "DefaultUser");
     }
 
+    public static final double WINDOW_WIDTH = 1000;
+    public static final double WINDOW_HEIGHT = 600;
+
     private CollectionManager collectionManager = new CollectionManager();
     private ObservableList<Book> bookListData = FXCollections.observableArrayList();
     private String collectionsFilePath = "collections.yaml"; // Pfad zu collections.yaml
@@ -533,7 +536,7 @@ public class BookManagerApp extends Application {
         // Daten an die Tabelle binden
         bookTableView.setItems(bookListData);
 
-        Scene scene = new Scene(new VBox(10, topContainer, bookTableView), 1000, 600);
+        Scene scene = new Scene(new VBox(10, topContainer, bookTableView), WINDOW_WIDTH, WINDOW_HEIGHT);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Book Collection Manager - Alles in Ordnung");
         primaryStage.show();
