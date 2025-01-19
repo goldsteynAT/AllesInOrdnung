@@ -603,6 +603,9 @@ public class BookManagerApp extends Application {
         Scene scene = new Scene(new VBox(20, topContainer, bookTableView), WINDOW_WIDTH, WINDOW_HEIGHT);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Book Collection Manager - Alles in Ordnung");
+        LoginScreen.setBookIcon(primaryStage);
+
+
         primaryStage.show();
 
         // Beim Schließen -> Speichern aller Collections
@@ -648,6 +651,9 @@ public class BookManagerApp extends Application {
      */
     private void addNewCollection() {
         TextInputDialog dialog = new TextInputDialog();
+        Image bookIcon = new Image(getClass().getResource("/icons/book.png").toExternalForm());
+        Stage dialogStage = (Stage) dialog.getDialogPane().getScene().getWindow();
+        dialogStage.getIcons().add(bookIcon);
         dialog.setTitle("Add New Collection");
         dialog.setHeaderText(null);
         dialog.setContentText("Collection Name:");
@@ -677,6 +683,9 @@ public class BookManagerApp extends Application {
         }
 
         TextInputDialog dialog = new TextInputDialog(selectedCollection);
+        Image bookIcon = new Image(getClass().getResource("/icons/book.png").toExternalForm());
+        Stage dialogStage = (Stage) dialog.getDialogPane().getScene().getWindow();
+        dialogStage.getIcons().add(bookIcon);
         dialog.setTitle("Rename Collection");
         dialog.setHeaderText(null);
         dialog.setContentText("New Collection Name:");
@@ -711,6 +720,11 @@ public class BookManagerApp extends Application {
         }
 
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+        Image bookIcon = new Image(getClass().getResource("/icons/book.png").toExternalForm());
+        Stage confirmationStage = (Stage) confirmation.getDialogPane().getScene().getWindow();
+        confirmationStage.getIcons().add(bookIcon);
+
+
         confirmation.setTitle("Delete Collection");
         confirmation.setContentText("Are you sure you want to delete the collection '" + selectedCollection + "'? This action cannot be undone.");
 
@@ -943,6 +957,7 @@ public class BookManagerApp extends Application {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setTitle(isNew ? "Add Book" : "Edit Book");
+        LoginScreen.setBookIcon(stage);
 
         stage.setHeight(480);
         stage.setWidth(720);

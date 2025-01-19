@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -202,7 +203,13 @@ public class LoginScreen extends Application {
         Scene scene = new Scene(wrappedLayout, BookManagerApp.WINDOW_WIDTH, BookManagerApp.WINDOW_HEIGHT); // Breite x Höhe
         primaryStage.setScene(scene);
         primaryStage.setTitle("Login-Screen");
+        setBookIcon(primaryStage);
         primaryStage.show();
+    }
+
+    public static void setBookIcon(Stage stage) {
+        Image bookIcon = new Image(LoginScreen.class.getResource("/icons/book.png").toExternalForm());
+        stage.getIcons().add(bookIcon);
     }
 
     // Validiert Login-Daten
@@ -280,6 +287,8 @@ public class LoginScreen extends Application {
     // Hilfsmethoden für Dialoge
     private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
+        Stage dialogueStage = (Stage) alert.getDialogPane().getScene().getWindow();
+        setBookIcon(dialogueStage);
         alert.setTitle(title);
         alert.setContentText(content);
         alert.showAndWait();
