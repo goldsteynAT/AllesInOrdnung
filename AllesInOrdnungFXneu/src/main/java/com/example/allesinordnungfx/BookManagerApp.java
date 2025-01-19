@@ -356,6 +356,7 @@ public class BookManagerApp extends Application {
             collectionManager.saveBooksForCollection(currentCollection);
         });
         titleColumn.setEditable(true);
+        titleColumn.setPrefWidth(170);
 
 
 
@@ -379,6 +380,7 @@ public class BookManagerApp extends Application {
             collectionManager.saveBooksForCollection(currentCollection);
         });
         authorColumn.setEditable(true);
+        authorColumn.setPrefWidth(170);
 
         TableColumn<Book, String> genreColumn = new TableColumn<>("Genre");
         genreColumn.setCellValueFactory(cd ->
@@ -390,11 +392,13 @@ public class BookManagerApp extends Application {
             collectionManager.saveBooksForCollection(currentCollection);
         });
         genreColumn.setEditable(true);
+        genreColumn.setPrefWidth(70);
 
         TableColumn<Book, Integer> yearColumn = new TableColumn<>("Publication Year");
         yearColumn.setCellValueFactory(cd ->
                 new SimpleIntegerProperty(cd.getValue().getPublicationYear()).asObject());
         yearColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        yearColumn.setPrefWidth(70);
 
         /*yearColumn.setOnEditCommit(event -> {
             Book book = event.getRowValue();
@@ -439,12 +443,14 @@ public class BookManagerApp extends Application {
             collectionManager.saveBooksForCollection(currentCollection);
         });
         isbnColumn.setEditable(true);
+        isbnColumn.setPrefWidth(70);
 
         TableColumn<Book, Boolean> readColumn = new TableColumn<>("Read");
         readColumn.setCellValueFactory(cd ->
                 new SimpleBooleanProperty(cd.getValue().isRead()));
         readColumn.setCellFactory(CheckBoxTableCell.forTableColumn(readColumn));
         readColumn.setEditable(true);
+        readColumn.setPrefWidth(40);
         readColumn.setOnEditCommit(event -> {
             Book book = event.getRowValue();
             book.setRead(event.getNewValue());
@@ -454,6 +460,7 @@ public class BookManagerApp extends Application {
         TableColumn<Book, String> ratingColumn = new TableColumn<>("Rating");
         ratingColumn.setCellValueFactory(cd ->
                 new SimpleStringProperty(cd.getValue().getRating()));
+
 
         ratingColumn.setCellFactory(column -> new TableCell<>() {
             private final ComboBox<String> comboBox = new ComboBox<>(
@@ -506,6 +513,7 @@ public class BookManagerApp extends Application {
             collectionManager.saveBooksForCollection(currentCollection);
         });
         commentColumn.setEditable(true);
+        commentColumn.setPrefWidth(200);
 
         // Edit-Button (in Zelle)
         TableColumn<Book, Void> editColumn = new TableColumn<>("Edit");

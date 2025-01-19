@@ -1,10 +1,10 @@
 !!com.example.allesinordnungfx.CollectionManager$CollectionWrapper
 books:
-- {comment: '', firstName: asdf, isbn: 0, lastName: awsaf1, publicationYear: 2022,
+- {comment: '', firstName: asdf, genre: null, isbn: 0, lastName: awsaf1, publicationYear: 2022,
   rating: '', read: false, title: nogg}
-- {comment: '', firstName: asdfsad, isbn: 0, lastName: sdafasdf, publicationYear: 2025,
+- {comment: '', firstName: asdfsad, genre: null, isbn: 0, lastName: sdafasdf, publicationYear: 2025,
   rating: '', read: false, title: asdfasd}
-- {comment: '', firstName: sdfasdf, isbn: 0, lastName: sdfgdsfg, publicationYear: 2025,
-  rating: '', read: false, title: asdf}
-- {comment: '', firstName: sdfg, isbn: 123, lastName: asdffa, publicationYear: 2025,
+- {comment: '', firstName: sdfasdf, genre: null, isbn: 0, lastName: sdfgdsfg, publicationYear: 2025,
+  rating: '2', read: true, title: asdf}
+- {comment: '', firstName: sdfg, genre: null, isbn: 123, lastName: asdffa, publicationYear: 2025,
   rating: '1', read: true, title: sfasdf}
