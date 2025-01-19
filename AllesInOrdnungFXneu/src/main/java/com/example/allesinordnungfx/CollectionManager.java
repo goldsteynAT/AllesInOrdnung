@@ -7,7 +7,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.apache.poi.ss.usermodel.*;
-import java.nio.file.Paths;
 
 import java.io.File;
 import java.io.FileReader;
@@ -349,8 +348,10 @@ public class CollectionManager {
     /**
      * Exportiert alle Collections als XLSX (Excel) in die angegebene Datei.
      * Jede Collection wird in einem separaten Arbeitsblatt dargestellt.
+     *
+     * @return
      */
-    public void exportToXlsx(String filePath) {
+    public boolean exportToXlsx(String filePath) {
         try (Workbook workbook = new XSSFWorkbook()) {
 
             for (String collectionName : collectionNames) {
@@ -362,11 +363,12 @@ public class CollectionManager {
                 headerRow.createCell(0).setCellValue("Title");
                 headerRow.createCell(1).setCellValue("First Name");
                 headerRow.createCell(2).setCellValue("Last Name");
-                headerRow.createCell(3).setCellValue("Year");
-                headerRow.createCell(4).setCellValue("ISBN");
-                headerRow.createCell(5).setCellValue("Read");
-                headerRow.createCell(6).setCellValue("Rating");
-                headerRow.createCell(7).setCellValue("Comment");
+                headerRow.createCell(3).setCellValue("Genre");
+                headerRow.createCell(4).setCellValue("Year");
+                headerRow.createCell(5).setCellValue("ISBN");
+                headerRow.createCell(6).setCellValue("Read");
+                headerRow.createCell(7).setCellValue("Rating");
+                headerRow.createCell(8).setCellValue("Comment");
 
                 // Datenzeilen
                 List<Book> books = collection.getBooks();
@@ -376,11 +378,12 @@ public class CollectionManager {
                     row.createCell(0).setCellValue(b.getTitle());
                     row.createCell(1).setCellValue(b.getFirstName());
                     row.createCell(2).setCellValue(b.getLastName());
-                    row.createCell(3).setCellValue(b.getPublicationYear());
-                    row.createCell(4).setCellValue(b.getIsbn());
-                    row.createCell(5).setCellValue(b.isRead());
-                    row.createCell(6).setCellValue(b.getRating());
-                    row.createCell(7).setCellValue(b.getComment());
+                    row.createCell(3).setCellValue(b.getGenre());
+                    row.createCell(4).setCellValue(b.getPublicationYear());
+                    row.createCell(5).setCellValue(b.getIsbn());
+                    row.createCell(6).setCellValue(b.isRead());
+                    row.createCell(7).setCellValue(b.getRating());
+                    row.createCell(8).setCellValue(b.getComment());
                 }
 
                 // Spaltenbreite anpassen
@@ -398,6 +401,7 @@ public class CollectionManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     // von YAML File importieren
@@ -444,11 +448,11 @@ public class CollectionManager {
                     String firstName = row.getCell(1).getStringCellValue();
                     String lastName = row.getCell(2).getStringCellValue();
                     String genre = row.getCell(3).getStringCellValue();
-                    int year = (int) row.getCell(3).getNumericCellValue();
-                    long isbn = (long) row.getCell(4).getNumericCellValue();
-                    boolean read = row.getCell(5).getBooleanCellValue();
-                    String rating = row.getCell(6).getStringCellValue();
-                    String comment = row.getCell(7).getStringCellValue();
+                    int year = (int) row.getCell(4).getNumericCellValue();
+                    long isbn = (long) row.getCell(5).getNumericCellValue();
+                    boolean read = row.getCell(6).getBooleanCellValue();
+                    String rating = row.getCell(7).getStringCellValue();
+                    String comment = row.getCell(8).getStringCellValue();
 
                     // Buch erstellen und hinzufügen
                     Book book = new Book(title, firstName, lastName, genre, year, isbn);

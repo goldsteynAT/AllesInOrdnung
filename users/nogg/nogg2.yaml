@@ -8,3 +8,5 @@ books:
   rating: '1', read: true, title: asdf}
 - {comment: '', firstName: sdfg, genre: null, isbn: 123, lastName: asdffa, publicationYear: 2025,
   rating: '1', read: true, title: sfasdf}
+- {comment: '', firstName: asdf, genre: '', isbn: 123235, lastName: sadf, publicationYear: 2025,
+  rating: '', read: false, title: asdf}

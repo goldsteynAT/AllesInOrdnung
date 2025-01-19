@@ -184,7 +184,7 @@ public class BookManagerApp extends Application {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Import Books");
             fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("YAML Files (*.yaml)", "*.yaml"),
+                    new FileChooser.ExtensionFilter("YAML Files (*.yaml, *.yml)", "*.yaml, *.yml"),
                     new FileChooser.ExtensionFilter("Excel Files (*.xlsx)", "*.xlsx")
             );
 
@@ -216,7 +216,7 @@ public class BookManagerApp extends Application {
         // Export-Button mit FileChooser
         Button exportButton = new Button("Export...");
 
-        // Export-Funktion per FileChooser
+        /*/ Export-Funktion per FileChooser
         exportButton.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Export Books");
@@ -249,10 +249,12 @@ public class BookManagerApp extends Application {
                         collectionManager.saveBooksForCollection(collection);
                     }
                     showInfo("Export Successful", "Collections have been successfully exported to " + file.getAbsolutePath());
+                    System.out.println("Exporting to file: " + file.getAbsolutePath());
                 } else if (fileName.endsWith(".xlsx")) {
                     // XLSX Export
                     collectionManager.exportToXlsx(file.getAbsolutePath());
                     showInfo("Export Successful", "Collections have been successfully exported to " + file.getAbsolutePath());
+                    System.out.println("Exporting to file: " + file.getAbsolutePath());
                 } else {
                     // Warnung: Unbekannte Endung
                     showAlert("Unknown File Extension",
@@ -260,6 +262,61 @@ public class BookManagerApp extends Application {
                 }
             }
         });
+*/
+
+        exportButton.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Export Books");
+
+            // Vorschlag für Dateinamen basierend auf Collection
+            if (currentCollection != null && currentCollection.getName() != null) {
+                fileChooser.setInitialFileName(currentCollection.getName());
+            } else {
+                fileChooser.setInitialFileName("BooksCollection");
+            }
+
+            // Unterstützte Dateiformate
+            FileChooser.ExtensionFilter yamlFilter =
+                    new FileChooser.ExtensionFilter("YAML Files (*.yaml)", "*.yaml");
+            FileChooser.ExtensionFilter xlsxFilter =
+                    new FileChooser.ExtensionFilter("Excel Files (*.xlsx)", "*.xlsx");
+            fileChooser.getExtensionFilters().addAll(yamlFilter, xlsxFilter);
+
+            // Datei auswählen
+            File file = fileChooser.showSaveDialog(primaryStage);
+            if (file != null) {
+                String fileName = file.getName().toLowerCase();
+
+                try {
+                    if (fileName.endsWith(".yaml") || fileName.endsWith(".yml")) {
+                        collectionManager.saveCollectionNames(collectionsFilePath);
+                        for (String name : collectionManager.getCollectionNames()) {
+                            Collection collection = collectionManager.loadBooksForCollection(name);
+                            collectionManager.saveBooksForCollection(collection);
+                        }
+                        showInfo("Export Successful", "Collections have been successfully exported to " + file.getAbsolutePath());
+                    } else if (fileName.endsWith(".xlsx")) {
+                        // XLSX-Export prüfen
+                        boolean success = collectionManager.exportToXlsx(file.getAbsolutePath());
+                        if (success) {
+                            showInfo("Export Successful", "Collections have been successfully exported to " + file.getAbsolutePath());
+                        } else {
+                            showAlert("Export Failed", "Failed to export collections to XLSX.");
+                        }
+                    } else {
+                        // Automatische Korrektur der Endung
+                        if (!fileName.contains(".")) {
+                            file = new File(file.getAbsolutePath() + ".yaml"); // Standard auf .yaml setzen
+                        }
+                    }
+                } catch (Exception ex) {
+                    // Fehlerbehandlung
+                    ex.printStackTrace();
+                    showAlert("Export Error", "An error occurred during export: " + ex.getMessage());
+                }
+            }
+        });
+
 
         // Suchfunktion
         searchButton.setOnAction(ev -> searchBooks(searchField));
@@ -1106,7 +1163,8 @@ public class BookManagerApp extends Application {
         setEnterKeyTraversal(firstNameField, lastNameField);
         setEnterKeyTraversal(lastNameField, yearField);
         setEnterKeyTraversal(yearField, isbnField);
-        setEnterKeyTraversal(isbnField, saveButton);
+        setEnterKeyTraversal(isbnField, genreField);
+        setEnterKeyTraversal(genreField, saveButton);
 
         ratingComboBox.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
@@ -1130,23 +1188,24 @@ public class BookManagerApp extends Application {
         grid.add(firstNameField, 1, 1);
         grid.add(lastNameLabel, 2, 1);
         grid.add(lastNameField, 3, 1);
-        grid.add(genreLabel, 4,1);
-        grid.add(genreField, 5,1);
 
         grid.add(yearLabel, 0, 2);
         grid.add(yearField, 1, 2);
         grid.add(isbnLabel, 2, 2);
         grid.add(isbnField, 3, 2);
 
-        grid.add(readLabel, 0, 3);
-        grid.add(readCheckBox, 1, 3);
-        grid.add(ratingLabel, 2, 3);
-        grid.add(ratingComboBox, 3, 3);
+        grid.add(genreLabel, 0,3);
+        grid.add(genreField, 1,3);
 
-        grid.add(commentLabel, 0, 4);
-        grid.add(commentArea, 1, 4, 3, 1);
+        grid.add(readLabel, 0, 4);
+        grid.add(readCheckBox, 1, 4);
+        grid.add(ratingLabel, 2, 4);
+        grid.add(ratingComboBox, 3, 4);
 
-        grid.add(saveButton, 0, 5, 4, 1);
+        grid.add(commentLabel, 0, 5);
+        grid.add(commentArea, 1, 5, 3, 1);
+
+        grid.add(saveButton, 0, 6, 4, 1);
 
         // Szene und Fenster anzeigen
         Scene scene = new Scene(grid, 500, 400);
@@ -1214,7 +1273,8 @@ public class BookManagerApp extends Application {
         setEnterKeyTraversal(firstNameField, lastNameField);
         setEnterKeyTraversal(lastNameField, yearField);
         setEnterKeyTraversal(yearField, isbnField);
-        setEnterKeyTraversal(isbnField, ratingComboBox);
+        setEnterKeyTraversal(isbnField, genreField);
+        setEnterKeyTraversal(genreField, ratingComboBox);
         ratingComboBox.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 commentArea.requestFocus(); // Springe zur Kommentarbox
@@ -1230,23 +1290,25 @@ public class BookManagerApp extends Application {
         grid.add(firstNameField, 1, 1);
         grid.add(lastNameLabel, 2, 1);
         grid.add(lastNameField, 3, 1);
-        grid.add(genreLabel, 4,1);
-        grid.add(genreField, 5,1);
+
 
         grid.add(yearLabel, 0, 2);
         grid.add(yearField, 1, 2);
         grid.add(isbnLabel, 2, 2);
         grid.add(isbnField, 3, 2);
 
-        grid.add(readLabel, 0, 3);
-        grid.add(readCheckBox, 1, 3);
-        grid.add(ratingLabel, 2, 3);
-        grid.add(ratingComboBox, 3, 3);
+        grid.add(genreLabel, 0,3);
+        grid.add(genreField, 1,3);
 
-        grid.add(commentLabel, 0, 4);
-        grid.add(commentArea, 1, 4, 3, 1);
+        grid.add(readLabel, 0, 4);
+        grid.add(readCheckBox, 1, 4);
+        grid.add(ratingLabel, 2, 4);
+        grid.add(ratingComboBox, 3, 4);
 
-        grid.add(closeButton, 0, 5, 4, 1);
+        grid.add(commentLabel, 0, 5);
+        grid.add(commentArea, 1, 5, 3, 1);
+
+        grid.add(closeButton, 0, 6, 4, 1);
 
         Scene scene = new Scene(grid, 500, 400);
         stage.setScene(scene);

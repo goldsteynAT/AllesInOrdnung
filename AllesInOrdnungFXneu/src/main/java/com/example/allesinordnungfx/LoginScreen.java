@@ -107,57 +107,6 @@ public class LoginScreen extends Application {
 */
 
 
-        /* Login-Formular (GridPane)
-        Label userLabel = new Label("Username:");
-        TextField userField = new TextField();
-
-        Label passLabel = new Label("Password:");
-        PasswordField passField = new PasswordField();
-
-        Button loginButton = new Button("Login");
-        Button registerButton = new Button("Register");
-
-        GridPane loginGrid = new GridPane();
-        loginGrid.setHgap(10);
-        loginGrid.setVgap(10);
-        loginGrid.add(userLabel, 0, 0);
-        loginGrid.add(userField, 1, 0);
-        loginGrid.add(passLabel, 0, 1);
-        loginGrid.add(passField, 1, 1);
-        loginGrid.add(loginButton, 0, 2);
-        loginGrid.add(registerButton, 1, 2);
-
-        // Layout zusammenstellen
-        VBox layout = new VBox(10, titleLabel, infoLine1, infoLine2, loginGrid);
-        layout.setStyle("-fx-padding: 20; -fx-alignment: center;");
-*/
-        /* alte Login Logik
-        // Login-Logik
-        loginButton.setOnAction(e -> {
-            String username = userField.getText().trim();
-            String password = passField.getText().trim();
-
-            if (validateLogin(username, password)) {
-                String userDirectoryPath = "users/" + username;
-                BookManagerApp app = new BookManagerApp();
-                app.startWithUser(primaryStage, userDirectoryPath); // Start mit Benutzerverzeichnis
-            } else {
-                showAlert("Login Error", "Invalid username or password.");
-            }
-        });
-
-        // Registrierung-Logik
-        registerButton.setOnAction(e -> {
-            String username = userField.getText().trim();
-            String password = passField.getText().trim();
-
-            if (registerUser(username, password)) {
-                showInfo("Registration Successful", "You can now log in with your credentials.");
-            } else {
-                showAlert("Registration Error", "Username already exists or invalid input.");
-            }
-        });
-*/
         // Login-Logik ausführen
         Runnable loginAction = () -> {
             String username = userField.getText().trim();
