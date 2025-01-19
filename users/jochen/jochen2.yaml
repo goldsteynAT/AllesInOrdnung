@@ -1,4 +1,48 @@
 !!com.example.allesinordnungfx.CollectionManager$CollectionWrapper
 books:
-- {comment: '', firstName: sdf, isbn: 0, lastName: sdafvs, publicationYear: 123, rating: '',
-  read: false, title: asdasdf}
+- {comment: '', firstName: Max, genre: Fiction, isbn: 9781234567101, lastName: Müller,
+  publicationYear: 2001, rating: '', read: false, title: Der Wanderer}
+- {comment: '', firstName: Anna, genre: Science Fiction, isbn: 9781234567102, lastName: Meier,
+  publicationYear: 1998, rating: '', read: false, title: Sterne und Schatten}
+- {comment: '', firstName: Peter, genre: Fantasy, isbn: 9781234567103, lastName: Schmidt,
+  publicationYear: 2010, rating: '', read: false, title: Das verlorene Königreich}
+- {comment: '', firstName: Lena, genre: Romance, isbn: 9781234567104, lastName: Fischer,
+  publicationYear: 2015, rating: '', read: false, title: Liebe im Herbst}
+- {comment: '', firstName: Thomas, genre: Mystery, isbn: 9781234567105, lastName: Becker,
+  publicationYear: 2020, rating: '', read: false, title: Das dritte Geheimnis}
+- {comment: '', firstName: Maria, genre: Horror, isbn: 9781234567106, lastName: Lang,
+  publicationYear: 1995, rating: '', read: false, title: Der Schatten des Waldes}
+- {comment: '', firstName: Michael, genre: Adventure, isbn: 9781234567107, lastName: Weber,
+  publicationYear: 2008, rating: '', read: false, title: Aufbruch zur See}
+- {comment: '', firstName: Clara, genre: Thriller, isbn: 9781234567108, lastName: Koch,
+  publicationYear: 1992, rating: '', read: false, title: Im Auge des Sturms}
+- {comment: '', firstName: Robert, genre: Science Fiction, isbn: 9781234567109, lastName: König,
+  publicationYear: 1987, rating: '', read: false, title: Das galaktische Erbe}
+- {comment: '', firstName: Katrin, genre: Fantasy, isbn: 9781234567110, lastName: Herzog,
+  publicationYear: 2023, rating: '', read: false, title: Der magische Schlüssel}
+- {comment: '', firstName: Johanna, genre: Romance, isbn: 9781234567111, lastName: Krüger,
+  publicationYear: 2017, rating: '', read: false, title: Herbstliche Träume}
+- {comment: '', firstName: Daniel, genre: Fiction, isbn: 9781234567112, lastName: Schwarz,
+  publicationYear: 2004, rating: '', read: false, title: Auf eigenen Wegen}
+- {comment: '', firstName: Eva, genre: Horror, isbn: 9781234567113, lastName: Wolf,
+  publicationYear: 2012, rating: '', read: false, title: Der dunkle See}
+- {comment: '', firstName: Paul, genre: Mystery, isbn: 9781234567114, lastName: Lehmann,
+  publicationYear: 2019, rating: '', read: false, title: Das verlorene Rätsel}
+- {comment: '', firstName: Nina, genre: Adventure, isbn: 9781234567115, lastName: Horn,
+  publicationYear: 1986, rating: '', read: false, title: Reise ins Unbekannte}
+- {comment: '', firstName: Tim, genre: Science Fiction, isbn: 9781234567116, lastName: Berger,
+  publicationYear: 2021, rating: '', read: false, title: Zwischen den Sternen}
+- {comment: '', firstName: Sophie, genre: Fantasy, isbn: 9781234567117, lastName: Grün,
+  publicationYear: 1993, rating: '', read: false, title: Das verborgene Amulett}
+- {comment: '', firstName: Markus, genre: Thriller, isbn: 9781234567118, lastName: Wagner,
+  publicationYear: 2003, rating: '', read: false, title: Die letzte Spur}
+- {comment: '', firstName: Isabel, genre: Romance, isbn: 9781234567119, lastName: Frank,
+  publicationYear: 1990, rating: '', read: false, title: Liebesbrief in Paris}
+- {comment: '', firstName: Leon, genre: Fiction, isbn: 9781234567120, lastName: Schulte,
+  publicationYear: 2005, rating: '', read: false, title: Unter dem Himmelszelt}
+- {comment: '', firstName: Hannah, genre: Horror, isbn: 9781234567121, lastName: Maier,
+  publicationYear: 1988, rating: '', read: false, title: Das Haus am Abgrund}
+- {comment: '', firstName: Sandra, genre: Fantasy, isbn: 9781234567199, lastName: Berg,
+  publicationYear: 2020, rating: '', read: false, title: Die letzte Prinzessin}
+- {comment: '', firstName: Philipp, genre: Adventure, isbn: 9781234567200, lastName: Stein,
+  publicationYear: 1988, rating: '', read: false, title: Expedition ins Nirgendwo}

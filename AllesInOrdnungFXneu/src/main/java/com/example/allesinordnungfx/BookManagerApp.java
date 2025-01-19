@@ -104,7 +104,7 @@ public class BookManagerApp extends Application {
 
 // HBox für den User-Display oben
         HBox userDisplayBox = new HBox(loggedInUserLabel);
-        userDisplayBox.setStyle("-fx-padding: 5; -fx-background-color: #f0f0f0; -fx-alignment: center-left;");
+        userDisplayBox.setStyle("-fx-padding: 5; -fx-background-color: #66a3a4; -fx-alignment: center-left;");
         userDisplayBox.setPadding(new Insets(5, 10, 5, 10));
 
         // GUI-Komponenten für die erste Zeile (Collection-Auswahl und Add Collection)
@@ -220,6 +220,14 @@ public class BookManagerApp extends Application {
         exportButton.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Export Books");
+
+            // Dateinamenvorschlag basierend auf dem Namen der aktuellen Collection
+            if (currentCollection != null && currentCollection.getName() != null) {
+                String suggestedFileName = currentCollection.getName(); // Hol den Namen der aktuellen Sammlung
+                fileChooser.setInitialFileName(suggestedFileName); // Setze als Vorgabe-Dateinamen
+            } else {
+                fileChooser.setInitialFileName("BooksCollection"); // Fallback-Name
+            }
 
             // YAML und XLSX als Optionen
             FileChooser.ExtensionFilter yamlFilter =
@@ -356,7 +364,7 @@ public class BookManagerApp extends Application {
             collectionManager.saveBooksForCollection(currentCollection);
         });
         titleColumn.setEditable(true);
-        titleColumn.setPrefWidth(170);
+        titleColumn.setPrefWidth(190);
 
 
 
@@ -380,7 +388,7 @@ public class BookManagerApp extends Application {
             collectionManager.saveBooksForCollection(currentCollection);
         });
         authorColumn.setEditable(true);
-        authorColumn.setPrefWidth(170);
+        authorColumn.setPrefWidth(190);
 
         TableColumn<Book, String> genreColumn = new TableColumn<>("Genre");
         genreColumn.setCellValueFactory(cd ->
@@ -450,7 +458,7 @@ public class BookManagerApp extends Application {
                 new SimpleBooleanProperty(cd.getValue().isRead()));
         readColumn.setCellFactory(CheckBoxTableCell.forTableColumn(readColumn));
         readColumn.setEditable(true);
-        readColumn.setPrefWidth(40);
+        readColumn.setMaxWidth(40);
         readColumn.setOnEditCommit(event -> {
             Book book = event.getRowValue();
             book.setRead(event.getNewValue());
@@ -513,7 +521,7 @@ public class BookManagerApp extends Application {
             collectionManager.saveBooksForCollection(currentCollection);
         });
         commentColumn.setEditable(true);
-        commentColumn.setPrefWidth(200);
+        commentColumn.setMaxWidth(180);
 
         // Edit-Button (in Zelle)
         TableColumn<Book, Void> editColumn = new TableColumn<>("Edit");

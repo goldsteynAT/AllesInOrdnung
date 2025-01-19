@@ -8,8 +8,10 @@
         <outputRelativeToContentRoot value="true" />
         <module name="AllesInOrdnungFX (2)" />
         <module name="AllesInOrdnungFX" />
-        <module name="AllesInOrdnungFX (1)" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="AllesInOrdnungFX (1)" target="23" />
+    </bytecodeTargetLevel>
   </component>
 </project>

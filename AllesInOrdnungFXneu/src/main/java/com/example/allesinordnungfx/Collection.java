@@ -67,7 +67,7 @@ public class Collection {
         books.removeIf(book -> book.getTitle().equalsIgnoreCase(title));
     }
 
-    // Suchfunktion innerhalb dieser Sammlung
+    // Suchfunktion innerhalb der geladenen Sammlung
     public List<Book> search(String keyword) {
         List<Book> results = new ArrayList<>();
         String lowerKeyword = keyword.toLowerCase();
@@ -76,7 +76,8 @@ public class Collection {
                     || book.getFirstName().toLowerCase().contains(lowerKeyword)
                     || book.getLastName().toLowerCase().contains(lowerKeyword)
                     || String.valueOf(book.getPublicationYear()).contains(lowerKeyword)
-                    || String.valueOf(book.getIsbn()).contains(lowerKeyword)) {
+                    || String.valueOf(book.getIsbn()).contains(lowerKeyword)
+                    || book.getGenre().toLowerCase().contains(lowerKeyword)) {
                 results.add(book);
             }
         }
