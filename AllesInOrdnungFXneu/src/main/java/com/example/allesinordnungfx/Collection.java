@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 // kümmert sich um die Daten und Funktionen innerhalb einer einzelnen Sammlung
-
 public class Collection {
     private String name; // welchen Namen soll die Sammlung haben?
     private List<Book> books;
@@ -96,7 +95,6 @@ public class Collection {
                         book.getTitle().equalsIgnoreCase(updateBook.getTitle()) &&
                         book.getIsbn() == updateBook.getIsbn());
     }
-
 
     // den Namen der Sammlung zurück geben
     @Override

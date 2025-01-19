@@ -1,0 +1,74 @@
+- !!com.example.allesinordnungfx.Book {comment: asdfadsf, firstName: Peter, genre: Fantasy,
+  isbn: 9781234567103, lastName: Schmidt, publicationYear: 2010, rating: '3', read: true,
+  title: Das verlorene Königreich}
+- !!com.example.allesinordnungfx.Book {comment: '', firstName: Markus, genre: Thriller,
+  isbn: 9781234567118, lastName: Wagner, publicationYear: 2003, rating: '', read: false,
+  title: Die letzte Spur}
+- !!com.example.allesinordnungfx.Book {comment: '', firstName: Lena, genre: Romance,
+  isbn: 9781234567104, lastName: Fischer, publicationYear: 2015, rating: '', read: false,
+  title: Liebe im Herbst}
+- !!com.example.allesinordnungfx.Book {comment: '', firstName: Thomas, genre: Mystery,
+  isbn: 9781234567105, lastName: Becker, publicationYear: 2020, rating: '', read: false,
+  title: Das dritte Geheimnis}
+- !!com.example.allesinordnungfx.Book {comment: asfsadf, firstName: asdfasdf, genre: asdf,
+  isbn: 1235, lastName: wrweqf, publicationYear: 2025, rating: '3', read: true, title: asdfasdf}
+- !!com.example.allesinordnungfx.Book {comment: '', firstName: Robert, genre: Science
+    Fiction, isbn: 9781234567109, lastName: König, publicationYear: 1987, rating: '',
+  read: false, title: Das galaktische Erbe}
+- !!com.example.allesinordnungfx.Book {comment: '', firstName: Michael, genre: Adventure,
+  isbn: 9781234567107, lastName: Weber, publicationYear: 2008, rating: '', read: false,
+  title: Aufbruch zur See}
+- !!com.example.allesinordnungfx.Book {comment: '', firstName: Johanna, genre: Romance,
+  isbn: 9781234567111, lastName: Krüger, publicationYear: 2017, rating: '3', read: false,
+  title: Herbstliche Träume}
+- !!com.example.allesinordnungfx.Book {comment: '', firstName: Isabel, genre: Romance,
+  isbn: 9781234567119, lastName: Frank, publicationYear: 1990, rating: '', read: false,
+  title: Liebesbrief in Paris}
+- !!com.example.allesinordnungfx.Book {comment: '', firstName: Maria, genre: Horror,
+  isbn: 9781234567106, lastName: Lang, publicationYear: 1995, rating: '', read: false,
+  title: Der Schatten des Waldes}
+- !!com.example.allesinordnungfx.Book {comment: '', firstName: Nina, genre: Adventure,
+  isbn: 9781234567115, lastName: Horn, publicationYear: 1986, rating: '', read: false,
+  title: Reise ins Unbekannte}
+- !!com.example.allesinordnungfx.Book {comment: '', firstName: Sandra, genre: Fantasy,
+  isbn: 9781234567199, lastName: Berg, publicationYear: 2020, rating: '', read: false,
+  title: Die letzte Prinzessin}
+- !!com.example.allesinordnungfx.Book {comment: asdfasdf, firstName: Max, genre: Fiction,
+  isbn: 9781234567101, lastName: Müller, publicationYear: 2001, rating: '2', read: true,
+  title: Der Wanderer}
+- !!com.example.allesinordnungfx.Book {comment: '', firstName: Sophie, genre: Fantasy,
+  isbn: 9781234567117, lastName: Grün, publicationYear: 1993, rating: '', read: false,
+  title: Das verborgene Amulett}
+- !!com.example.allesinordnungfx.Book {comment: '', firstName: Leon, genre: Fiction,
+  isbn: 9781234567120, lastName: Schulte, publicationYear: 2005, rating: '', read: false,
+  title: Unter dem Himmelszelt}
+- !!com.example.allesinordnungfx.Book {comment: '', firstName: Katrin, genre: Fantasy,
+  isbn: 9781234567110, lastName: Herzog, publicationYear: 2023, rating: '', read: false,
+  title: Der magische Schlüssel}
+- !!com.example.allesinordnungfx.Book {comment: '', firstName: Philipp, genre: Adventure,
+  isbn: 9781234567200, lastName: Stein, publicationYear: 1988, rating: '', read: false,
+  title: Expedition ins Nirgendwo}
+- !!com.example.allesinordnungfx.Book {comment: '', firstName: Paul, genre: Mystery,
+  isbn: 9781234567114, lastName: Lehmann, publicationYear: 2019, rating: '', read: false,
+  title: Das verlorene Rätsel}
+- !!com.example.allesinordnungfx.Book {comment: '', firstName: Tim, genre: Science
+    Fiction, isbn: 9781234567116, lastName: Berger, publicationYear: 2021, rating: '',
+  read: false, title: Zwischen den Sternen}
+- !!com.example.allesinordnungfx.Book {comment: '', firstName: Daniel, genre: Fiction,
+  isbn: 9781234567112, lastName: Schwarz, publicationYear: 2004, rating: '1', read: false,
+  title: Auf eigenen Wegen}
+- !!com.example.allesinordnungfx.Book {comment: fasdfasdf, firstName: Vorname Autor,
+  genre: Genre, isbn: 3775667123123, lastName: Nachname Autor, publicationYear: 2024,
+  rating: '1', read: true, title: Buchtitel}
+- !!com.example.allesinordnungfx.Book {comment: '', firstName: Eva, genre: Horror,
+  isbn: 9781234567113, lastName: Wolf, publicationYear: 2012, rating: '2', read: false,
+  title: Der dunkle See}
+- !!com.example.allesinordnungfx.Book {comment: '', firstName: Hannah, genre: Horror,
+  isbn: 9781234567121, lastName: Maier, publicationYear: 1988, rating: '', read: false,
+  title: Das Haus am Abgrund}
+- !!com.example.allesinordnungfx.Book {comment: asdfadsfasdf, firstName: Anna, genre: Science
+    Fiction, isbn: 9781234567102, lastName: Meier, publicationYear: 1998, rating: '1',
+  read: true, title: Sterne und Schatten}
+- !!com.example.allesinordnungfx.Book {comment: '', firstName: Clara, genre: Thriller,
+  isbn: 9781234567108, lastName: Koch, publicationYear: 1992, rating: '', read: false,
+  title: Im Auge des Sturms}

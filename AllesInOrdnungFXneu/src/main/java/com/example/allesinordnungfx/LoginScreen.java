@@ -35,7 +35,7 @@ public class LoginScreen extends Application {
 
         // Zwei weitere Zeilen
         Label infoLine1 = new Label("Projekt für Programmieren 1, WS 2024/25");
-        Label infoLine2 = new Label("Autor*Innen: Daniel Essl, Corinna Jäger, Jochen Schmidtberger und Christina Seidl");
+        Label infoLine2 = new Label("Autor*innen: Daniel Essl, Corinna Jäger, Jochen Schmidtberger und Christina Seidl");
         infoLine1.setStyle("-fx-font-size: 16px;");
         infoLine2.setStyle("-fx-font-size: 16px;");
 
@@ -88,24 +88,6 @@ public class LoginScreen extends Application {
         wrappedLayout.setBackground(new Background(
                 new BackgroundFill(Color.web("#66a3a4"), new CornerRadii(15), null)
         ));
-/*
-        // Bildpfad (relativ zum Ressourcen-Ordner)
-        String imagePath = "/images/1594205764210.png";
-
-        // Hintergrundbild definieren
-        BackgroundImage backgroundImage = new BackgroundImage(
-                new Image(getClass().getResource(imagePath).toExternalForm()), // Bild aus Ressourcen laden
-                BackgroundRepeat.NO_REPEAT,  // Keine Wiederholung horizontal
-                BackgroundRepeat.NO_REPEAT,  // Keine Wiederholung vertikal
-                BackgroundPosition.DEFAULT,  // Standard-Position (zentriert)
-                BackgroundSize.DEFAULT       // Standard-Größe (entsprechend Bildgröße)
-        );
-
-        // Hintergrund auf das Layout setzen
-        wrappedLayout.setBackground(new Background(backgroundImage));
-
-*/
-
 
         // Login-Logik ausführen
         Runnable loginAction = () -> {
@@ -183,8 +165,6 @@ public class LoginScreen extends Application {
         }
         return false;
     }
-
-
 
     // Registriert einen neuen Benutzer
     private boolean registerUser(String username, String password) {

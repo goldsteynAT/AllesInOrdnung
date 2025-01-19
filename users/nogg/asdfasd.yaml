@@ -1,0 +1,6 @@
+!!com.example.allesinordnungfx.CollectionManager$CollectionWrapper
+books:
+- {comment: asfadfgxcv, firstName: asdfvsda, genre: wasf, isbn: 2134542, lastName: asdfsa,
+  publicationYear: 2025, rating: '1', read: true, title: asdfa}
+- {comment: '', firstName: asf, genre: agsdfag, isbn: 12436, lastName: 3254gsdf, publicationYear: 2025,
+  rating: '', read: false, title: asf65u}

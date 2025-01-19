@@ -1,29 +1,22 @@
 package com.example.allesinordnungfx;
 
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
-import org.apache.poi.ss.usermodel.*;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 // verantwortlich für das Laden, Speichern, Umbenennen und Löschen von Buchsammlungen
 // und Export der Daten
-
 public class CollectionManager {
 
     private List<String> collectionNames; // Liste der Collection-Namen
     private String userDirectoryPath; // Pfad des Benutzerverzeichnisses
-    //private static final String COLLECTIONS_DIRECTORY = "collections"; // Standardverzeichnis
+    private FileHandler fileHandler = new FileHandler();
 
     public CollectionManager(String userDirectoryPath) {
         this.collectionNames = new ArrayList<>();
@@ -166,20 +159,20 @@ public class CollectionManager {
 
         System.out.println("A new collection has been added: " + collectionName);
     }
-/*
+
     // Neue Methode 2: Collections-Verzeichnis sicherstellen
     public void ensureCollectionsDirectoryExists() {
-        File directory = new File(COLLECTIONS_DIRECTORY);
+        File directory = new File(userDirectoryPath);
         if (!directory.exists()) {
             boolean created = directory.mkdirs();
             if (created) {
-                System.out.println("Das Verzeichnis für Collections wurde erstellt: " + COLLECTIONS_DIRECTORY);
+                System.out.println("Das Verzeichnis für Collections wurde erstellt: " + userDirectoryPath);
             } else {
-                System.err.println("Fehler beim Erstellen des Verzeichnisses: " + COLLECTIONS_DIRECTORY);
+                System.err.println("Fehler beim Erstellen des Verzeichnisses: " + userDirectoryPath);
             }
         }
     }
-*/
+
     // Neue Methode 3: Bestehende Collection umbenennen
     public boolean renameSelectedCollection(String oldName, String newName) {
         // Prüfen, ob alte Collection existiert und neue noch frei ist
@@ -241,10 +234,6 @@ public class CollectionManager {
         this.userDirectoryPath = userDirectoryPath;
         ensureUserDirectoryExists(); // Sicherstellen, dass das Verzeichnis existiert
     }
-
-
-
-
 
     /**
      * Methode zum Umbenennen einer Collection.
@@ -351,128 +340,100 @@ public class CollectionManager {
      *
      * @return
      */
-    public boolean exportToXlsx(String filePath) {
-        try (Workbook workbook = new XSSFWorkbook()) {
 
-            for (String collectionName : collectionNames) {
-                Collection collection = loadBooksForCollection(collectionName);
-                Sheet sheet = workbook.createSheet(collection.getName());
-
-                // Kopfzeile (Header)
-                Row headerRow = sheet.createRow(0);
-                headerRow.createCell(0).setCellValue("Title");
-                headerRow.createCell(1).setCellValue("First Name");
-                headerRow.createCell(2).setCellValue("Last Name");
-                headerRow.createCell(3).setCellValue("Genre");
-                headerRow.createCell(4).setCellValue("Year");
-                headerRow.createCell(5).setCellValue("ISBN");
-                headerRow.createCell(6).setCellValue("Read");
-                headerRow.createCell(7).setCellValue("Rating");
-                headerRow.createCell(8).setCellValue("Comment");
-
-                // Datenzeilen
-                List<Book> books = collection.getBooks();
-                for (int i = 0; i < books.size(); i++) {
-                    Book b = books.get(i);
-                    Row row = sheet.createRow(i + 1);
-                    row.createCell(0).setCellValue(b.getTitle());
-                    row.createCell(1).setCellValue(b.getFirstName());
-                    row.createCell(2).setCellValue(b.getLastName());
-                    row.createCell(3).setCellValue(b.getGenre());
-                    row.createCell(4).setCellValue(b.getPublicationYear());
-                    row.createCell(5).setCellValue(b.getIsbn());
-                    row.createCell(6).setCellValue(b.isRead());
-                    row.createCell(7).setCellValue(b.getRating());
-                    row.createCell(8).setCellValue(b.getComment());
-                }
-
-                // Spaltenbreite anpassen
-                for (int col = 0; col < 8; col++) {
-                    sheet.autoSizeColumn(col);
-                }
-            }
-
-            // Datei schreiben
-            try (FileOutputStream fos = new FileOutputStream(filePath)) {
-                workbook.write(fos);
-            }
-            System.out.println("Export to XLSX done: " + filePath);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    // von YAML File importieren
     public boolean importFromYaml(String filePath, String collectionName) {
-        File file = new File(filePath);
-        if (!file.exists()) {
-            System.out.println("YAML file does not exist: " + filePath);
-            return false;
-        }
-
-        try (FileReader reader = new FileReader(filePath)) {
-            Yaml yaml = new Yaml(new Constructor(CollectionWrapper.class));
-            CollectionWrapper wrapper = yaml.load(reader);
-            if (wrapper != null && wrapper.getBooks() != null) {
-                Collection collection = loadBooksForCollection(collectionName);
-                collection.getBooks().addAll(wrapper.getBooks()); // Bücher hinzufügen
-                saveBooksForCollection(collection); // Aktualisierte Sammlung speichern
-                System.out.println("Imported books from YAML: " + filePath + " into collection: " + collectionName);
-                return true;
+        try {
+            List<Book> books = fileHandler.loadBooksFromYaml(filePath);
+            Collection collection = getCollectionByName(collectionName);
+            if (collection != null) {
+                collection.getBooks().addAll(books);
+            } else {
+                System.out.println("Collection not found: " + collectionName);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    // von XLSX File importieren
-    public boolean importFromXlsx(String filePath, String collectionName) {
-        File file = new File(filePath);
-        if (!file.exists()) {
-            System.out.println("XLSX file does not exist: " + filePath);
-            return false;
-        }
-
-        try (Workbook workbook = WorkbookFactory.create(file)) {
-            Sheet sheet = workbook.getSheetAt(0); // Nur das erste Tabellenblatt einlesen
-            Collection collection = loadBooksForCollection(collectionName); // Lade bestehende Sammlung
-
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) { // Start ab Zeile 1 (nach Header)
-                Row row = sheet.getRow(i);
-                if (row != null) {
-                    // Werte aus den Zellen lesen
-                    String title = row.getCell(0).getStringCellValue();
-                    String firstName = row.getCell(1).getStringCellValue();
-                    String lastName = row.getCell(2).getStringCellValue();
-                    String genre = row.getCell(3).getStringCellValue();
-                    int year = (int) row.getCell(4).getNumericCellValue();
-                    long isbn = (long) row.getCell(5).getNumericCellValue();
-                    boolean read = row.getCell(6).getBooleanCellValue();
-                    String rating = row.getCell(7).getStringCellValue();
-                    String comment = row.getCell(8).getStringCellValue();
-
-                    // Buch erstellen und hinzufügen
-                    Book book = new Book(title, firstName, lastName, genre, year, isbn);
-                    book.setRead(read);
-                    book.setRating(rating);
-                    book.setComment(comment);
-                    collection.addBook(book);
-                }
-            }
-
-            saveBooksForCollection(collection); // Sammlung speichern
-            System.out.println("Imported books from XLSX: " + filePath + " into collection: " + collectionName);
             return true;
-
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
+    public boolean importFromXlsx(String filePath, String collectionName) {
+        try {
+            List<Book> books = fileHandler.loadBooksFromXlsx(filePath);
+            Collection collection = getCollectionByName(collectionName);
+            if (collection != null) {
+                collection.getBooks().addAll(books);
+            } else {
+                System.out.println("Collection not found: " + collectionName);
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
+        public boolean exportToXlsx(String filePath) {
+            try {
+                List<Book> allBooks = getAllBooks();
+                fileHandler.saveBooksToXlsx(filePath, allBooks);
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
 
+        public boolean exportToYaml(String filePath) {
+            try {
+                List<Book> allBooks = getAllBooks();
+                fileHandler.saveBooksToYaml(filePath, allBooks);
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        private Collection getCollectionByName(String collectionName) {
+            // Überprüfen, ob der Name in der Liste der Collection-Namen existiert
+            if (collectionNames.contains(collectionName)) {
+                // Sammlung mit vorhandener Methode laden
+                return loadBooksForCollection(collectionName);
+            } else {
+                // Sammlung nicht gefunden
+                System.out.println("Collection not found: " + collectionName);
+                return new Collection(collectionName);
+            }
+        }
+
+    private List<Book> getAllBooks() {
+        List<Book> allBooks = new ArrayList<>(); // Liste für alle Bücher
+
+        if (collectionNames == null || collectionNames.isEmpty()) {
+            System.out.println("No collections available.");
+            return allBooks; // Leere Liste zurückgeben
+        }
+
+        // Kopie der collectionNames für thread-sicheren Zugriff
+        List<String> safeCollectionNames = new ArrayList<>(collectionNames);
+
+        for (String collection : safeCollectionNames) {
+            Collection currentCollection = loadBooksForCollection(collection);
+            if (currentCollection == null) {
+                System.err.println("Collection could not be loaded: " + collection);
+                continue;
+            }
+
+            List<Book> books = currentCollection.getBooks();
+            if (books != null && !books.isEmpty()) {
+                allBooks.addAll(books); // Bücher hinzufügen
+            } else {
+                System.out.println("No books in the collection: " + collection);
+            }
+        }
+        // Optional: Entfernen von Duplikaten
+        return new ArrayList<>(new HashSet<>(allBooks));
+        // Wenn Duplikate erlaubt sind, einfach: return allBooks;
+    }
 }

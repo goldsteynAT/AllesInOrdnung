@@ -11,7 +11,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
-import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
@@ -27,16 +26,15 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import java.time.Year;
-
 import java.io.File;
+import java.util.List;
 import java.util.Optional;
 
 public class BookManagerApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // Placeholder implementation to fulfill the abstract method requirements
-        // The proper initialization can take place within the start(Stage, String) method
+
         startWithUser(primaryStage, System.getProperty("user.dir"), "DefaultUser");
     }
 
@@ -46,6 +44,8 @@ public class BookManagerApp extends Application {
     private CollectionManager collectionManager = new CollectionManager();
     private ObservableList<Book> bookListData = FXCollections.observableArrayList();
     private String collectionsFilePath = "collections.yaml"; // Pfad zu collections.yaml
+
+    private TableView<Book> bookTableView = new TableView<>();
 
     private Collection currentCollection; // Aktuell ausgewählte Sammlung
     private ComboBox<String> collectionComboBox; // Klassenvariable für die ComboBox
@@ -64,12 +64,9 @@ public class BookManagerApp extends Application {
         start(primaryStage, username); // Hauptfenster starten
     }
 
-
-    //@Override
     public void start(Stage primaryStage, String username) {
 
-        // Sicherstellen, dass das Verzeichnis existiert
-        //ensureCollectionsDirectoryExists();
+        ensureCollectionsDirectoryExists();
 
         // Vorhandene Collection-Namen laden
         collectionManager.loadCollectionNames(collectionsFilePath);
@@ -85,7 +82,6 @@ public class BookManagerApp extends Application {
         }
 
         // Verbindung zwischen Collection und UI-Benachrichtigung herstellen
-
         if (currentCollection != null) { // Sicherstellen, dass currentCollection gesetzt ist
             currentCollection.setNotificationCallback(message -> {
                 showAlert("Duplicate Book", message);
@@ -98,11 +94,7 @@ public class BookManagerApp extends Application {
         Label loggedInUserLabel = new Label("Logged in as: " + username); // "Benutzername" durch den echten Usernamen ersetzen
         loggedInUserLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;"); // Beispielstil
 
-// Platzhalter für den Benutzer (kann angepasst oder überschrieben werden)
-        //String currentUsername = "AktuellerBenutzer"; // Dies könnte aus einer Login-Logik kommen
-        //loggedInUserLabel.setText("Logged in als: " + currentUsername);
-
-// HBox für den User-Display oben
+        // HBox für den User-Display oben
         HBox userDisplayBox = new HBox(loggedInUserLabel);
         userDisplayBox.setStyle("-fx-padding: 5; -fx-background-color: #66a3a4; -fx-alignment: center-left;");
         userDisplayBox.setPadding(new Insets(5, 10, 5, 10));
@@ -152,8 +144,6 @@ public class BookManagerApp extends Application {
             }
         });
 
-
-
         // GUI-Komponenten für die zweite Zeile (Search, Buttons, Export)
         TextField searchField = new TextField();
         searchField.setPromptText("Search...");
@@ -180,143 +170,86 @@ public class BookManagerApp extends Application {
 
         // Import-Funktion
         Button importButton = new Button("Import...");
-        importButton.setOnAction(e -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Import Books");
-            fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("YAML Files (*.yaml, *.yml)", "*.yaml, *.yml"),
-                    new FileChooser.ExtensionFilter("Excel Files (*.xlsx)", "*.xlsx")
-            );
-
-            File file = fileChooser.showOpenDialog(primaryStage);
-            if (file != null) {
-                String fileName = file.getName().toLowerCase();
-                String filePath = file.getAbsolutePath();
-                String collectionName = currentCollection.getName();
-
-                boolean success = false;
-                if (fileName.endsWith(".yaml") || fileName.endsWith(".yml")) {
-                    success = collectionManager.importFromYaml(filePath, collectionName);
-                } else if (fileName.endsWith(".xlsx")) {
-                    success = collectionManager.importFromXlsx(filePath, collectionName);
-                }
-
-                if (success) {
-                    loadBooksForCurrentCollection(); // Tabelle aktualisieren
-                    showInfo("Import Successful", "Books have been successfully imported!");
-                } else {
-                    showAlert("Import Failed", "Could not import books.");
-                }
-            }
-        });
-
+        importButton.setDisable(true);
 
         Button addButton = new Button("Add Book");
+
+        Button refreshButton = new Button("Refresh");
+        refreshButton.setDisable(true);
+        refreshButton.setOnAction(e -> {
+            loadBooksForCurrentCollection();
+            bookTableView.refresh(); // Optional, falls die Tabelle nicht automatisch aktualisiert wird
+        });
 
         // Export-Button mit FileChooser
         Button exportButton = new Button("Export...");
 
-        /*/ Export-Funktion per FileChooser
-        exportButton.setOnAction(e -> {
+        importButton.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Export Books");
+            fileChooser.setTitle("Import Books");
 
-            // Dateinamenvorschlag basierend auf dem Namen der aktuellen Collection
-            if (currentCollection != null && currentCollection.getName() != null) {
-                String suggestedFileName = currentCollection.getName(); // Hol den Namen der aktuellen Sammlung
-                fileChooser.setInitialFileName(suggestedFileName); // Setze als Vorgabe-Dateinamen
-            } else {
-                fileChooser.setInitialFileName("BooksCollection"); // Fallback-Name
-            }
-
-            // YAML und XLSX als Optionen
-            FileChooser.ExtensionFilter yamlFilter =
-                    new FileChooser.ExtensionFilter("YAML Files (*.yaml)", "*.yaml");
-            FileChooser.ExtensionFilter xlsxFilter =
-                    new FileChooser.ExtensionFilter("Excel Files (*.xlsx)", "*.xlsx");
-            fileChooser.getExtensionFilters().addAll(yamlFilter, xlsxFilter);
-
-            // Dialog anzeigen
-            File file = fileChooser.showSaveDialog(primaryStage);
-            if (file != null) {
-                String fileName = file.getName().toLowerCase();
-
-                if (fileName.endsWith(".yaml") || fileName.endsWith(".yml")) {
-                    // YAML Export aller Collections
-                    collectionManager.saveCollectionNames(collectionsFilePath);
-                    for (String name : collectionManager.getCollectionNames()) {
-                        Collection collection = collectionManager.loadBooksForCollection(name);
-                        collectionManager.saveBooksForCollection(collection);
-                    }
-                    showInfo("Export Successful", "Collections have been successfully exported to " + file.getAbsolutePath());
-                    System.out.println("Exporting to file: " + file.getAbsolutePath());
-                } else if (fileName.endsWith(".xlsx")) {
-                    // XLSX Export
-                    collectionManager.exportToXlsx(file.getAbsolutePath());
-                    showInfo("Export Successful", "Collections have been successfully exported to " + file.getAbsolutePath());
-                    System.out.println("Exporting to file: " + file.getAbsolutePath());
-                } else {
-                    // Warnung: Unbekannte Endung
-                    showAlert("Unknown File Extension",
-                            "Please use .yaml (or .yml) or .xlsx extension!");
-                }
-            }
-        });
-*/
-
-        exportButton.setOnAction(e -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Export Books");
-
-            // Vorschlag für Dateinamen basierend auf Collection
-            if (currentCollection != null && currentCollection.getName() != null) {
-                fileChooser.setInitialFileName(currentCollection.getName());
-            } else {
-                fileChooser.setInitialFileName("BooksCollection");
-            }
-
-            // Unterstützte Dateiformate
-            FileChooser.ExtensionFilter yamlFilter =
-                    new FileChooser.ExtensionFilter("YAML Files (*.yaml)", "*.yaml");
-            FileChooser.ExtensionFilter xlsxFilter =
-                    new FileChooser.ExtensionFilter("Excel Files (*.xlsx)", "*.xlsx");
-            fileChooser.getExtensionFilters().addAll(yamlFilter, xlsxFilter);
+            // Zulässige Dateiformate (XLSX und YAML)
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("YAML Files (*.yaml, *.yml)", "*.yaml", "*.yml"),
+                    new FileChooser.ExtensionFilter("Excel Files (*.xlsx)", "*.xlsx")
+            );
 
             // Datei auswählen
-            File file = fileChooser.showSaveDialog(primaryStage);
+            File file = fileChooser.showOpenDialog(primaryStage);
             if (file != null) {
+                String filePath = file.getAbsolutePath();
                 String fileName = file.getName().toLowerCase();
 
-                try {
-                    if (fileName.endsWith(".yaml") || fileName.endsWith(".yml")) {
-                        collectionManager.saveCollectionNames(collectionsFilePath);
-                        for (String name : collectionManager.getCollectionNames()) {
-                            Collection collection = collectionManager.loadBooksForCollection(name);
-                            collectionManager.saveBooksForCollection(collection);
-                        }
-                        showInfo("Export Successful", "Collections have been successfully exported to " + file.getAbsolutePath());
-                    } else if (fileName.endsWith(".xlsx")) {
-                        // XLSX-Export prüfen
-                        boolean success = collectionManager.exportToXlsx(file.getAbsolutePath());
-                        if (success) {
-                            showInfo("Export Successful", "Collections have been successfully exported to " + file.getAbsolutePath());
-                        } else {
-                            showAlert("Export Failed", "Failed to export collections to XLSX.");
-                        }
-                    } else {
-                        // Automatische Korrektur der Endung
-                        if (!fileName.contains(".")) {
-                            file = new File(file.getAbsolutePath() + ".yaml"); // Standard auf .yaml setzen
-                        }
-                    }
-                } catch (Exception ex) {
-                    // Fehlerbehandlung
-                    ex.printStackTrace();
-                    showAlert("Export Error", "An error occurred during export: " + ex.getMessage());
+                boolean success = false;
+                if (fileName.endsWith(".yaml") || fileName.endsWith(".yml")) {
+                    // Import von YAML
+                    success = collectionManager.importFromYaml(filePath, currentCollection.getName());
+                } else if (fileName.endsWith(".xlsx")) {
+                    // Import von XLSX
+                    success = collectionManager.importFromXlsx(filePath, currentCollection.getName());
+                }
+
+                if (success) {
+                    loadBooksForCurrentCollection(); // GUI aktualisieren
+                    showInfo("Import Erfolgreich", "Die Bücher wurden erfolgreich importiert!");
+                } else {
+                    showAlert("Import Fehler", "Der Import ist fehlgeschlagen.");
                 }
             }
         });
 
+        exportButton.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Export Books");
+            fileChooser.setInitialFileName(currentCollection.getName() + ".xlsx");
+
+            // Filter: Export als XLSX oder YAML wählen
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Excel Files (*.xlsx)", "*.xlsx"),
+                    new FileChooser.ExtensionFilter("YAML Files (*.yaml)", "*.yaml")
+            );
+
+            // Speicher-Pfad vom Nutzer wählen lassen
+            File file = fileChooser.showSaveDialog(primaryStage);
+            if (file != null) {
+                String filePath = file.getAbsolutePath();
+
+                boolean success = false;
+                if (filePath.endsWith(".xlsx")) {
+                    // Export nach XLSX
+                    success = collectionManager.exportToXlsx(filePath);
+                } else if (filePath.endsWith(".yaml")) {
+                    // Export nach YAML
+                    success = collectionManager.exportToYaml(filePath);
+                }
+
+                if (success) {
+                    showInfo("Export Erfolgreich", "Die Sammlung wurde erfolgreich exportiert.");
+                } else {
+                    showAlert("Export Fehler", "Der Export ist fehlgeschlagen.");
+                }
+            }
+        });
 
         // Suchfunktion
         searchButton.setOnAction(ev -> searchBooks(searchField));
@@ -343,13 +276,8 @@ public class BookManagerApp extends Application {
         HBox.setHgrow(spacer2, javafx.scene.layout.Priority.ALWAYS);
 
         // HBox für die zweite Zeile (Search, Buttons, Export)
-        HBox actionBox = new HBox(10, searchField, searchButton, resetButton, addButton, spacer2, exportButton);
+        HBox actionBox = new HBox(10, searchField, searchButton, resetButton, addButton, refreshButton, spacer2, exportButton);
         actionBox.setPadding(new Insets(5));
-
-
-
-        // VBox, die beide HBoxes enthält
-        //VBox topContainer = new VBox(0, collectionBox, actionBox);
 
         // VBox, die LogIn-Info und bestehende HBoxes (Collections, Actions) enthält
         VBox topContainer = new VBox(10, userDisplayBox, collectionBox, actionBox);
@@ -464,25 +392,6 @@ public class BookManagerApp extends Application {
                 new SimpleIntegerProperty(cd.getValue().getPublicationYear()).asObject());
         yearColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         yearColumn.setPrefWidth(70);
-
-        /*yearColumn.setOnEditCommit(event -> {
-            Book book = event.getRowValue();
-            book.setPublicationYear(event.getNewValue());
-            collectionManager.saveBooksForCollection(currentCollection);
-        });
-        yearColumn.setOnEditCommit(event -> {
-                    Book book = event.getRowValue();
-                    int newYear = event.getNewValue();
-
-                    // Validierung der Jahreszahl
-                    if (isValidYear(String.valueOf(newYear))) {
-                        book.setPublicationYear(newYear);
-                        collectionManager.saveBooksForCollection(currentCollection);
-                    } else {
-                        showAlert("Invalid Year", "The year must be a valid number between 1000 and 9999.");
-                        loadBooksForCurrentCollection(); // Zurücksetzen auf alten Wert
-                    }
-        });*/
 
         yearColumn.setOnEditCommit(event -> {
             Book book = event.getRowValue();
@@ -647,9 +556,6 @@ public class BookManagerApp extends Application {
         editColumn.setSortable(false);
         deleteColumn.setSortable(false);
 
-        // VBox, die beide HBoxes enthält
-        // VBox topContainer = new VBox(5, collectionBox, actionBox);
-
         // Listener für Collection-Auswahl
         collectionComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
@@ -664,12 +570,12 @@ public class BookManagerApp extends Application {
 
         // Daten an die Tabelle binden
         bookTableView.setItems(bookListData);
+        bookListData.setAll(currentCollection.getBooks());
 
         Scene scene = new Scene(new VBox(20, topContainer, bookTableView), WINDOW_WIDTH, WINDOW_HEIGHT);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Book Collection Manager - Alles in Ordnung");
         LoginScreen.setBookIcon(primaryStage);
-
 
         primaryStage.show();
 
@@ -693,9 +599,6 @@ public class BookManagerApp extends Application {
             collectionManager.saveCollectionNames(collectionsFilePath); // Speichert die Collection-Namen in der YAML-Datei
             System.out.println("Collection were saved while shutting down.");
         });
-
-
-
     }
 
     //Überprüft ob die Eingabe der Jahreszahl valide ist
@@ -838,18 +741,26 @@ public class BookManagerApp extends Application {
     /**
      * Stellt sicher, dass das Verzeichnis "collections" existiert.
      */
-    /*
+
     private void ensureCollectionsDirectoryExists() {
         collectionManager.ensureCollectionsDirectoryExists(); // Direkt die Methode aus CollectionManager verwenden
     }
-*/
+
     /**
      * Lädt die Bücher für die aktuell ausgewählte Collection.
      */
     private void loadBooksForCurrentCollection() {
-        if (currentCollection != null) {
-            bookListData.setAll(currentCollection.getBooks());
+        if (currentCollection == null) {
+            System.err.println("Error: currentCollection is null.");
+            return;
         }
+
+        // Bücher aus der aktuellen Sammlung laden
+        List<Book> books = currentCollection.getBooks();
+
+        // Tabellenansicht in der GUI aktualisieren
+        bookTableView.getItems().clear();
+        bookTableView.getItems().addAll(books);
     }
 
     /**
@@ -877,135 +788,7 @@ public class BookManagerApp extends Application {
         openBookForm(book, false);
     }
 
-    /**
-     * Zeigt ein Book-Formular (Add oder Edit) in einem neuen Dialogfenster.
-
-    private void openBookForm(Book book, boolean isNew) {
-        Stage stage = new Stage();
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setTitle(isNew ? "Add Book" : "Edit Book");
-
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(10));
-
-        Label titleLabel = new Label("Title:");
-        TextField titleField = new TextField(book.getTitle());
-
-        Label firstNameLabel = new Label("First Name:");
-        TextField firstNameField = new TextField(book.getFirstName());
-        Label lastNameLabel = new Label("Last Name:");
-        TextField lastNameField = new TextField(book.getLastName());
-
-        Label yearLabel = new Label("Year:");
-
-        TextField yearField = new TextField(String.valueOf(book.getPublicationYear() > 0 ? book.getPublicationYear() : Year.now().getValue()));
-
-        //TextField yearField = new TextField(String.valueOf(book.getPublicationYear()));
-
-        //Formatter für die numerische Eingabe
-        TextFormatter<Integer> yearFormatter = new TextFormatter<>(
-                new IntegerStringConverter(),
-                book.getPublicationYear() > 0 ? book.getPublicationYear() : Year.now().getValue(),
-                change -> change.getControlNewText().matches("\\d*") ? change : null // Akzeptiere nur Ziffern oder Leerzeichen
-        );
-        yearField.setTextFormatter(yearFormatter);
-
-        Label isbnLabel = new Label("ISBN:");
-        TextField isbnField = new TextField(String.valueOf(book.getIsbn()));
-
-        Label readLabel = new Label("Read:");
-        CheckBox readCheckBox = new CheckBox();
-        readCheckBox.setSelected(book.isRead());
-
-        Label ratingLabel = new Label("Rating:");
-        ComboBox<String> ratingComboBox = new ComboBox<>();
-        ratingComboBox.getItems().addAll("1", "2", "3");
-        ratingComboBox.setValue(book.getRating() == null ? "" : book.getRating());
-
-        Label commentLabel = new Label("Comment:");
-        TextArea commentArea = new TextArea(book.getComment());
-
-        Button saveButton = new Button("Save");
-        saveButton.setOnAction(e -> {
-            try {
-                String title = titleField.getText().trim();
-                String firstName = firstNameField.getText().trim();
-                String lastName = lastNameField.getText().trim();
-                int year = Integer.parseInt(yearField.getText().trim());
-                long isbn = Long.parseLong(isbnField.getText().trim());
-
-                if (title.isEmpty() || firstName.isEmpty() || lastName.isEmpty()) {
-                    showAlert("Invalid Input", "Title, First Name, and Last Name cannot be empty.");
-                    return;
-                }
-
-                if (!isValidYear(String.valueOf(year))) {
-                    showAlert("Invalid Year", "The year must be a valid number between 1000 and current year.");
-                    return;
-                }
-
-                book.setTitle(title);
-                book.setFirstName(firstName);
-                book.setLastName(lastName);
-                book.setPublicationYear(year);
-                book.setIsbn(isbn);
-
-                book.setRead(readCheckBox.isSelected());
-                book.setRating(ratingComboBox.getValue());
-                book.setComment(commentArea.getText());
-
-                if (isNew) {
-                    currentCollection.addBook(book);
-                    bookListData.add(book);
-                    System.out.println("Added book to collection '" + currentCollection.getName() + "': " + book);
-                }else {
-                    // Aktualisiere die Anzeige für bestehendes Buch
-                    int index = bookListData.indexOf(book); // Index des Buchs
-                    if (index >= 0) {
-                        bookListData.set(index, book); // Aktualisiere den Eintrag
-                    }
-                }
-
-                // Speichern der aktuellen Collection
-                collectionManager.saveBooksForCollection(currentCollection);
-
-                stage.close();
-            } catch (NumberFormatException ex) {
-                showAlert("Invalid Input", "Please enter valid numerical values for Year and ISBN.");
-            }
-        });
-
-        // Anordnung
-        grid.add(titleLabel, 0, 0);
-        grid.add(titleField, 1, 0, 3, 1);
-
-        grid.add(firstNameLabel, 0, 1);
-        grid.add(firstNameField, 1, 1);
-        grid.add(lastNameLabel, 2, 1);
-        grid.add(lastNameField, 3, 1);
-
-        grid.add(yearLabel, 0, 2);
-        grid.add(yearField, 1, 2);
-        grid.add(isbnLabel, 2, 2);
-        grid.add(isbnField, 3, 2);
-
-        grid.add(readLabel, 0, 3);
-        grid.add(readCheckBox, 1, 3);
-        grid.add(ratingLabel, 2, 3);
-        grid.add(ratingComboBox, 3, 3);
-
-        grid.add(commentLabel, 0, 4);
-        grid.add(commentArea, 1, 4, 3, 1);
-
-        grid.add(saveButton, 0, 5, 4, 1);
-
-        Scene scene = new Scene(grid, 500, 400);
-        stage.setScene(scene);
-        stage.showAndWait();
-    } */
-    // Methode zur Steuerung, welcher Element den Fokus bei "Enter" erhält
+    // Methode zur Steuerung, welches Element den Fokus bei "Enter" erhält
     private void setEnterKeyTraversal(TextField currentField, Control nextField) {
         currentField.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
@@ -1017,7 +800,6 @@ public class BookManagerApp extends Application {
     /**
      * Öffnet ein Fenster zur Anzeige der Book-Details.
      */
-
     private void openBookForm(Book book, boolean isNew) {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
@@ -1100,8 +882,6 @@ public class BookManagerApp extends Application {
                     return;
                 }
 
-
-
                 // Buch-Daten aktualisieren
                 book.setTitle(title);
                 book.setFirstName(firstName);
@@ -1109,22 +889,9 @@ public class BookManagerApp extends Application {
                 book.setGenre(genre);
                 book.setPublicationYear(year);
                 book.setIsbn(isbn);
-
                 book.setRead(readCheckBox.isSelected());
                 book.setRating(ratingComboBox.getValue());
                 book.setComment(commentArea.getText());
-
-//                if (isNew) {
-//                    currentCollection.addBook(book);
-//                    bookListData.add(book);
-//                    System.out.println("Added book to collection '" + currentCollection.getName() + "': " + book);
-//                } else {
-//                    // Aktualisiere Anzeige für bestehendes Buch
-//                    int index = bookListData.indexOf(book); // Index des Buchs finden
-//                    if (index >= 0) {
-//                        bookListData.set(index, book); // Aktualisiere Eintrag
-//                    }
-//                }
 
                 if (isNew) {
                     boolean success = currentCollection.addBook(book);
@@ -1243,8 +1010,6 @@ public class BookManagerApp extends Application {
         TextField yearField = new TextField(String.valueOf(book.getPublicationYear() > 0 ?
                 book.getPublicationYear() :
                 Year.now().getValue()));
-        /*TextField yearField = new TextField(String.valueOf(book.getPublicationYear()));
-        yearField.setDisable(true);*/
 
         Label isbnLabel = new Label("ISBN:");
         TextField isbnField = new TextField(String.valueOf(book.getIsbn()));
@@ -1281,7 +1046,6 @@ public class BookManagerApp extends Application {
             }
         });
 
-
         // Anordnung
         grid.add(titleLabel, 0, 0);
         grid.add(titleField, 1, 0, 3, 1);
@@ -1290,7 +1054,6 @@ public class BookManagerApp extends Application {
         grid.add(firstNameField, 1, 1);
         grid.add(lastNameLabel, 2, 1);
         grid.add(lastNameField, 3, 1);
-
 
         grid.add(yearLabel, 0, 2);
         grid.add(yearField, 1, 2);
@@ -1314,5 +1077,4 @@ public class BookManagerApp extends Application {
         stage.setScene(scene);
         stage.showAndWait();
     }
-
 }

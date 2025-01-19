@@ -1,11 +1,12 @@
 !!com.example.allesinordnungfx.CollectionManager$CollectionWrapper
 books:
-- {comment: '', firstName: Max, genre: Fiction, isbn: 9781234567101, lastName: Müller,
-  publicationYear: 2001, rating: '', read: false, title: Der Wanderer}
-- {comment: '', firstName: Anna, genre: Science Fiction, isbn: 9781234567102, lastName: Meier,
-  publicationYear: 1998, rating: '', read: false, title: Sterne und Schatten}
-- {comment: '', firstName: Peter, genre: Fantasy, isbn: 9781234567103, lastName: Schmidt,
-  publicationYear: 2010, rating: '', read: false, title: Das verlorene Königreich}
+- {comment: asdfasdf, firstName: Max, genre: Fiction, isbn: 9781234567101, lastName: Müller,
+  publicationYear: 2001, rating: '2', read: true, title: Der Wanderer}
+- {comment: asdfadsfasdf, firstName: Anna, genre: Science Fiction, isbn: 9781234567102,
+  lastName: Meier, publicationYear: 1998, rating: '1', read: true, title: Sterne und
+    Schatten}
+- {comment: asdfadsf, firstName: Peter, genre: Fantasy, isbn: 9781234567103, lastName: Schmidt,
+  publicationYear: 2010, rating: '3', read: true, title: Das verlorene Königreich}
 - {comment: '', firstName: Lena, genre: Romance, isbn: 9781234567104, lastName: Fischer,
   publicationYear: 2015, rating: '', read: false, title: Liebe im Herbst}
 - {comment: '', firstName: Thomas, genre: Mystery, isbn: 9781234567105, lastName: Becker,
@@ -21,11 +22,11 @@ books:
 - {comment: '', firstName: Katrin, genre: Fantasy, isbn: 9781234567110, lastName: Herzog,
   publicationYear: 2023, rating: '', read: false, title: Der magische Schlüssel}
 - {comment: '', firstName: Johanna, genre: Romance, isbn: 9781234567111, lastName: Krüger,
-  publicationYear: 2017, rating: '', read: false, title: Herbstliche Träume}
+  publicationYear: 2017, rating: '3', read: false, title: Herbstliche Träume}
 - {comment: '', firstName: Daniel, genre: Fiction, isbn: 9781234567112, lastName: Schwarz,
-  publicationYear: 2004, rating: '', read: false, title: Auf eigenen Wegen}
+  publicationYear: 2004, rating: '1', read: false, title: Auf eigenen Wegen}
 - {comment: '', firstName: Eva, genre: Horror, isbn: 9781234567113, lastName: Wolf,
-  publicationYear: 2012, rating: '', read: false, title: Der dunkle See}
+  publicationYear: 2012, rating: '2', read: false, title: Der dunkle See}
 - {comment: '', firstName: Paul, genre: Mystery, isbn: 9781234567114, lastName: Lehmann,
   publicationYear: 2019, rating: '', read: false, title: Das verlorene Rätsel}
 - {comment: '', firstName: Nina, genre: Adventure, isbn: 9781234567115, lastName: Horn,

@@ -1,4 +1,6 @@
 !!com.example.allesinordnungfx.CollectionManager$CollectionWrapper
 books:
-- {comment: '', firstName: Vorname Autor, genre: Genre, isbn: 3775667123123, lastName: Nachname
-    Autor, publicationYear: 2024, rating: '', read: false, title: Buchtitel}
+- {comment: fasdfasdf, firstName: Vorname Autor, genre: Genre, isbn: 3775667123123,
+  lastName: Nachname Autor, publicationYear: 2024, rating: '2', read: true, title: Buchtitel}
+- {comment: asfsadf, firstName: asdfasdf, genre: asdf, isbn: 1235, lastName: wrweqf,
+  publicationYear: 2025, rating: '3', read: true, title: asdfasdf}
