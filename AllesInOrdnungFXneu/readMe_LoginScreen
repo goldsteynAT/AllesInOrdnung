@@ -1,0 +1,141 @@
+/**
+ * LoginScreen
+ *
+ * Die Klasse `LoginScreen` stellt die Benutzeroberfläche für den Login- und Registrierungsprozess
+ * der AllesInOrdnungFX-Anwendung bereit. Sie ist der Startpunkt der gesamten Anwendung und
+ * ermöglicht es dem Benutzer, sich mithilfe eines Benutzernamens und Passworts anzumelden oder
+ * ein neues Konto zu erstellen. Die entsprechenden Benutzerdaten (Benutzername und Passwort)
+ * werden in einer YAML-basierten Datei gespeichert ("users.yaml").
+ *
+ * **Hauptfunktionen und Features**:
+ * =================================
+ * 1. **Login-Funktion**:
+ *    - Überprüft Benutzername und Passwort anhand der gespeicherten Daten in der Datei "users.yaml".
+ *    - Stellt sicher, dass das Benutzerverzeichnis (`users/<username>`) vorhanden ist, bevor der Login
+ *      erfolgreich abgeschlossen wird.
+ *    - Startet die Hauptanwendung (`BookManagerApp`) mit benutzerspezifischen Daten.
+ *
+ * 2. **Registrierungsfunktion**:
+ *    - Erlaubt es dem Benutzer, ein neues Konto zu erstellen, sofern der Benutzername noch nicht
+ *      existiert.
+ *    - Speichert neue Benutzername-Passwort-Paare sicher in der YAML-Datei ab.
+ *    - Erstellt ein spezielles Benutzerverzeichnis (`users/<username>`) sowie eine Standard-Büchersammlung
+ *      (z. B. "default.yaml") für den neuen Benutzer.
+ *
+ * 3. **Benutzerfreundliche GUI-Komponenten**:
+ *    - Interaktive Loginformulare mit Eingabefeldern für Benutzername und Passwort.
+ *    - Buttons für Login und Registrierung.
+ *    - Intuitive Popups und Fehlermeldungen für ungültige Anmeldungen oder fehlgeschlagene Registrierungen
+ *      (z. B. wenn ein Benutzername bereits existiert).
+ *
+ * **GUI-Komponenten**:
+ * ---------------------
+ * - **Benutzereingaben**:
+ *   - Textfelder (`TextField`) für den Benutzernamen.
+ *   - Passwortfeld (`PasswordField`) für das Passwort (versteckte Eingabe).
+ * - **Buttons**:
+ *   - `Login-Button`: Überprüft die Eingaben und führt die Login-Logik aus.
+ *   - `Register-Button`: Erstellt ein neues Konto basierend auf den eingegebenen Daten.
+ * - **Interaktivität**:
+ *   - Die Enter-Taste wird für eine schnelle Navigation und Bestätigung verwendet.
+ *   - Fehlermeldungen und Nachrichten werden in Form von Popups (`Alert`) angezeigt.
+ * - **Layout und Design**:
+ *   - Klare Strukturierung durch Layout-Panels (`VBox`, `GridPane`, `HBox`).
+ *   - Optische Anpassungen wie Farben und Rahmen (z. B. Hintergrundfarbe, Rahmenradius).
+ *
+ * **Datenverwaltung**:
+ * ---------------------
+ * - **Dateisystem**:
+ *   - Die Benutzerinformationen (Benutzername und Passwort) werden in einer YAML-Datei ("users.yaml") gespeichert.
+ *   - Das Benutzerverzeichnis (z. B. `users/<username>`) wird beim ersten Login oder bei der Registrierung
+ *     erstellt.
+ *   - Eine Standardbuchsammlung (z. B. `users/<username>/default.yaml`) wird für jeden Benutzer angelegt.
+ * - **Validierung**:
+ *   - Überprüfung von eingegebenen Feldern auf Leere oder ungültige Daten.
+ *   - Prüfen, ob ein Benutzerverzeichnis existiert und gültig ist.
+ *
+ * **Wichtigste Methoden und ihre Funktionen**:
+ * ============================================
+ * - `start(Stage primaryStage)`:
+ *   - Diese Methode wird von der JavaFX-API aufgerufen, um die Benutzeroberfläche für den Login-Bildschirm zu starten.
+ *   - Erzeugt alle Layouts, Buttons, Labels und Event-Handler.
+ *   - Verknüpft die Benutzerinteraktion mit der Login- und Registrierung-Logik.
+ * - `validateLogin(String username, String password)`:
+ *   - Validiert die eingegebenen Login-Daten, indem sie mit den in "users.yaml" gespeicherten Daten verglichen werden.
+ *   - Gibt `true` zurück, wenn der Benutzer existiert, das Passwort korrekt ist und das Benutzerverzeichnis existiert.
+ *   - Gibt `false` zurück, wenn die Validierung fehlschlägt (z. B. falscher Benutzername, Passwort oder fehlendes Verzeichnis).
+ * - `registerUser(String username, String password)`:
+ *   - Registriert neue Benutzer, sofern der Benutzername nicht bereits existiert.
+ *   - Speichert neue Benutzerdaten in "users.yaml".
+ *   - Erstellt ein neues Benutzerverzeichnis und eine Standard-Büchersammlung für den neuen Benutzer.
+ * - `showAlert(String title, String content)`:
+ *   - Zeigt Fehlermeldungen in einem GUI-Popup an.
+ * - `showInfo(String title, String content)`:
+ *   - Zeigt Informationsmeldungen für erfolgreiche Aktionen an (z. B. erfolgreiche Registrierung).
+ *
+ * **Zusammenarbeit mit anderen Klassen**:
+ * ----------------------------------------
+ * - **`BookManagerApp`**:
+ *   - Nach einer erfolgreichen Anmeldung ruft die `LoginScreen`-Klasse die Methode `startWithUser` aus
+ *     der `BookManagerApp`-Klasse auf, um die Hauptanwendung für den entsprechenden Benutzer zu starten.
+ * - **`CollectionManager`**:
+ *   - Wird während der Registrierung verwendet, um eine Standard-Büchersammlung für einen neuen Benutzer zu erstellen.
+ * - **SnakeYAML-Bibliothek**:
+ *   - Wird verwendet, um Benutzerdaten als `Map<String, String>` in der YAML-Datei "users.yaml" zu speichern und
+ *     zu lesen.
+ *
+ * **Typische Benutzerszenarien**:
+ * -------------------------------
+ * 1. **Login**:
+ *    - Der Benutzer gibt seinen Benutzernamen und sein Passwort ein und klickt auf `Login`.
+ *    - Bei einem erfolgreichen Login wechselt die Anwendung zur Hauptansicht der Anwendung (`BookManagerApp`).
+ *    - Bei fehlerhaften Eingaben wird eine Fehlermeldung angezeigt.
+ *
+ * 2. **Registrierung eines neuen Benutzers**:
+ *    - Der Benutzer gibt einen neuen Benutzernamen und ein Passwort ein und klickt auf `Register`.
+ *    - Die Methode `registerUser` erstellt ein neues Benutzerkonto.
+ *    - Ein Benutzerverzeichnis und eine Standard-Büchersammlung werden ebenfalls erstellt.
+ *    - Nach erfolgreicher Registrierung kann sich der Benutzer einloggen.
+ *
+ * **Zusammenfassung**:
+ * ---------------------
+ * Die Klasse `LoginScreen` ist die zentrale Komponente für die Benutzerverwaltung in der Anwendung.
+ * Sie bietet eine benutzerfreundliche Möglichkeit, ein Benutzerkonto zu erstellen oder sich mit einem bestehenden
+ * Konto anzumelden. Durch den Einsatz von Dateisystemen (Benutzerverzeichnisse) und der SnakeYAML-Bibliothek wird
+ * sichergestellt, dass alle Benutzerdaten sicher gespeichert werden. Nach einer erfolgreichen Anmeldung wird die
+ * Kontrolle an die Hauptkomponente der Anwendung (`BookManagerApp`) übergeben.
+ */
+
+
++---------------------------------------------------+
+|                   LoginScreen                     |
+|---------------------------------------------------|
+| - usersFilePath : String                          |
+|---------------------------------------------------|
+| + start(Stage primaryStage)                       |
+| + setBookIcon(Stage stage)                        |
+| + validateLogin(String username, String password) |
+| + registerUser(String username, String password)  |
+| + showAlert(String title, String content)         |
+| + showInfo(String title, String content)          |
+|---------------------------------------------------|
+| **GUI Logic**: Login/Register forms and events    |
++---------------------------------------------------+
+            |
+            | Calls/Uses
+            v
++---------------------------+       +----------------------------+
+| CollectionManager         |       |         BookManagerApp      |
+|---------------------------|       |----------------------------|
+| + addNewCollection(name)  |       | + startWithUser(...)        |
+|---------------------------|       | + start(Stage primaryStage) |
+                                    +----------------------------+
+            |
+            | Creates user-specific collection file
+            v
++------------------------------------------------+
+|                 users.yaml (YAML File)         |
+|------------------------------------------------|
+| - Stores username-password mappings            |
+| - Loaded and saved using SnakeYAML             |
++------------------------------------------------+

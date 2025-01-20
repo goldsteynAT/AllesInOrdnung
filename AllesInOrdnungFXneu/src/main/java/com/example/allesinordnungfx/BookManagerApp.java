@@ -38,23 +38,29 @@ public class BookManagerApp extends Application {
         startWithUser(primaryStage, System.getProperty("user.dir"), "DefaultUser");
     }
 
+    // Konstanten für die Fenstergröße
     public static final double WINDOW_WIDTH = 1000;
     public static final double WINDOW_HEIGHT = 600;
 
+    // Instanz eines CollectionManagers (Verwaltung Sammlungen wie Bücher)
     private CollectionManager collectionManager = new CollectionManager();
+
+    // Liste für die Anzeige der Bücher in einer Tabelle
     private final ObservableList<Book> bookListData = FXCollections.observableArrayList();
-    private String collectionsFilePath = "collections.yaml"; // Pfad zu collections.yaml
 
-    private final TableView<Book> bookTableView = new TableView<>();
-
+    private String collectionsFilePath = "collections.yaml"; // Pfad für Datei zur Speicherung von Sammlungen
+    private final TableView<Book> bookTableView = new TableView<>(); // Tabelle zur Anzeige der Bücher
     private Collection currentCollection; // Aktuell ausgewählte Sammlung
     private ComboBox<String> collectionComboBox; // Klassenvariable für die ComboBox
     private ObservableList<String> collectionsObservableList; // ObservableList für Collections
 
+    // Startet die JavaFX-Anwendung
     public static void main(String[] args) {
         launch(args);
     }
 
+    // Startpunkt der Applikation mit einem vorgegebenen Benutzer und Verzeichnis
+    // BookManagerApp ist auch als Stand-Alone konzipiert und kann ohne LoginScreen gestartet werden.
     public void startWithUser(Stage primaryStage, String userDirectoryPath, String username) {
         this.collectionManager = new CollectionManager(userDirectoryPath);
         this.collectionsFilePath = userDirectoryPath + "/collections.yaml"; // Angepasst für Benutzer
@@ -64,9 +70,10 @@ public class BookManagerApp extends Application {
         start(primaryStage, username); // Hauptfenster starten
     }
 
+    // Initialisiert das Hauptfenster, die Benutzeroberfläche und die notwendigen Daten.
     public void start(Stage primaryStage, String username) {
 
-        ensureCollectionsDirectoryExists();
+        ensureCollectionsDirectoryExists(); // Überprüfung - Erstelt bei Bedarf ein neues Verzeichnis
 
         // Vorhandene Collection-Namen laden
         collectionManager.loadCollectionNames(collectionsFilePath);
@@ -78,11 +85,12 @@ public class BookManagerApp extends Application {
         if (collectionsObservableList.isEmpty()) {
             String defaultName = "New Collection";
             collectionsObservableList.add(defaultName);
-            collectionManager.addNewCollection(defaultName); // Default-Collection auch abspeichern
+            collectionManager.addNewCollection(defaultName); // Erstellt und speichert eine Default-Collection
         }
 
         // Verbindung zwischen Collection und UI-Benachrichtigung herstellen
         if (currentCollection != null) { // Sicherstellen, dass currentCollection gesetzt ist
+            // Zeigt einen Hinweis bei Duplikaten
             currentCollection.setNotificationCallback(message -> showAlert("Duplicate Book", message));
         } else {
             System.err.println("Error: currentCollection is null");
@@ -92,17 +100,17 @@ public class BookManagerApp extends Application {
         Label loggedInUserLabel = new Label("Logged in as: " + username); // "Benutzername" durch den echten Usernamen ersetzen
         loggedInUserLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;"); // Beispielstil
 
-        // HBox für den User-Display oben
+        // Container für die Anzeige des eingeloggten Benutzers (HBox für horizontale Anordnung)
         HBox userDisplayBox = new HBox(loggedInUserLabel);
         userDisplayBox.setStyle("-fx-padding: 5; -fx-background-color: #66a3a4; -fx-alignment: center-left;");
         userDisplayBox.setPadding(new Insets(5, 10, 5, 10));
 
-        // GUI-Komponenten für die erste Zeile (Collection-Auswahl und Add Collection)
+        // Initialisierung einer ComboBox für die Auswahl der Sammlungen
         collectionComboBox = new ComboBox<>(collectionsObservableList);
         collectionComboBox.setPrefWidth(150);
         collectionComboBox.setPromptText("Select Collection");
 
-        // Wähle standardmäßig die erste Collection aus (z. B. Default)
+        // Setzt die Auswahl auf die erste Collection (Standard)
         if (!collectionsObservableList.isEmpty()) {
             String firstCollection = collectionsObservableList.getFirst(); // Nimm die erste Collection
             collectionComboBox.getSelectionModel().select(firstCollection); // Setze die Auswahl in der ComboBox
@@ -110,7 +118,7 @@ public class BookManagerApp extends Application {
             bookListData.setAll(currentCollection.getBooks()); // Aktualisiere die Buch-Liste (Tabelle)
         }
 
-        // ComboBox-Listener: Aktualisiere `currentCollection`, wenn sich die Auswahl ändert
+        // Listener: Reagiert auf Änderungen in der Auswahlliste (ComboBox)
         collectionComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 currentCollection = collectionManager.loadBooksForCollection(newVal); // Lade Bücher der neuen Collection
@@ -134,20 +142,22 @@ public class BookManagerApp extends Application {
         // Logout-Button
         Button logoutButton = new Button("Logout");
         logoutButton.setOnAction(e -> {
-            LoginScreen loginScreen = new LoginScreen(); // Instanziere den LoginScreen
+            LoginScreen loginScreen = new LoginScreen(); // Erstellt eine neue LoginScreen-Instanz
             try {
-                loginScreen.start(primaryStage); // Setze die Szene auf den LoginScreen
+                loginScreen.start(primaryStage); // Wechsel zum Login-Screen
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         });
 
-        // GUI-Komponenten für die zweite Zeile (Search, Buttons, Export)
+        // Suchfeld für die Bücher-Ansicht
         TextField searchField = new TextField();
         searchField.setPromptText("Search...");
+
+        // Such-Button
         Button searchButton = new Button("🔍");
 
-        // Reset-Button
+        // Reset-Button (Suchfeld löschen und Ansicht zurücksetzen)
         Button resetButton = new Button();
         try {
             Image resetImage = new Image(getClass().getResourceAsStream("/icons/reset.png"));
@@ -162,31 +172,34 @@ public class BookManagerApp extends Application {
 
         // Aktion: Suchfeld leeren + wieder alle Bücher anzeigen
         resetButton.setOnAction(e -> {
-            searchField.clear();
-            loadBooksForCurrentCollection();
+            searchField.clear(); // Suchfeld löschen
+            loadBooksForCurrentCollection(); // Bücherliste der aktuellen Sammlung laden
         });
 
-        // Import-Funktion
+        // Import Button
         Button importButton = new Button("Import...");
-        importButton.setDisable(true);
+        importButton.setDisable(true); // deaktiviert
 
+        // Add-Book Button
         Button addButton = new Button("Add Book");
 
+        // Refresh Button
         Button refreshButton = new Button("Refresh");
-        refreshButton.setDisable(true);
+        refreshButton.setDisable(true); // deaktiviert
         refreshButton.setOnAction(e -> {
-            loadBooksForCurrentCollection();
+            loadBooksForCurrentCollection(); // Bücherliste der aktuellen Sammlung laden
             bookTableView.refresh(); // Optional, falls die Tabelle nicht automatisch aktualisiert wird
         });
 
         // Export-Button mit FileChooser
         Button exportButton = new Button("Export...");
 
+        // Import-Button: Öffnet eine Dialog zum Importieren von Dateien - aktuell deaktiviert
         importButton.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Import Books");
 
-            // Zulässige Dateiformate (XLSX und YAML)
+            // Filter für erlaubte Dateitypen (z.B. YAML oder Excel)
             fileChooser.getExtensionFilters().addAll(
                     new FileChooser.ExtensionFilter("YAML Files (*.yaml, *.yml)", "*.yaml", "*.yml"),
                     new FileChooser.ExtensionFilter("Excel Files (*.xlsx)", "*.xlsx")
@@ -198,6 +211,7 @@ public class BookManagerApp extends Application {
                 String filePath = file.getAbsolutePath();
                 String fileName = file.getName().toLowerCase();
 
+                // Verarbeitet den Dateipfad basierend auf seiner Dateiendung
                 boolean success = false;
                 if (fileName.endsWith(".yaml") || fileName.endsWith(".yml")) {
                     // Import von YAML
@@ -216,9 +230,12 @@ public class BookManagerApp extends Application {
             }
         });
 
+        // Export-Button: Öffnet einen Dialog zum Exportieren von Sammlungen und Büchern
         exportButton.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Export Books");
+
+            // Standardname für Exportdatei (basierend auf dem aktuellen Sammlungstitel)
             fileChooser.setInitialFileName(currentCollection.getName() + ".xlsx");
 
             // Filter: Export als XLSX oder YAML wählen
@@ -232,6 +249,7 @@ public class BookManagerApp extends Application {
             if (file != null) {
                 String filePath = file.getAbsolutePath();
 
+                // Unterscheidet basierend auf Dateiendung zwischen XLSX und YAML
                 boolean success = false;
                 if (filePath.endsWith(".xlsx")) {
                     // Export nach XLSX
@@ -249,80 +267,80 @@ public class BookManagerApp extends Application {
             }
         });
 
-        // Suchfunktion
+        // Suchfunktion - Sucht in der Buchliste basierend auf dem Text im Suchfeld
         searchButton.setOnAction(ev -> searchBooks(searchField));
-        searchField.setOnKeyPressed(ev -> {
+        searchField.setOnKeyPressed(ev -> { // ENTER-Taste im Suchfeld: Startet die Suche
             if (ev.getCode() == KeyCode.ENTER) {
-                searchBooks(searchField);
+                searchBooks(searchField); // Ruft die Methode `searchBooks` auf
             }
         });
 
         // Neues Buch hinzufügen
-        addButton.setOnAction(ev -> openAddBookWindow());
+        addButton.setOnAction(ev -> openAddBookWindow()); // Öffnet Dialogfenster
 
-
-        // Spacer für die erste Zeile
+        // Spacer für die erste Zeile (macht Layout flexibler)
         Region spacer1 = new Region();
         HBox.setHgrow(spacer1, javafx.scene.layout.Priority.ALWAYS);
 
-        // HBox für Collection-Auswahl und Buttons (erste Zeile)
+        // HBox: Legt die Layoutstruktur für die erste Zeile fest (Sammlungs-Auswahl und Buttons)
         HBox collectionBox = new HBox(10, collectionComboBox, addCollectionButton, renameCollectionButton, deleteCollectionButton, logoutButton, spacer1, importButton);
-        collectionBox.setPadding(new Insets(5));
+        collectionBox.setPadding(new Insets(5)); // Innenabstände setzen
 
         // Spacer für die zweite Zeile
         Region spacer2 = new Region();
         HBox.setHgrow(spacer2, javafx.scene.layout.Priority.ALWAYS);
 
-        // HBox für die zweite Zeile (Search, Buttons, Export)
+        // HBox: Layout für die zweite Zeile (Suchfeld, Buttons, Exportfunktion)
         HBox actionBox = new HBox(10, searchField, searchButton, resetButton, addButton, refreshButton, spacer2, exportButton);
-        actionBox.setPadding(new Insets(5));
+        actionBox.setPadding(new Insets(5)); // Innenabstände setzen
 
-        // VBox, die LogIn-Info und bestehende HBoxes (Collections, Actions) enthält
+        // VBox: Enthält Benutzerinfo, CollectionBox und ActionBox (vertikale Anordnung)
         VBox topContainer = new VBox(10, userDisplayBox, collectionBox, actionBox);
-        topContainer.setPadding(new Insets(10));
+        topContainer.setPadding(new Insets(10)); // Padding für die gesamte VBox setzen
 
-        // TableView
+        // TableView: Tabelle zur Anzeige und Bearbeitung der Bücher
         TableView<Book> bookTableView = new TableView<>();
-        bookTableView.setEditable(true);
+        bookTableView.setEditable(true); // Tabelle als bearbeitbar setzen
         Label placeholderLabel = new Label("No content in table");
-        bookTableView.setPlaceholder(placeholderLabel);
+        bookTableView.setPlaceholder(placeholderLabel); // Platzhaltertext, wenn keine Inhalte vorhanden sind
 
-        // RowFactory + ContextMenu (Show / Edit / Delete)
+        // ContextMenu: Kontextmenü für Tabellenzeilen (Rechtsklick)
         bookTableView.setRowFactory(tv -> {
             TableRow<Book> row = new TableRow<>();
             ContextMenu contextMenu = new ContextMenu();
 
-            // "Show"
+            // Menüpunkt: "Show" (Details eines Buches anzeigen)
             MenuItem showItem = new MenuItem("Show");
-            showItem.setOnAction(e -> {
+            showItem.setOnAction(e -> { // Holt das Buch aus der Zeile
                 Book rowData = row.getItem();
                 if (rowData != null) {
-                    openShowWindow(rowData);
+                    openShowWindow(rowData); // Öffnet Detailfenster
                 }
             });
 
-            // "Edit"
+            // Menüpunkt: "Edit" (Buch bearbeiten)
             MenuItem editItem = new MenuItem("Edit");
             editItem.setOnAction(e -> {
-                Book rowData = row.getItem();
+                Book rowData = row.getItem(); // Holt das Buch aus der Zeile
                 if (rowData != null) {
-                    openEditWindow(rowData);
+                    openEditWindow(rowData); // Öffnet Bearbeitungsfenster
                 }
             });
 
-            // "Delete"
+            // Menüpunkt: "Delete" (Buch löschen)
             MenuItem deleteItem = new MenuItem("Delete");
             deleteItem.setOnAction(e -> {
-                Book rowData = row.getItem();
+                Book rowData = row.getItem(); // Holt das Buch aus der Zeile
                 if (rowData != null) {
-                    currentCollection.removeBook(rowData.getTitle());
-                    bookListData.remove(rowData);
+                    currentCollection.removeBook(rowData.getTitle()); // Entfernt Buch aus der Sammlung
+                    bookListData.remove(rowData); // Entfernt Buch aus der Tabellenansicht
                     // Sofort in YAML speichern
                     collectionManager.saveBooksForCollection(currentCollection);
                 }
             });
 
 
+            // Hinzufügen der Menüeinträge zum Kontextmenü
             contextMenu.getItems().addAll(showItem, editItem, deleteItem);
 
             // Kontextmenü nur anzeigen, wenn Zeile nicht leer ist
@@ -331,35 +349,36 @@ public class BookManagerApp extends Application {
                             .then((ContextMenu)null)
                             .otherwise(contextMenu)
             );
-
             return row;
         });
 
-        // -- Spalten definieren --
+        // -- Tabellen-Spalten definieren --
 
+        // Spalte: Titel
         TableColumn<Book, String> titleColumn = new TableColumn<>("Title");
-        titleColumn.setCellValueFactory(cd ->
+        titleColumn.setCellValueFactory(cd -> // Zugriff auf den Titel des Buches
                 new SimpleStringProperty(cd.getValue().getTitle()));
-        titleColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        titleColumn.setOnEditCommit(event -> {
+        titleColumn.setCellFactory(TextFieldTableCell.forTableColumn()); // Setzt Editierbarkeit
+        titleColumn.setOnEditCommit(event -> { // Listener für Änderungen am Titel
             Book book = event.getRowValue();
-            book.setTitle(event.getNewValue());
-            collectionManager.saveBooksForCollection(currentCollection);
+            book.setTitle(event.getNewValue()); // Aktualisiert den Titel
+            collectionManager.saveBooksForCollection(currentCollection); // Speichert Änderungen
         });
-        titleColumn.setEditable(true);
-        titleColumn.setPrefWidth(190);
+        titleColumn.setEditable(true); // Spalte editierbar setzen
+        titleColumn.setPrefWidth(190); // Breite der Spalte
 
-
-
+        // Spalte: Autor
         TableColumn<Book, String> authorColumn = new TableColumn<>("Author");
         authorColumn.setCellValueFactory(cd ->
                 new SimpleStringProperty(
                         cd.getValue().getFirstName() + " " + cd.getValue().getLastName()
-                ));
-        authorColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        authorColumn.setOnEditCommit(event -> {
+                )); // Verknüpft Vor- und Nachnamen
+        authorColumn.setCellFactory(TextFieldTableCell.forTableColumn()); // Setzt Editierbarkeit
+        authorColumn.setOnEditCommit(event -> { // Listener für Änderungen am Autorennamen
             Book book = event.getRowValue();
             String newValue = event.getNewValue();
+
+            // Aufteilen des eingegebenen Namens in Vor- und Nachnamen
             String[] parts = newValue.split("\\s+", 2);
             if (parts.length == 2) {
                 book.setFirstName(parts[0]);
@@ -368,11 +387,12 @@ public class BookManagerApp extends Application {
                 book.setFirstName(parts[0]);
                 book.setLastName("");
             }
-            collectionManager.saveBooksForCollection(currentCollection);
+            collectionManager.saveBooksForCollection(currentCollection); // Speichert Änderungen
         });
         authorColumn.setEditable(true);
         authorColumn.setPrefWidth(190);
 
+        // Spalte: Genre - gleiche Funktionen wie Titel und Autor
         TableColumn<Book, String> genreColumn = new TableColumn<>("Genre");
         genreColumn.setCellValueFactory(cd ->
                 new SimpleStringProperty(cd.getValue().getGenre()));
@@ -385,9 +405,11 @@ public class BookManagerApp extends Application {
         genreColumn.setEditable(true);
         genreColumn.setPrefWidth(70);
 
+        // Spalte: Erscheinungsjahr
         TableColumn<Book, Integer> yearColumn = new TableColumn<>("Publication Year");
         yearColumn.setCellValueFactory(cd ->
                 new SimpleIntegerProperty(cd.getValue().getPublicationYear()).asObject());
+        // Textfeld-Konverter
         yearColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         yearColumn.setPrefWidth(70);
 
@@ -400,11 +422,12 @@ public class BookManagerApp extends Application {
                 book.setPublicationYear(newYear);
                 collectionManager.saveBooksForCollection(currentCollection); // Speichern
             } else {
-                showAlert("Invalid Year", "The year must be a valid number between 1000 and the current year.");
+                showAlert("Invalid Year", "Please fill in a valid year!");
                 loadBooksForCurrentCollection(); // Zurücksetzen, wenn ungültig
             }
         });
 
+        // Spalte ISBN-Code
         TableColumn<Book, Long> isbnColumn = new TableColumn<>("ISBN");
         isbnColumn.setCellValueFactory(cd ->
                 new SimpleLongProperty(cd.getValue().getIsbn()).asObject());
@@ -417,34 +440,41 @@ public class BookManagerApp extends Application {
         isbnColumn.setEditable(true);
         isbnColumn.setPrefWidth(70);
 
+        // Spalte "Read" (Lesestatus)
         TableColumn<Book, Boolean> readColumn = new TableColumn<>("Read");
         readColumn.setCellValueFactory(cd ->
                 new SimpleBooleanProperty(cd.getValue().isRead()));
+        // Stellt Checkboxen in der Spalte dar
         readColumn.setCellFactory(CheckBoxTableCell.forTableColumn(readColumn));
         readColumn.setEditable(true);
         readColumn.setMaxWidth(40);
+        // Listener: Speichert Änderungen am Lesestatus
         readColumn.setOnEditCommit(event -> {
             Book book = event.getRowValue();
             book.setRead(event.getNewValue());
             collectionManager.saveBooksForCollection(currentCollection);
         });
 
+        // Spalte für Bewertungen
         TableColumn<Book, String> ratingColumn = new TableColumn<>("Rating");
         ratingColumn.setCellValueFactory(cd ->
                 new SimpleStringProperty(cd.getValue().getRating()));
 
-
+        // Setzt eine benutzerdefinierte CellFactory
         ratingColumn.setCellFactory(column -> new TableCell<>() {
+            // Dropdown-Menü (ComboBox) für Bewertungen (1, 2, 3)
             private final ComboBox<String> comboBox = new ComboBox<>(
                     FXCollections.observableArrayList("1", "2", "3")
             );
 
+            // Tooltip, wenn Bewertung nicht verfügbar ist
             private final Tooltip disabledTooltip = new Tooltip("Mark as read to enable rating");
 
             @Override
             protected void updateItem(String rating, boolean empty) {
                 super.updateItem(rating, empty);
 
+                // Wenn die Zelle leer ist oder keine Daten vorhanden sind
                 if (empty || getTableRow() == null || getTableRow().getItem() == null) {
                     setGraphic(null);
                     return;
@@ -475,6 +505,7 @@ public class BookManagerApp extends Application {
             }
         });
 
+        // Spalte für Kommentare
         TableColumn<Book, String> commentColumn = new TableColumn<>("Comment");
         commentColumn.setCellValueFactory(cd ->
                 new SimpleStringProperty(cd.getValue().getComment()));
@@ -502,21 +533,25 @@ public class BookManagerApp extends Application {
                 } catch (NullPointerException e) {
                     editButton.setText("Edit");
                 }
+                // Aktion: Öffnet ein Bearbeitungsfenster für das Buch
                 editButton.setOnAction(evt -> {
+                    // Holt das Buch der aktuellen Zeile
                     Book book = getTableView().getItems().get(getIndex());
-                    openEditWindow(book);
+                    openEditWindow(book); // Öffnet das Bearbeitungsfenster für das Buch
                 });
             }
 
+            // Aktualisiert die Darstellung der Zelle, basierend darauf, ob sie leer ist
             @Override
             public void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : editButton);
-                setAlignment(Pos.CENTER);
+                setGraphic(empty ? null : editButton); // Zeigt den Edit-Button nur an, wenn die Zelle nicht leer ist
+                setAlignment(Pos.CENTER); // Zentriert den Button in der Zelle
             }
         });
 
         // Delete-Button (in Zelle)
+        // Erstellt die CellFactory, um in jeder Zeile einen Delete-Button hinzuzufügen
         TableColumn<Book, Void> deleteColumn = new TableColumn<>("Delete");
         deleteColumn.setCellFactory(param -> new TableCell<>() {
             private final Button deleteButton = new Button();
@@ -531,17 +566,19 @@ public class BookManagerApp extends Application {
                 } catch (NullPointerException e) {
                     deleteButton.setText("Del");
                 }
+                // Aktion für Klick auf den Button
                 deleteButton.setOnAction(evt -> {
-                    Book book = getTableView().getItems().get(getIndex());
-                    currentCollection.removeBook(book.getTitle());
-                    bookListData.remove(book);
-                    collectionManager.saveBooksForCollection(currentCollection);
+                    Book book = getTableView().getItems().get(getIndex()); // Holt das Buch aus der aktuellen Zeile
+                    currentCollection.removeBook(book.getTitle()); // Entfernt das Buch aus der aktuellen Collection
+                    bookListData.remove(book); // Entfernt das Buch aus der Ansicht (Daten der TableView)
+                    collectionManager.saveBooksForCollection(currentCollection); // Speichert die aktualisierte Collection
                 });
             }
+            // Aktualisiert die Darstellung der Zelle
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : deleteButton);
+                setGraphic(empty ? null : deleteButton);  // Zeigt den Delete-Button nur, wenn die Zelle nicht leer ist
                 setAlignment(Pos.CENTER);
             }
         });
@@ -551,15 +588,17 @@ public class BookManagerApp extends Application {
                 titleColumn, authorColumn, genreColumn, yearColumn, isbnColumn,
                 readColumn, ratingColumn, commentColumn, editColumn, deleteColumn
         );
+
+        // Verhindert das Sortieren der Edit- und Delete-Spalten
         editColumn.setSortable(false);
         deleteColumn.setSortable(false);
 
-        // Listener für Collection-Auswahl
+        // Listener für die Auswahl der aktuellen Collection
         collectionComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                currentCollection = collectionManager.loadBooksForCollection(newVal);
-                bookListData.setAll(currentCollection.getBooks());
-                System.out.println("Current Collection set to: " + currentCollection.getName());
+            if (newVal != null) { // Überprüft, ob eine neue Collection ausgewählt wurde
+                currentCollection = collectionManager.loadBooksForCollection(newVal); // Lädt die Bücher der neuen Collection
+                bookListData.setAll(currentCollection.getBooks()); // Aktualisiert die Buchliste in der Tabelle
+                System.out.println("Current Collection set to: " + currentCollection.getName()); // Gibt die neue Collection im Log aus
             }
         });
 
@@ -567,15 +606,16 @@ public class BookManagerApp extends Application {
         collectionComboBox.getSelectionModel().selectFirst();
 
         // Daten an die Tabelle binden
-        bookTableView.setItems(bookListData);
-        bookListData.setAll(currentCollection.getBooks());
+        bookTableView.setItems(bookListData); // Verknüpft die ObservableList mit der Tabelle
+        bookListData.setAll(currentCollection.getBooks()); // Lädt die Bücher der aktuellen Collection in die Anzeige
 
+        // Initialisiert die Hauptszene
         Scene scene = new Scene(new VBox(20, topContainer, bookTableView), WINDOW_WIDTH, WINDOW_HEIGHT);
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Book Collection Manager - Alles in Ordnung");
+        primaryStage.setScene(scene); // Setzt die Szene des Fensters
+        primaryStage.setTitle("Book Collection Manager - Alles in Ordnung"); // Setzt den Titel des Fensters
         LoginScreen.setBookIcon(primaryStage);
 
-        primaryStage.show();
+        primaryStage.show(); // Zeigt das Fenster an
 
         // Beim Schließen -> Speichern aller Collections
         primaryStage.setOnCloseRequest(ev -> {
@@ -603,7 +643,7 @@ public class BookManagerApp extends Application {
     private boolean isValidYear(String yearString) {
         //if (year.isEmpty()) return false;
         try {
-            int intYear = Integer.parseInt(yearString);
+            int intYear = Integer.parseInt(yearString); // Konvertiert den String in eine Ganzzahl
             int currentYear = Year.now().getValue(); // Aktuelles Jahr ermitteln
             return intYear >= 1000 && intYear <= currentYear; // Sicherstellen, dass das Jahr zwischen 1000 und dem aktuellen Jahr liegt
         } catch (NumberFormatException e) {
@@ -611,22 +651,24 @@ public class BookManagerApp extends Application {
         }
     }
 
-
     /**
      * Fügt eine neue Collection hinzu.
      */
     private void addNewCollection() {
+        // Erzeugt ein Dialogfenster für die Eingabe des Collection-Namens
         TextInputDialog dialog = new TextInputDialog();
         Image bookIcon = new Image(getClass().getResource("/icons/book.png").toExternalForm());
         Stage dialogStage = (Stage) dialog.getDialogPane().getScene().getWindow();
         dialogStage.getIcons().add(bookIcon);
         dialog.setTitle("Add New Collection");
-        dialog.setHeaderText(null);
-        dialog.setContentText("Collection Name:");
+        dialog.setHeaderText(null); // Kein Headertext
+        dialog.setContentText("Collection Name:"); // Hinweistext für den Benutzer
 
+        // Zeigt den Dialog an und wartet auf die Benutzereingabe
         Optional<String> result = dialog.showAndWait();
-        result.ifPresent(name -> {
-            String trimmedName = name.trim();
+        result.ifPresent(name -> { // Falls ein Name eingegeben wurde
+            String trimmedName = name.trim(); // Entfernt unnötige Leerzeichen
+            // Überprüft, ob der Name gültig ist und keine ungültigen Zeichen enthält
             if (!trimmedName.isEmpty() && isValidFileName(trimmedName)) {
                 collectionManager.addNewCollection(trimmedName); // Methode im CollectionManager aufrufen
                 collectionsObservableList.add(trimmedName); // ObservableList aktualisieren
@@ -642,32 +684,41 @@ public class BookManagerApp extends Application {
      * Handler zum Umbenennen der aktuell ausgewählten Collection.
      */
     private void renameSelectedCollection() {
+        // Holt den aktuell ausgewählten Collection-Namen aus der ComboBox
         String selectedCollection = collectionComboBox.getSelectionModel().getSelectedItem();
         if (selectedCollection == null) {
             showAlert("No Collection Selected", "Please select a collection first.");
             return;
         }
 
+        // Erstellt einen Dialog für die Eingabe des neuen Namens, mit dem aktuellen Namen als Platzhalter
         TextInputDialog dialog = new TextInputDialog(selectedCollection);
         Image bookIcon = new Image(getClass().getResource("/icons/book.png").toExternalForm());
         Stage dialogStage = (Stage) dialog.getDialogPane().getScene().getWindow();
         dialogStage.getIcons().add(bookIcon);
+
+        // Konfiguriert den Dialog
         dialog.setTitle("Rename Collection");
         dialog.setHeaderText(null);
         dialog.setContentText("New Collection Name:");
 
+        // Zeigt den Dialog an und wartet auf das Ergebnis
         Optional<String> result = dialog.showAndWait();
-        result.ifPresent(newName -> {
-            String trimmedName = newName.trim();
+        result.ifPresent(newName -> { // Falls ein neuer Name eingegeben wurde
+            String trimmedName = newName.trim(); // Leerzeichen entfernen
+
+            // Überprüft, ob der Name gültig ist
             if (trimmedName.isEmpty() || !isValidFileName(trimmedName)) {
                 showAlert("Invalid Name", "Invalid or empty name.");
                 return;
             }
 
+            // Methode zum Umbenennen der Collection aufrufen
             boolean success = collectionManager.renameSelectedCollection(selectedCollection, trimmedName); // Neue Methode aufrufen
-            if (success) {
+            if (success) { // Wenn das Umbenennen erfolgreich war
+                // Aktualisiert die ObservableList
                 collectionsObservableList.set(collectionsObservableList.indexOf(selectedCollection), trimmedName);
-                collectionComboBox.getSelectionModel().select(trimmedName);
+                collectionComboBox.getSelectionModel().select(trimmedName); // Wählt die neue Collection aus
                 showInfo("Renamed Successfully", "Collection '" + selectedCollection + "' was renamed to '" + trimmedName + "'.");
             } else {
                 showAlert("Rename Failed", "Collection '" + selectedCollection + "' could not be renamed.");
@@ -679,23 +730,26 @@ public class BookManagerApp extends Application {
      * Handler zum Löschen der aktuell ausgewählten Collection.
      */
     private void deleteSelectedCollection() {
+        // Holt die aktuell ausgewählte Collection
         String selectedCollection = collectionComboBox.getSelectionModel().getSelectedItem();
         if (selectedCollection == null) {
             showAlert("No Collection Selected", "Please select a collection first.");
             return;
         }
 
+        // Erstellt ein Bestätigungsdialogfenster
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
         Image bookIcon = new Image(getClass().getResource("/icons/book.png").toExternalForm());
         Stage confirmationStage = (Stage) confirmation.getDialogPane().getScene().getWindow();
         confirmationStage.getIcons().add(bookIcon);
 
-
+        // Dialog-Text konfigurieren
         confirmation.setTitle("Delete Collection");
         confirmation.setContentText("Are you sure you want to delete the collection '" + selectedCollection + "'? This action cannot be undone.");
 
+        // Zeigt den Dialog an und wartet auf die Antwort des Benutzers
         Optional<ButtonType> result = confirmation.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK) { // Falls der Benutzer die Löschung bestätigt
             boolean success = collectionManager.deleteSelectedCollection(selectedCollection); // Neue Methode aufrufen
             if (success) {
                 collectionsObservableList.remove(selectedCollection); // ObservableList aktualisieren
@@ -711,6 +765,7 @@ public class BookManagerApp extends Application {
      * Überprüft, ob ein String ein gültiger Dateiname ist.
      */
     private boolean isValidFileName(String name) {
+        // Überprüft, ob der String nur alphanumerische Zeichen, Bindestriche, Unterstriche und Leerzeichen enthält
         return name.matches("^[a-zA-Z0-9-_ ]+$");
     }
 
@@ -741,14 +796,15 @@ public class BookManagerApp extends Application {
      */
 
     private void ensureCollectionsDirectoryExists() {
-        collectionManager.ensureCollectionsDirectoryExists(); // Direkt die Methode aus CollectionManager verwenden
+        // Ruft die Methode im CollectionManager auf, um sicherzustellen, dass das Verzeichnis vorhanden ist
+        collectionManager.ensureCollectionsDirectoryExists();
     }
 
     /**
      * Lädt die Bücher für die aktuell ausgewählte Collection.
      */
     private void loadBooksForCurrentCollection() {
-        if (currentCollection == null) {
+        if (currentCollection == null) { // Überprüfung, ob eine Collection ausgewählt ist
             System.err.println("Error: currentCollection is null.");
             return;
         }
@@ -756,7 +812,7 @@ public class BookManagerApp extends Application {
         // Bücher aus der aktuellen Sammlung laden
         List<Book> books = currentCollection.getBooks();
 
-        // Tabellenansicht in der GUI aktualisieren
+        // Tabellenansicht in der GUI löschen und aktualisieren
         bookTableView.getItems().clear();
         bookTableView.getItems().addAll(books);
     }
@@ -765,9 +821,11 @@ public class BookManagerApp extends Application {
      * Sucht nach Büchern, die das Keyword enthalten (Titel, Autor, Jahr, ISBN).
      */
     private void searchBooks(TextField searchField) {
+        // Holt das eingegebene Keyword aus dem Textfeld und wandelt es in Kleinbuchstaben um
         String keyword = searchField.getText().toLowerCase();
-        bookListData.clear();
-        if (currentCollection != null) {
+        bookListData.clear(); // Löscht die aktuelle Anzeige der Buchliste
+        if (currentCollection != null) { // Überprüft, ob eine aktuelle Sammlung existiert
+            // Führt die Suche in der Sammlung durch und fügt die Ergebnisse der Buchliste hinzu
             currentCollection.search(keyword).forEach(bookListData::add);
         }
     }
@@ -776,6 +834,7 @@ public class BookManagerApp extends Application {
      * Öffnet ein Fenster, um ein neues Book anzulegen.
      */
     private void openAddBookWindow() {
+        // Erstellt ein neues Buch mit leeren Attributen und öffnet das Formular im "Hinzufügen"-Modus (true = neues Buch)
         openBookForm(new Book("", "", "","", 0, 0), true);
     }
 
@@ -783,12 +842,14 @@ public class BookManagerApp extends Application {
      * Öffnet ein Dialogfenster, um ein existierendes Book zu bearbeiten.
      */
     private void openEditWindow(Book book) {
+        // Öffnet das Formular im "Bearbeiten"-Modus (false = existierendes Buch bearbeiten)
         openBookForm(book, false);
     }
 
     // Methode zur Steuerung, welches Element den Fokus bei "Enter" erhält
     private void setEnterKeyTraversal(TextField currentField, Control nextField) {
-        currentField.setOnKeyPressed(event -> {
+        // Event, das auf Enter-Tastenanschlag hört
+        currentField.setOnKeyPressed(event -> { // Überprüft, ob die gedrückte Taste Enter ist
             if (event.getCode() == KeyCode.ENTER) {
                 nextField.requestFocus(); // Nächstes Feld erhält den Fokus
             }
@@ -797,38 +858,46 @@ public class BookManagerApp extends Application {
 
     /**
      * Öffnet ein Fenster zur Anzeige der Book-Details.
+     * @param book Das Buch, das bearbeitet oder angezeigt werden soll.
+     * @param isNew Gibt an, ob ein neues Buch hinzugefügt werden soll (true) oder ein bestehendes bearbeitet wird (false).
      */
+    // Ein neues Fenster (Stage) initialisieren
     private void openBookForm(Book book, boolean isNew) {
         Stage stage = new Stage();
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setTitle(isNew ? "Add Book" : "Edit Book");
+        stage.initModality(Modality.APPLICATION_MODAL); // Das Fenster ist modal (blockiert andere Fenster)
+        stage.setTitle(isNew ? "Add Book" : "Edit Book"); // Setzt den Fenstertitel abhängig davon, ob es "Neu" oder "Bearbeiten" ist
         LoginScreen.setBookIcon(stage);
 
+        // Konfiguriert die Fenstergröße und das Verhalten
         stage.setHeight(480);
         stage.setWidth(720);
-        stage.setResizable(false);
+        stage.setResizable(false); // Erlaubt keine Größenanpassung
         GridPane grid = new GridPane();
-        grid.setHgap(5);
-        grid.setVgap(5);
-        grid.setPadding(new Insets(5));
+        grid.setHgap(5); // Horizontaler Abstand zwischen Spalten
+        grid.setVgap(5); // Vertikaler Abstand zwischen Zeilen
+        grid.setPadding(new Insets(5)); // Randabstand innerhalb des Grids
 
         // Felder mit ID für Debugging konfigurieren
         Label titleLabel = new Label("Title:");
-        TextField titleField = new TextField(book.getTitle());
+        TextField titleField = new TextField(book.getTitle()); // Vorbelegung mit dem Titel des Buchs
         titleField.setId("titleField"); // ID setzen für Debugging
 
+        // Eingabefeld für den Vorname des Autors inkl. Vorbelegung
         Label firstNameLabel = new Label("First Name:");
         TextField firstNameField = new TextField(book.getFirstName());
         firstNameField.setId("firstNameField");
 
+        // Eingabefeld für den Nachname des Autors inkl. Vorbelegung
         Label lastNameLabel = new Label("Last Name:");
         TextField lastNameField = new TextField(book.getLastName());
         lastNameField.setId("lastNameField");
 
+        // Eingabefeld für das Genre des Buchs inkl. Vorbelegung
         Label genreLabel = new Label("Genre:");
         TextField genreField = new TextField(book.getGenre());
         genreField.setId("genreField");
 
+        // Eingabefeld für das Veröffentlichungsjahr des Buchs inkl. Vorbelegung
         Label yearLabel = new Label("Year:");
         TextField yearField = new TextField(String.valueOf(
                 book.getPublicationYear() > 0 ? book.getPublicationYear() : Year.now().getValue()));
@@ -837,32 +906,38 @@ public class BookManagerApp extends Application {
         // Formatter für numerische Eingabe (nur Zahlen erlauben)
         TextFormatter<Integer> yearFormatter = new TextFormatter<>(
                 new IntegerStringConverter(),
-                book.getPublicationYear() > 0 ? book.getPublicationYear() : Year.now().getValue(),
+                book.getPublicationYear() > 0 ? book.getPublicationYear() : Year.now().getValue(), // Standardwert setzen
                 change -> change.getControlNewText().matches("\\d*") ? change : null // Nur Ziffern erlauben
         );
         yearField.setTextFormatter(yearFormatter);
 
+        // Eingabefeld für die ISBN des Buchs inkl. Vorbelegung
         Label isbnLabel = new Label("ISBN:");
         TextField isbnField = new TextField(String.valueOf(book.getIsbn()));
         isbnField.setId("isbnField");
 
+        // CheckBox für "Gelesen" (bereits gelesen oder nicht) inkl. Vorbelegung
         Label readLabel = new Label("Read:");
         CheckBox readCheckBox = new CheckBox();
         readCheckBox.setSelected(book.isRead());
 
+        // Dropdown für die Bewertung des Buchs
         Label ratingLabel = new Label("Rating:");
         ComboBox<String> ratingComboBox = new ComboBox<>();
-        ratingComboBox.getItems().addAll("1", "2", "3");
+        ratingComboBox.getItems().addAll("1", "2", "3"); // Fügt Bewertungsauswahl hinzu
+        // Vorbelegung mit aktueller Bewertung (falls vorhanden)
         ratingComboBox.setValue(book.getRating() == null ? "" : book.getRating());
         ratingComboBox.setId("ratingComboBox"); // ID setzen für Debugging
 
+        // Textarea für Kommentare zum Buch
         Label commentLabel = new Label("Comment:");
         TextArea commentArea = new TextArea(book.getComment());
         commentArea.setId("commentArea");
 
+        // Save-Button mit Aktion
         Button saveButton = new Button("Save");
         saveButton.setOnAction(e -> {
-            try {
+            try { // Liest Eingabedaten aus den Feldern und schneidet unnötige Leerzeichen ab
                 String title = titleField.getText().trim();
                 String firstName = firstNameField.getText().trim();
                 String lastName = lastNameField.getText().trim();
@@ -870,13 +945,15 @@ public class BookManagerApp extends Application {
                 int year = Integer.parseInt(yearField.getText().trim());
                 long isbn = Long.parseLong(isbnField.getText().trim());
 
+                // Validierung der Pflichtfelder
                 if (title.isEmpty() || firstName.isEmpty() || lastName.isEmpty()) {
                     showAlert("Invalid Input", "Title, First Name, and Last Name cannot be empty.");
                     return;
                 }
 
+                // Validierung des Jahres
                 if (!isValidYear(String.valueOf(year))) {
-                    showAlert("Invalid Year", "The year must be a valid number between 1000 and current year.");
+                    showAlert("Invalid Year", "Please enter a valid year.");
                     return;
                 }
 
@@ -891,6 +968,7 @@ public class BookManagerApp extends Application {
                 book.setRating(ratingComboBox.getValue());
                 book.setComment(commentArea.getText());
 
+                // Fügt das Buch einer Sammlung hinzu, wenn es neu ist
                 if (isNew) {
                     boolean success = currentCollection.addBook(book);
                     if (success) {
@@ -900,7 +978,7 @@ public class BookManagerApp extends Application {
                         showAlert("Duplicate Book", "A book with the same title or ISBN already exists.");
                         return;
                     }
-                } else {
+                } else { // Prüft auf Duplikate (falls das Buch bearbeitet wird)
                     if (currentCollection.isDuplicateExcept(book)) {
                         showAlert("Duplicate Book", "A book with the same title or ISBN already exists.");
                         return;
@@ -923,7 +1001,7 @@ public class BookManagerApp extends Application {
             }
         });
 
-        // Fokus-Reihenfolge setzen
+        // Setzt die Reihenfolge der Navigation mit der Enter-Taste
         setEnterKeyTraversal(titleField, firstNameField);
         setEnterKeyTraversal(firstNameField, lastNameField);
         setEnterKeyTraversal(lastNameField, yearField);
@@ -931,6 +1009,7 @@ public class BookManagerApp extends Application {
         setEnterKeyTraversal(isbnField, genreField);
         setEnterKeyTraversal(genreField, saveButton);
 
+        // Zusätzliche Navigation für Rating und Kommentar
         ratingComboBox.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 System.out.println("Enter pressed in: " + ratingComboBox.getId());
@@ -945,7 +1024,7 @@ public class BookManagerApp extends Application {
             }
         });
 
-        // Anordnung von Elementen im Grid
+        // Anordnung der Elemente im Grid-Layout für das Buch-Formular
         grid.add(titleLabel, 0, 0);
         grid.add(titleField, 1, 0, 3, 1);
 
@@ -973,21 +1052,26 @@ public class BookManagerApp extends Application {
         grid.add(saveButton, 0, 6, 4, 1);
 
         // Szene und Fenster anzeigen
-        Scene scene = new Scene(grid, 500, 400);
-        stage.setScene(scene);
-        stage.showAndWait();
+        Scene scene = new Scene(grid, 500, 400); // Szene erstellen mit Grid-Layout und Abmessungen 500x400
+        stage.setScene(scene);                  // Bühne (Fenster) die Szene zuweisen
+        stage.showAndWait();                    // Fenster anzeigen und warten, bis es geschlossen wird (modal)
     }
 
+    /**
+     * Öffnet ein schreibgeschütztes Fenster zur Anzeige der Buchdetails.
+     */
     private void openShowWindow(Book book) {
         Stage stage = new Stage();
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setTitle("Show Book");
+        stage.initModality(Modality.APPLICATION_MODAL); // Modaler Dialog, blockiert andere Fenster
+        stage.setTitle("Show Book"); // Titel des Fensters setzen
 
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(10));
         grid.setHgap(10);
         grid.setVgap(10);
 
+        // Erstellen der Labels und schreibgeschützten Felder für die Buchdetails
+        // Alle Felder sind deaktiviert, um Bearbeitung zu verhindern
         Label titleLabel = new Label("Title:");
         TextField titleField = new TextField(book.getTitle());
         titleField.setDisable(true);
@@ -1028,6 +1112,7 @@ public class BookManagerApp extends Application {
         TextArea commentArea = new TextArea(book.getComment());
         commentArea.setDisable(true);
 
+        // Schließen-Button zur Rückkehr in die Hauptanwendung
         Button closeButton = new Button("Close");
         closeButton.setOnAction(e -> stage.close());
 

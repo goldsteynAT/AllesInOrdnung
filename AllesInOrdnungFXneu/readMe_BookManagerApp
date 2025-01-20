@@ -1,0 +1,134 @@
+/**
+ * BookManagerApp
+ *
+ * Diese Klasse definiert eine JavaFX-Anwendung zum Verwalten von Buchsammlungen. Sie bietet eine grafische Benutzeroberfläche,
+ * die es Benutzern ermöglicht, ihre Bücher in Sammlungen zu organisieren, zu durchsuchen, zu importieren/exportieren
+ * und detailliert individuelle Eigenschaften eines Buchs festzulegen. Die Anwendung nutzt JavaFX-Komponenten
+ * wie ComboBox, TableView und Kontextmenüs, um eine benutzerfreundliche und interaktive Umgebung zu schaffen.
+ *
+ * Zentrale Funktionen und Features:
+ *
+ * 1. **Sammlungsmanagement**:
+ *    - Sammlungen können erstellt, umbenannt und gelöscht werden.
+ *    - Alle Sammlungsnamen werden in einer Datei (`collections.yaml`) gespeichert.
+ *    - Bestehende Sammlungen werden per Dropdown (ComboBox) auswählbar.
+ *
+ * 2. **Buchmanagement**:
+ *    - Bücher können zu einer bestimmten Sammlung hinzugefügt, bearbeitet, gesucht oder gelöscht werden.
+ *    - Detaillierte Informationen zu Büchern (Titel, Autor, Genre, Jahr, ISBN, Bewertung, Kommentar, etc.)
+ *      können bearbeitet werden und automatisch gespeichert werden.
+ *    - Jedes Buch wird in einer Tabelle (TableView) mit verschiedenen dynamischen Spalten angezeigt, die
+ *      Editieroptionen bieten.
+ *
+ * 3. **Datenimport und -export**:
+ *    - Unterstützung beim Importieren und Exportieren von Büchern in YAML- oder Excel-Dateien (XLSX).
+ *    - Alle Änderungen an Sammlungen und Büchern werden gespeichert, indem mit Hilfe der `CollectionManager`-Klasse
+ *      Daten persistiert werden.
+ *
+ * 4. **Benutzerunterstützung**:
+ *    - Benutzer können die Anwendung starten und personalisierte Verzeichnisse nutzen.
+ *    - Die aktuelle Sammlung und deren Bücher können durchsucht und gefiltert werden.
+ *
+ * **GUI-Komponenten**:
+ * Die Benutzeroberfläche besteht aus verschiedenen Layouts (VBox/HBox/GridPane), die klar gegliedert folgende Sektionen bieten:
+ *    - Ein Info-Bereich oben zeigt den eingeloggten Benutzer an.
+ *    - Ein Dropdown und mehrere Buttons zur Verwaltung von Sammlungen.
+ *    - Eine Suchleiste und Action-Buttons für spezifische Buchoperationen.
+ *    - Eine Tabelle (TableView), die alle Bücher der momentan ausgewählten Sammlung anzeigt.
+ *
+ * **Datenmodell**:
+ * - Bücher werden in der Klasse `Book` modelliert, welche Eigenschaften wie Titel, Autor und Genre besitzt.
+ * - Sammlungen verwalten Bücher mit Hilfe der `Collection`- und `CollectionManager`-Klassen.
+ * - Alle Sammlungen und Bücher werden bei jeder Änderung automatisch gespeichert.
+ *
+ * Verwendung:
+ * ==========
+ * 1. Start der Anwendung:
+ *    - Die Hauptmethode `start(Stage primaryStage)` wird von JavaFX aufgerufen.
+ *    - Der Benutzer kann Sammlungen erstellen und ändern, Bücher bearbeiten oder importieren/exportieren.
+ *
+ * 2. Benutzerinteraktion:
+ *    - Interaktive Komponenten wie Buttons, Textfelder und Kontextmenüs ermöglichen ein intuitives Arbeiten.
+ *
+ * 3. Automatische Speicherung:
+ *    - Sammlungs- und Buchdaten werden durch `CollectionManager` in Dateien gespeichert, um bei der nächsten
+ *      Ausführung wieder geladen zu werden.
+ *
+ * Besonderheiten:
+ * ---------------
+ * - Kontextmenüs bieten schnelle Aktionen wie Buch-Löschen, Details anzeigen oder Bearbeiten.
+ * - Es sind Schutzmaßnahmen eingebaut, um Fehler wie das Löschen wichtiger Sammlungen oder ungültige Eingaben zu verhindern.
+ * - Bewertungs- und Lesestatus ändern automatisch die Benutzerschnittstelle (z. B. Aktivierung der Bewertungsfunktion
+ *   bei gelesenen Büchern).
+ *
+ * Abhängigkeiten:
+ * ---------------
+ * Diese Klasse hängt von mehreren Utility- und Modellklassen ab, z. B.:
+ * - `Book`: Repräsentiert ein Buch und seine Eigenschaften.
+ * - `Collection`: Repräsentiert eine Sammlung von Büchern.
+ * - `CollectionManager`: Verwaltet mehrere Sammlungen und deren Interaktionen (z. B. Import, Export, Speicherung).
+ *
+ * Schließen der Anwendung:
+ * ------------------------
+ * - Beim Schließen des Programms (Window Close Event) wird sichergestellt, dass alle Sammlungen und deren Bücher
+ *   gespeichert werden.
+ *
+ * Fazit:
+ * ------
+ * Diese Klasse konzentriert sich auf Benutzerfreundlichkeit, Datenverwaltung und bietet eine gut strukturierte,
+ * intuitive Benutzeroberfläche für das Verwalten von Büchersammlungen.
+ */
+
+
+ +------------------------------------------------+
+ |                  BookManagerApp                |
+ |------------------------------------------------|
+ | - collectionsFilePath : String                |
+ | - collectionManager : CollectionManager       |
+ | - currentCollection : Collection              |
+ | - bookListData : ObservableList<Book>         |
+ | - collectionComboBox : ComboBox<String>       |
+ | - bookTableView : TableView<Book>             |
+ |------------------------------------------------|
+ | + start(Stage primaryStage)                   |
+ | + startWithUser(...)                          |
+ | + addNewCollection()                          |
+ | + renameSelectedCollection()                  |
+ | + deleteSelectedCollection()                  |
+ | + openAddBookWindow()                         |
+ | + openEditWindow(Book book)                   |
+ | + importBooks()                               |
+ | + exportBooks()                               |
+ | + searchBooks(TextField searchField)          |
+ |------------------------------------------------|
+ | **GUI** Components and Event Handlers         |
+ +------------------------------------------------+
+             |
+             | Calls/Uses
+             V
+ +-------------------------+      +-------------------------+
+ |   CollectionManager     |      |         Book            |
+ |-------------------------|      |-------------------------|
+ | - collections : List<Collection> | - title : String       |
+ |-------------------------|      | - author : String        |
+ | + addNewCollection(name) |      | - genre : String         |
+ | + deleteCollection(name) |      | - year : int            |
+ | + getBooksForCollection(...)  | | - rating : double       |
+ | + saveBooksForCollection(...) | | - comment : String      |
+ | + importFromYaml(...)         | |-------------------------|
+ | + exportToYaml(...)           | | + getters and setters   |
+ |-------------------------|      +-------------------------+
+             |
+             | Manages multiple
+             V
+ +-------------------------+
+ |      Collection         |
+ |-------------------------|
+ | - name : String         |
+ | - books : List<Book>    |
+ |-------------------------|
+ | + addBook(Book)         |
+ | + removeBook(Book)      |
+ | + editBook(Book)        |
+ | + search(keyword) : List<Book> |
+ +-------------------------+
