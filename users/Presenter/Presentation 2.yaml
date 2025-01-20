@@ -1,0 +1,136 @@
+!!com.example.allesinordnungfx.CollectionManager$CollectionWrapper
+books:
+- {comment: Ein Meisterwerk, firstName: Anna, genre: Drama, isbn: 9781234567111, lastName: Müller,
+  publicationYear: 2001, rating: '2', read: true, title: Die verlorene Zeit}
+- {comment: Sehr spannend, firstName: Peter, genre: Thriller, isbn: 9781234567112,
+  lastName: Schmidt, publicationYear: 2010, rating: '2', read: true, title: Der stille
+    Jäger}
+- {comment: Nicht mein Geschmack, firstName: Julia, genre: Romance, isbn: 9781234567113,
+  lastName: Fischer, publicationYear: 1998, rating: '4', read: true, title: Herzklopfen}
+- {comment: Ein Klassiker, firstName: Thomas, genre: Classic, isbn: 9781234567114,
+  lastName: Becker, publicationYear: 1965, rating: '5', read: true, title: Die alte
+    Villa}
+- {comment: Sehr lehrreich, firstName: Laura, genre: Non-Fiction, isbn: 9781234567115,
+  lastName: Wagner, publicationYear: 2015, rating: '4', read: true, title: Die Geschichte
+    der Welt}
+- {comment: Fesselnd, firstName: Markus, genre: Mystery, isbn: 9781234567116, lastName: Hoffmann,
+  publicationYear: 2003, rating: '2', read: true, title: Das geheime Versteck}
+- {comment: Langatmig, firstName: Sophie, genre: Historical, isbn: 9781234567117,
+  lastName: Schäfer, publicationYear: 1999, rating: '4', read: true, title: Die Zeitreisende}
+- {comment: Inspirierend, firstName: Daniel, genre: Biography, isbn: 9781234567118,
+  lastName: Neumann, publicationYear: 2018, rating: '2', read: true, title: Mein Leben}
+- {comment: Ein Muss für Fans, firstName: Lena, genre: Fantasy, isbn: 9781234567119,
+  lastName: Schwarz, publicationYear: 2020, rating: '1', read: true, title: Die magische
+    Welt}
+- {comment: Sehr unterhaltsam, firstName: Paul, genre: Comedy, isbn: 9781234567120,
+  lastName: Braun, publicationYear: 2012, rating: '3', read: true, title: Lachen ist
+    gesund}
+- {comment: Einfach toll, firstName: Lisa, genre: Children, isbn: 9781234567121, lastName: Krüger,
+  publicationYear: 2005, rating: '4', read: true, title: Abenteuer im Wald}
+- {comment: Nicht überzeugend, firstName: Jan, genre: Science Fiction, isbn: 9781234567122,
+  lastName: Meier, publicationYear: 1997, rating: '5', read: true, title: Die Zukunft}
+- {comment: Sehr informativ, firstName: Nina, genre: Non-Fiction, isbn: 9781234567123,
+  lastName: Lehmann, publicationYear: 2016, rating: '4', read: true, title: Die Wissenschaft}
+- {comment: Einfach genial, firstName: Tim, genre: Horror, isbn: 9781234567124, lastName: Klein,
+  publicationYear: 2002, rating: '5', read: true, title: Der Schrecken}
+- {comment: Nicht mein Fall, firstName: Emma, genre: Romance, isbn: 9781234567125,
+  lastName: Wolf, publicationYear: 1996, rating: '1', read: true, title: Liebesglück}
+- {comment: Sehr spannend, firstName: Max, genre: Thriller, isbn: 9781234567126, lastName: Richter,
+  publicationYear: 2011, rating: '1', read: true, title: Der Schatten}
+- {comment: Ein Klassiker, firstName: Mia, genre: Classic, isbn: 9781234567127, lastName: Böhm,
+  publicationYear: 1970, rating: '5', read: true, title: Die alte Stadt}
+- {comment: Sehr lehrreich, firstName: Leon, genre: Non-Fiction, isbn: 9781234567128,
+  lastName: Frank, publicationYear: 2017, rating: '5', read: true, title: Die Natur}
+- {comment: Fesselnd, firstName: Lara, genre: Mystery, isbn: 9781234567129, lastName: Albrecht,
+  publicationYear: 2004, rating: '2', read: true, title: Das Rätsel}
+- {comment: Langatmig, firstName: Erik, genre: Historical, isbn: 9781234567130, lastName: Busch,
+  publicationYear: 2000, rating: '2', read: true, title: Die Reise}
+- {comment: Inspirierend, firstName: Sara, genre: Biography, isbn: 9781234567131,
+  lastName: Dietrich, publicationYear: 2019, rating: '4', read: true, title: Mein
+    Weg}
+- {comment: Ein Muss für Fans, firstName: Finn, genre: Fantasy, isbn: 9781234567132,
+  lastName: Engel, publicationYear: 2021, rating: '3', read: true, title: Die Zauberwelt}
+- {comment: Sehr unterhaltsam, firstName: Zoe, genre: Comedy, isbn: 9781234567133,
+  lastName: Fuchs, publicationYear: 2013, rating: '3', read: true, title: Lachen ist
+    die beste Medizin}
+- {comment: Einfach toll, firstName: Ben, genre: Children, isbn: 9781234567134, lastName: Graf,
+  publicationYear: 2006, rating: '4', read: true, title: Abenteuer im Dschungel}
+- {comment: Nicht überzeugend, firstName: Mia, genre: Science Fiction, isbn: 9781234567135,
+  lastName: Hartmann, publicationYear: 1998, rating: '5', read: true, title: Die Zukunft
+    der Menschheit}
+- {comment: Sehr informativ, firstName: Tom, genre: Non-Fiction, isbn: 9781234567136,
+  lastName: Jäger, publicationYear: 2017, rating: '4', read: true, title: Die Technik}
+- {comment: Einfach genial, firstName: Lea, genre: Horror, isbn: 9781234567137, lastName: Keller,
+  publicationYear: 2003, rating: '4', read: true, title: Der Albtraum}
+- {comment: Nicht mein Fall, firstName: Noah, genre: Romance, isbn: 9781234567138,
+  lastName: Lange, publicationYear: 1997, rating: '4', read: true, title: Liebesleid}
+- {comment: Sehr spannend, firstName: Ella, genre: Thriller, isbn: 9781234567139,
+  lastName: Möller, publicationYear: 2012, rating: '1', read: true, title: Der Jäger}
+- {comment: Ein Klassiker, firstName: Luis, genre: Classic, isbn: 9781234567140, lastName: Otto,
+  publicationYear: 1975, rating: '4', read: true, title: Die alte Brücke}
+- {comment: Sehr lehrreich, firstName: Lina, genre: Non-Fiction, isbn: 9781234567141,
+  lastName: Peters, publicationYear: 2018, rating: '4', read: true, title: Die Geschichte
+    der Menschheit}
+- {comment: Fesselnd, firstName: Jonas, genre: Mystery, isbn: 9781234567142, lastName: Reuter,
+  publicationYear: 2005, rating: '2', read: true, title: Das Geheimnis}
+- {comment: Langatmig, firstName: Mia, genre: Historical, isbn: 9781234567143, lastName: Schmid,
+  publicationYear: 2001, rating: '2', read: true, title: Die Entdeckung}
+- {comment: Inspirierend, firstName: Leo, genre: Biography, isbn: 9781234567144, lastName: Schneider,
+  publicationYear: 2020, rating: '2', read: true, title: Mein Erfolg}
+- {comment: Ein Muss für Fans, firstName: Emma, genre: Fantasy, isbn: 9781234567145,
+  lastName: Schulz, publicationYear: 2022, rating: '3', read: true, title: Die magischen
+    Abenteuer}
+- {comment: Sehr unterhaltsam, firstName: Max, genre: Comedy, isbn: 9781234567146,
+  lastName: Vogel, publicationYear: 2014, rating: '4', read: true, title: Lachen ist
+    ansteckend}
+- {comment: asdfasdf, firstName: Max, genre: Fiction, isbn: 9781234567101, lastName: Müller,
+  publicationYear: 2001, rating: '5', read: true, title: Der Wanderer}
+- {comment: asdfadsfasdf, firstName: Anna, genre: Science Fiction, isbn: 9781234567102,
+  lastName: Meier, publicationYear: 1998, rating: '4', read: true, title: Sterne und
+    Schatten}
+- {comment: asdfadsf, firstName: Peter, genre: Fantasy, isbn: 9781234567103, lastName: Schmidt,
+  publicationYear: 2010, rating: '2', read: true, title: Das verlorene Königreich}
+- {comment: asdfwerg, firstName: Lena, genre: Romance, isbn: 9781234567104, lastName: Fischer,
+  publicationYear: 2015, rating: '2', read: true, title: Liebe im Herbst}
+- {comment: '', firstName: Thomas, genre: Mystery, isbn: 9781234567105, lastName: Becker,
+  publicationYear: 2020, rating: '4', read: false, title: Das dritte Geheimnis}
+- {comment: '', firstName: Maria, genre: Horror, isbn: 9781234567106, lastName: Lang,
+  publicationYear: 1995, rating: '5', read: false, title: Der Schatten des Waldes}
+- {comment: Ein spannendes Buch, firstName: Michael, genre: Adventure, isbn: 9781234567107,
+  lastName: Weber, publicationYear: 2008, rating: '4', read: true, title: Aufbruch
+    zur See}
+- {comment: Sehr interessante Charaktere, firstName: Clara, genre: Thriller, isbn: 9781234567108,
+  lastName: Koch, publicationYear: 1992, rating: '3', read: true, title: Im Auge des
+    Sturms}
+- {comment: fand ich langweilig, firstName: Robert, genre: Science Fiction, isbn: 9781234567109,
+  lastName: König, publicationYear: 1987, rating: '2', read: true, title: Das galaktische
+    Erbe}
+- {comment: noch nicht gelesen, firstName: Katrin, genre: Fantasy, isbn: 9781234567110,
+  lastName: Herzog, publicationYear: 2023, rating: '2', read: false, title: Der magische
+    Schlüssel}
+- {comment: '', firstName: Johanna, genre: Romance, isbn: 9781234567111, lastName: Krüger,
+  publicationYear: 2017, rating: '2', read: false, title: Herbstliche Träume}
+- {comment: '', firstName: Daniel, genre: Fiction, isbn: 9781234567112, lastName: Schwarz,
+  publicationYear: 2004, rating: '1', read: false, title: Auf eigenen Wegen}
+- {comment: '', firstName: Eva, genre: Horror, isbn: 9781234567113, lastName: Wolf,
+  publicationYear: 2012, rating: '2', read: false, title: Der dunkle See}
+- {comment: '', firstName: Paul, genre: Mystery, isbn: 9781234567114, lastName: Lehmann,
+  publicationYear: 2019, rating: '2', read: false, title: Das verlorene Rätsel}
+- {comment: '', firstName: Nina, genre: Adventure, isbn: 9781234567115, lastName: Horn,
+  publicationYear: 1986, rating: '2', read: false, title: Reise ins Unbekannte}
+- {comment: '', firstName: Tim, genre: Science Fiction, isbn: 9781234567116, lastName: Berger,
+  publicationYear: 2021, rating: '2', read: true, title: Zwischen den Sternen}
+- {comment: '', firstName: Sophie, genre: Fantasy, isbn: 9781234567117, lastName: Grün,
+  publicationYear: 1993, rating: '2', read: false, title: Das verborgene Amulett}
+- {comment: '', firstName: Markus, genre: Thriller, isbn: 9781234567118, lastName: Wagner,
+  publicationYear: 2003, rating: '4', read: true, title: Die letzte Spur}
+- {comment: '', firstName: Isabel, genre: Romance, isbn: 9781234567119, lastName: Frank,
+  publicationYear: 1990, rating: '', read: false, title: Liebesbrief in Paris}
+- {comment: '', firstName: Leon, genre: Fiction, isbn: 9781234567120, lastName: Schulte,
+  publicationYear: 2005, rating: '', read: false, title: Unter dem Himmelszelt}
+- {comment: '', firstName: Hannah, genre: Horror, isbn: 9781234567121, lastName: Maier,
+  publicationYear: 1988, rating: '2', read: false, title: Das Haus am Abgrund}
+- {comment: '', firstName: Sandra, genre: Fantasy, isbn: 9781234567199, lastName: Berg,
+  publicationYear: 2020, rating: '4', read: false, title: Die letzte Prinzessin}
+- {comment: '', firstName: Philipp, genre: Adventure, isbn: 9781234567200, lastName: Stein,
+  publicationYear: 1988, rating: '', read: false, title: Expedition ins Nirgendwo}

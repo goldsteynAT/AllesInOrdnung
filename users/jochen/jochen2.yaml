@@ -10,17 +10,21 @@ books:
 - {comment: '', firstName: Lena, genre: Romance, isbn: 9781234567104, lastName: Fischer,
   publicationYear: 2015, rating: '', read: false, title: Liebe im Herbst}
 - {comment: '', firstName: Thomas, genre: Mystery, isbn: 9781234567105, lastName: Becker,
-  publicationYear: 2020, rating: '', read: false, title: Das dritte Geheimnis}
+  publicationYear: 2020, rating: '1', read: false, title: Das dritte Geheimnis}
 - {comment: '', firstName: Maria, genre: Horror, isbn: 9781234567106, lastName: Lang,
-  publicationYear: 1995, rating: '', read: false, title: Der Schatten des Waldes}
-- {comment: '', firstName: Michael, genre: Adventure, isbn: 9781234567107, lastName: Weber,
-  publicationYear: 2008, rating: '', read: false, title: Aufbruch zur See}
-- {comment: '', firstName: Clara, genre: Thriller, isbn: 9781234567108, lastName: Koch,
-  publicationYear: 1992, rating: '', read: false, title: Im Auge des Sturms}
-- {comment: '', firstName: Robert, genre: Science Fiction, isbn: 9781234567109, lastName: König,
-  publicationYear: 1987, rating: '', read: false, title: Das galaktische Erbe}
-- {comment: '', firstName: Katrin, genre: Fantasy, isbn: 9781234567110, lastName: Herzog,
-  publicationYear: 2023, rating: '', read: false, title: Der magische Schlüssel}
+  publicationYear: 1995, rating: '1', read: false, title: Der Schatten des Waldes}
+- {comment: Ein spannendes Buch, firstName: Michael, genre: Adventure, isbn: 9781234567107,
+  lastName: Weber, publicationYear: 2008, rating: '2', read: true, title: Aufbruch
+    zur See}
+- {comment: Sehr interessante Charaktere, firstName: Clara, genre: Thriller, isbn: 9781234567108,
+  lastName: Koch, publicationYear: 1992, rating: '1', read: true, title: Im Auge des
+    Sturms}
+- {comment: fand ich langweilig, firstName: Robert, genre: Science Fiction, isbn: 9781234567109,
+  lastName: König, publicationYear: 1987, rating: '1', read: true, title: Das galaktische
+    Erbe}
+- {comment: noch nicht gelesen, firstName: Katrin, genre: Fantasy, isbn: 9781234567110,
+  lastName: Herzog, publicationYear: 2023, rating: '', read: false, title: Der magische
+    Schlüssel}
 - {comment: '', firstName: Johanna, genre: Romance, isbn: 9781234567111, lastName: Krüger,
   publicationYear: 2017, rating: '3', read: false, title: Herbstliche Träume}
 - {comment: '', firstName: Daniel, genre: Fiction, isbn: 9781234567112, lastName: Schwarz,

@@ -1,18 +1,14 @@
 !!com.example.allesinordnungfx.CollectionManager$CollectionWrapper
 books:
-- {comment: fasdfasdf, firstName: Vorname Autor, genre: Genre, isbn: 3775667123123,
-  lastName: Nachname Autor, publicationYear: 2024, rating: '2', read: true, title: Buchtitel}
-- {comment: asfsadf, firstName: asdfasdf, genre: asdf, isbn: 1235, lastName: wrweqf,
-  publicationYear: 2025, rating: '4', read: true, title: asdfasdf}
 - {comment: Ein Meisterwerk, firstName: Anna, genre: Drama, isbn: 9781234567111, lastName: Müller,
   publicationYear: 2001, rating: '5', read: true, title: Die verlorene Zeit}
 - {comment: Sehr spannend, firstName: Peter, genre: Thriller, isbn: 9781234567112,
-  lastName: Schmidt, publicationYear: 2010, rating: '2', read: true, title: Der stille
+  lastName: Schmidt, publicationYear: 2010, rating: '5', read: true, title: Der stille
     Jäger}
 - {comment: Nicht mein Geschmack, firstName: Julia, genre: Romance, isbn: 9781234567113,
   lastName: Fischer, publicationYear: 1998, rating: '5', read: true, title: Herzklopfen}
 - {comment: Ein Klassiker, firstName: Thomas, genre: Classic, isbn: 9781234567114,
-  lastName: Becker, publicationYear: 1965, rating: '2', read: true, title: Die alte
+  lastName: Becker, publicationYear: 1965, rating: '4', read: true, title: Die alte
     Villa}
 - {comment: Sehr lehrreich, firstName: Laura, genre: Non-Fiction, isbn: 9781234567115,
   lastName: Wagner, publicationYear: 2015, rating: '5', read: true, title: Die Geschichte
@@ -22,68 +18,68 @@ books:
 - {comment: Langatmig, firstName: Sophie, genre: Historical, isbn: 9781234567117,
   lastName: Schäfer, publicationYear: 1999, rating: '2', read: true, title: Die Zeitreisende}
 - {comment: Inspirierend, firstName: Daniel, genre: Biography, isbn: 9781234567118,
-  lastName: Neumann, publicationYear: 2018, rating: '4', read: true, title: Mein Leben}
+  lastName: Neumann, publicationYear: 2018, rating: '2', read: true, title: Mein Leben}
 - {comment: Ein Muss für Fans, firstName: Lena, genre: Fantasy, isbn: 9781234567119,
   lastName: Schwarz, publicationYear: 2020, rating: '5', read: true, title: Die magische
     Welt}
 - {comment: Sehr unterhaltsam, firstName: Paul, genre: Comedy, isbn: 9781234567120,
-  lastName: Braun, publicationYear: 2012, rating: '2', read: true, title: Lachen ist
+  lastName: Braun, publicationYear: 2012, rating: '4', read: true, title: Lachen ist
     gesund}
 - {comment: Einfach toll, firstName: Lisa, genre: Children, isbn: 9781234567121, lastName: Krüger,
-  publicationYear: 2005, rating: '2', read: true, title: Abenteuer im Wald}
+  publicationYear: 2005, rating: '5', read: true, title: Abenteuer im Wald}
 - {comment: Nicht überzeugend, firstName: Jan, genre: Science Fiction, isbn: 9781234567122,
-  lastName: Meier, publicationYear: 1997, rating: '2', read: true, title: Die Zukunft}
+  lastName: Meier, publicationYear: 1997, rating: '4', read: true, title: Die Zukunft}
 - {comment: Sehr informativ, firstName: Nina, genre: Non-Fiction, isbn: 9781234567123,
   lastName: Lehmann, publicationYear: 2016, rating: '5', read: true, title: Die Wissenschaft}
 - {comment: Einfach genial, firstName: Tim, genre: Horror, isbn: 9781234567124, lastName: Klein,
   publicationYear: 2002, rating: '5', read: true, title: Der Schrecken}
 - {comment: Nicht mein Fall, firstName: Emma, genre: Romance, isbn: 9781234567125,
-  lastName: Wolf, publicationYear: 1996, rating: '4', read: true, title: Liebesglück}
+  lastName: Wolf, publicationYear: 1996, rating: '5', read: true, title: Liebesglück}
 - {comment: Sehr spannend, firstName: Max, genre: Thriller, isbn: 9781234567126, lastName: Richter,
-  publicationYear: 2011, rating: '4', read: true, title: Der Schatten}
+  publicationYear: 2011, rating: '2', read: true, title: Der Schatten}
 - {comment: Ein Klassiker, firstName: Mia, genre: Classic, isbn: 9781234567127, lastName: Böhm,
   publicationYear: 1970, rating: '2', read: true, title: Die alte Stadt}
 - {comment: Sehr lehrreich, firstName: Leon, genre: Non-Fiction, isbn: 9781234567128,
   lastName: Frank, publicationYear: 2017, rating: '5', read: true, title: Die Natur}
 - {comment: Fesselnd, firstName: Lara, genre: Mystery, isbn: 9781234567129, lastName: Albrecht,
-  publicationYear: 2004, rating: '2', read: true, title: Das Rätsel}
+  publicationYear: 2004, rating: '5', read: true, title: Das Rätsel}
 - {comment: Langatmig, firstName: Erik, genre: Historical, isbn: 9781234567130, lastName: Busch,
-  publicationYear: 2000, rating: '2', read: true, title: Die Reise}
+  publicationYear: 2000, rating: '4', read: true, title: Die Reise}
 - {comment: Inspirierend, firstName: Sara, genre: Biography, isbn: 9781234567131,
   lastName: Dietrich, publicationYear: 2019, rating: '4', read: true, title: Mein
     Weg}
 - {comment: Ein Muss für Fans, firstName: Finn, genre: Fantasy, isbn: 9781234567132,
-  lastName: Engel, publicationYear: 2021, rating: '5', read: true, title: Die Zauberwelt}
+  lastName: Engel, publicationYear: 2021, rating: '2', read: true, title: Die Zauberwelt}
 - {comment: Sehr unterhaltsam, firstName: Zoe, genre: Comedy, isbn: 9781234567133,
   lastName: Fuchs, publicationYear: 2013, rating: '4', read: true, title: Lachen ist
     die beste Medizin}
 - {comment: Einfach toll, firstName: Ben, genre: Children, isbn: 9781234567134, lastName: Graf,
   publicationYear: 2006, rating: '5', read: true, title: Abenteuer im Dschungel}
 - {comment: Nicht überzeugend, firstName: Mia, genre: Science Fiction, isbn: 9781234567135,
-  lastName: Hartmann, publicationYear: 1998, rating: '5', read: true, title: Die Zukunft
+  lastName: Hartmann, publicationYear: 1998, rating: '2', read: true, title: Die Zukunft
     der Menschheit}
 - {comment: Sehr informativ, firstName: Tom, genre: Non-Fiction, isbn: 9781234567136,
   lastName: Jäger, publicationYear: 2017, rating: '4', read: true, title: Die Technik}
 - {comment: Einfach genial, firstName: Lea, genre: Horror, isbn: 9781234567137, lastName: Keller,
   publicationYear: 2003, rating: '4', read: true, title: Der Albtraum}
 - {comment: Nicht mein Fall, firstName: Noah, genre: Romance, isbn: 9781234567138,
-  lastName: Lange, publicationYear: 1997, rating: '5', read: true, title: Liebesleid}
+  lastName: Lange, publicationYear: 1997, rating: '4', read: true, title: Liebesleid}
 - {comment: Sehr spannend, firstName: Ella, genre: Thriller, isbn: 9781234567139,
   lastName: Möller, publicationYear: 2012, rating: '4', read: true, title: Der Jäger}
 - {comment: Ein Klassiker, firstName: Luis, genre: Classic, isbn: 9781234567140, lastName: Otto,
-  publicationYear: 1975, rating: '4', read: true, title: Die alte Brücke}
+  publicationYear: 1975, rating: '5', read: true, title: Die alte Brücke}
 - {comment: Sehr lehrreich, firstName: Lina, genre: Non-Fiction, isbn: 9781234567141,
-  lastName: Peters, publicationYear: 2018, rating: '5', read: true, title: Die Geschichte
+  lastName: Peters, publicationYear: 2018, rating: '2', read: true, title: Die Geschichte
     der Menschheit}
 - {comment: Fesselnd, firstName: Jonas, genre: Mystery, isbn: 9781234567142, lastName: Reuter,
-  publicationYear: 2005, rating: '5', read: true, title: Das Geheimnis}
+  publicationYear: 2005, rating: '4', read: true, title: Das Geheimnis}
 - {comment: Langatmig, firstName: Mia, genre: Historical, isbn: 9781234567143, lastName: Schmid,
-  publicationYear: 2001, rating: '4', read: true, title: Die Entdeckung}
+  publicationYear: 2001, rating: '2', read: true, title: Die Entdeckung}
 - {comment: Inspirierend, firstName: Leo, genre: Biography, isbn: 9781234567144, lastName: Schneider,
-  publicationYear: 2020, rating: '2', read: true, title: Mein Erfolg}
+  publicationYear: 2020, rating: '5', read: true, title: Mein Erfolg}
 - {comment: Ein Muss für Fans, firstName: Emma, genre: Fantasy, isbn: 9781234567145,
-  lastName: Schulz, publicationYear: 2022, rating: '4', read: true, title: Die magischen
+  lastName: Schulz, publicationYear: 2022, rating: '2', read: true, title: Die magischen
     Abenteuer}
 - {comment: Sehr unterhaltsam, firstName: Max, genre: Comedy, isbn: 9781234567146,
-  lastName: Vogel, publicationYear: 2014, rating: '2', read: true, title: Lachen ist
+  lastName: Vogel, publicationYear: 2014, rating: '5', read: true, title: Lachen ist
     ansteckend}

@@ -1,0 +1,5 @@
+!!com.example.allesinordnungfx.CollectionManager$CollectionWrapper
+books:
+- {comment: für präsentationszwecke, firstName: ich will, genre: unnötig, isbn: 12314234,
+  lastName: löschen, publicationYear: 2025, rating: '', read: false, title: das ist
+    zum löschen}
