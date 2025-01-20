@@ -10,28 +10,34 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-// verantwortlich für das Laden, Speichern, Umbenennen und Löschen von Buchsammlungen
-// und Export der Daten
+/*
+Der CollectionManager übernimmt die Verwaltung von Buchsammlungen
+und ist verantwortlich für das Erstellen, Laden, Speichern, Umbenennen und Löschen von Buchsammlungen
+sowie deren Import/Export (Yaml/Xlsx)
+*/
 public class CollectionManager {
 
-    private List<String> collectionNames; // Liste der Collection-Namen
-    private String userDirectoryPath; // Pfad des Benutzerverzeichnisses
-    private FileHandler fileHandler = new FileHandler();
+    private List<String> collectionNames; // Liste der verwalteten Collection-Namen
+    private String userDirectoryPath; // Pfad des Benutzerverzeichnisses, in dem die Sammlungen gespeichert werden
+    private FileHandler fileHandler = new FileHandler(); //Hilfsklasse für Dateioperationen
 
+    // Konstruktor mit einem benutzerdefinierten Verzeichnispfad
     public CollectionManager(String userDirectoryPath) {
         this.collectionNames = new ArrayList<>();
         this.userDirectoryPath = userDirectoryPath;
         ensureUserDirectoryExists(); // Sicherstellen, dass das Benutzerverzeichnis existiert
     }
 
+    // Standard-Konstruktor mit einem voreingestellten Verzeichnis "collections"
     public CollectionManager() {
         this("collections");
     }
 
+    // Hilfsmethode, um sicherzustellen, dass das Benutzerverzeichnis existiert
     private void ensureUserDirectoryExists() {
         File directory = new File(userDirectoryPath);
         if (!directory.exists()) {
-            boolean created = directory.mkdirs();
+            boolean created = directory.mkdirs(); // Verzeichnis erstellen, falls es nicht existiert
             if (created) {
                 System.out.println("Directory created: " + userDirectoryPath);
             } else {
@@ -40,15 +46,27 @@ public class CollectionManager {
         }
     }
 
-    // Getter und Setter für collectionNames
+    // Getter für collectionNames
     public List<String> getCollectionNames() {
         return collectionNames;
     }
 
-    public void setCollectionNames(List<String> collectionNames) {
-        this.collectionNames = collectionNames;
-    }
+    /*
+    Methode zum Laden der Sammlungsnamen aus einer YAML-Datei.
+    Zunächst wird der Pfad der Datei im Benutzerverzeichnis generiert. Falls die Datei nicht vorhanden ist,
+    wird die Methode abgebrochen, da es nichts zu laden gibt.
 
+    Ein Yaml-Objekt aus der SnakeYAML-Bibliothek wird erstellt, mit einem Konstruktor für die Klasse
+    CollectionsWrapper, die die Struktur der YAML-Datei beschreibt. Der FileReader liest die YAML-Datei.
+    Mittels eines try-with-resources-Blocks wird sichergestellt, dass der FileReader nach Abschluss der
+    Lade-Operation automatisch geschlossen wird.
+
+    Nach dem Laden wird geprüft, ob die YAML-Datei erfolgreich gelesen wurde und eine valide Liste von
+    Sammlungsnamen enthält. Die Liste der Sammlungsnamen wird vor der Aktualisierung geleert, und die neuen
+    Daten aus der Datei werden eingefügt.
+
+    Bei einem Fehler beim Lesen der Datei wird eine IOException abgefangen.
+    */
     public void loadCollectionNames(String fileName) {
         String filePath = userDirectoryPath + "/" + fileName; // Benutzerverzeichnis verwenden
         File file = new File(filePath);
@@ -60,7 +78,7 @@ public class CollectionManager {
         try (FileReader reader = new FileReader(filePath)) {
             CollectionsWrapper wrapper = yaml.load(reader);
             if (wrapper != null && wrapper.getCollections() != null) {
-                collectionNames.clear();
+                collectionNames.clear(); //Liste wird vor dem Laden der neuen Einträge geleert.
                 collectionNames.addAll(wrapper.getCollections()); // Laden der Collection-Namen
                 System.out.println("Loaded collection names from YAML in " + filePath);
             }
@@ -69,9 +87,20 @@ public class CollectionManager {
         }
     }
 
-    /**
-     * Speichert die Collection-Namen in collections.yaml.
-     */
+    /*
+    Methode zum Speichern der Sammlungsnamen in einer YAML-Datei.
+    Es wird ein Dateipfad im Benutzerverzeichnis generiert, abhängig vom übergebenen Dateinamen.
+    Ein Yaml-Objekt aus der SnakeYAML-Bibliothek wird initialisiert,
+    das später für das Schreiben der Daten verwendet wird.
+
+    Die Liste der Sammlungsnamen (collectionNames) wird in einer CollectionsWrapper-Instanz verpackt.
+    Ein FileWriter wird erstellt, der in den angegebene Dateipfad schreibt.
+    Mittels des try-with-resources-Blocks wird sichergestellt, dass der FileWriter nach Abschluss
+    der Operation automatisch geschlossen wird.
+
+    Die Methode yaml.dump() speichert die Daten aus der Wrapper-Instanz in die Datei im YAML-Format.
+    Im Falle eines Fehlers beim Schreiben der Datei wird die IOException abgefangen.
+    */
     public void saveCollectionNames(String fileName) {
         String filePath = userDirectoryPath + "/" + fileName; // Benutzerverzeichnis verwenden
         Yaml yaml = new Yaml();
@@ -79,16 +108,28 @@ public class CollectionManager {
         wrapper.setCollections(collectionNames);
 
         try (FileWriter writer = new FileWriter(filePath)) {
-            yaml.dump(wrapper, writer);
+            yaml.dump(wrapper, writer); //YAML-Datei schreiben
             System.out.println("Saved collection names to YAML: " + filePath);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    /**
-     * Lädt die Bücher für eine spezifische Collection aus <collectionName>.yaml.
-     */
+    /*
+    Methode zum Laden der Bücher aus einer spezifischen Sammlung aus einer YAML-Datei.
+    Es wird ein Dateipfad im Benutzerverzeichnis generiert, abhängig vom Namen der Sammlung.
+    Falls die Datei nicht existiert, wird eine neue (leere) Sammlung zurückgegeben.
+
+    Ein Yaml-Objekt aus der SnakeYAML-Bibliothek wird initialisiert, mit einem Konstruktor für die Klasse
+    CollectionWrapper, die die Struktur der YAML-Datei beschreibt. Der FileReader liest die Datei am angegebenen
+    Pfad. Mittels des try-with-resources-Blocks wird sichergestellt, dass der FileReader automatisch geschlossen
+    wird.
+
+    Nach dem Laden wird geprüft, ob der Ladevorgang erfolgreich war und ob die YAML-Datei eine valide Liste
+    von Büchern enthält. Die Bücher werden dann in einer Collection gespeichert, die zurückgegeben wird.
+
+    Bei einem eventuellen Fehler beim Lesen der Datei wird eine IOException abgefangen.
+    */
     public Collection loadBooksForCollection(String collectionName) {
         String filePath = userDirectoryPath + "/" + collectionName + ".yaml"; // Benutzerverzeichnis verwenden
         File file = new File(filePath);
@@ -112,9 +153,20 @@ public class CollectionManager {
         return new Collection(collectionName);
     }
 
-    /**
-     * Speichert die Bücher einer spezifischen Collection in <collectionName>.yaml.
-     */
+    /*
+    Methode zum Speichern der Bücher einer spezifischen Buchsammlung in einer YAML-Datei.
+    Zunächst wird ein Dateipfad im Benutzerverzeichnis generiert, basierend auf dem Namen der Sammlung.
+    Ein Yaml-Objekt aus der SnakeYAML-Bibliothek wird erstellt, das die Daten aus der Sammlung speichert.
+
+    Die Liste der Bücher der Sammlung wird in ein Wrapper-Objekt (CollectionWrapper) übertragen,
+    das als Container für die YAML-Struktur fungiert. Ein FileWriter wird erstellt, der die Daten in die
+    angegebene Datei speichert.
+
+    Mittels des try-with-resources-Blocks wird sichergestellt, dass der FileWriter nach Abschluss der Operation
+    automatisch geschlossen wird. Die Methode yaml.dump() speichert die Bücher im YAML-Format in der Datei.
+
+    Tritt während des Schreibens ein Fehler auf, wird eine IOException abgefangen.
+    */
     public void saveBooksForCollection(Collection collection) {
         String filePath = userDirectoryPath + "/" + collection.getName() + ".yaml"; // Benutzerverzeichnis verwenden
         Yaml yaml = new Yaml();
@@ -128,24 +180,38 @@ public class CollectionManager {
             e.printStackTrace();
         }
     }
-    // =========================
-    // Hinzugefügte Methoden:
-    // =========================
 
-    // Neue Methode 1: Neue Collection hinzufügen
-
+    /*
+    Methode zum Hinzufügen einer neuen Sammlung (Überladung der zweiten Methode)
+    Wird verwendet, um schnell und ohne Verwendung weiterer Parameter eine Sammlung zu erstellen
+    */
     public void addNewCollection(String collectionName) {
         addNewCollection(collectionName, "defaultUserDirectory"); // Standardwerte
     }
 
-    public void addNewCollection(String collectionName, String userDirectoryPath) {
+    /*
+    Flexiblere Methode zum Hinzufügen einer neuen Sammlung. (Mehrere Benutzer mit unterschiedlichen Verzeichnissen)
+    Wird verwendet, um Sammlungen in den korrekten Unterverzeichnissen zu erstellen.
+    */
+    public boolean addNewCollection(String collectionName, String userDirectoryPath) {
         // Sicherstellen, dass das Benutzerverzeichnis existiert
         ensureUserDirectoryExists();
+
+        // Synchronisieren der Sammlungsliste mit der gespeicherten Datei
+        loadCollectionNames("collections.yaml"); // Neu laden, um sicherzustellen, dass die Liste aktuell ist
 
         // Prüfen, ob der Collection-Name bereits existiert
         if (collectionNames.contains(collectionName)) {
             System.out.println("A collection with name '" + collectionName + "' already exists.");
-            return;
+            return false;
+        }
+
+        // Datei-Existenzprüfung für zusätzliche Sicherheit
+        String filePath = userDirectoryPath + "/" + collectionName + ".yaml";
+        File file = new File(filePath);
+        if (file.exists()) {
+            System.out.println("A file for collection '" + collectionName + "' already exists.");
+            return false;
         }
 
         // Sammlung zur Liste hinzufügen und Namen speichern
@@ -155,12 +221,13 @@ public class CollectionManager {
         // Leere Collection im Benutzerverzeichnis anlegen
         Collection newCollection = new Collection(collectionName);
         newCollection.setAdditionalInfo(userDirectoryPath);
-        saveBooksForCollection(newCollection);
+        saveBooksForCollection(newCollection); // Sammlung in Yaml-Datei speichern
 
         System.out.println("A new collection has been added: " + collectionName);
+        return true;
     }
 
-    // Neue Methode 2: Collections-Verzeichnis sicherstellen
+    // Methode um user-spezifisches Collections-Verzeichnis zu erstellen
     public void ensureCollectionsDirectoryExists() {
         File directory = new File(userDirectoryPath);
         if (!directory.exists()) {
@@ -173,7 +240,7 @@ public class CollectionManager {
         }
     }
 
-    // Neue Methode 3: Bestehende Collection umbenennen
+    // Methode um bestehende Collection umbenennen
     public boolean renameSelectedCollection(String oldName, String newName) {
         // Prüfen, ob alte Collection existiert und neue noch frei ist
         if (!collectionNames.contains(oldName)) {
@@ -208,13 +275,14 @@ public class CollectionManager {
         return true;
     }
 
-    // Neue Methode 4: Eine Collection löschen
+    // Methode um eine Collection zu löschen
     public boolean deleteSelectedCollection(String collectionName) {
         if (!collectionNames.contains(collectionName)) {
             System.out.println("The collection '" + collectionName + "' does not exist.");
             return false;
         }
 
+        //Datei aus dem Verzeichnis löschen
         String filePath = userDirectoryPath + "/" + collectionName + ".yaml"; // Benutzerverzeichnis verwenden
         File file = new File(filePath);
         if (file.exists() && !file.delete()) {
@@ -233,75 +301,6 @@ public class CollectionManager {
     public void setUserDirectoryPath(String userDirectoryPath) {
         this.userDirectoryPath = userDirectoryPath;
         ensureUserDirectoryExists(); // Sicherstellen, dass das Verzeichnis existiert
-    }
-
-    /**
-     * Methode zum Umbenennen einer Collection.
-     *
-     * @param oldName Der aktuelle Name der Collection.
-     * @param newName Der neue Name der Collection.
-     * @return true, wenn die Umbenennung erfolgreich war, sonst false.
-     */
-    public boolean renameCollection(String oldName, String newName) {
-        if (!collectionNames.contains(oldName) || collectionNames.contains(newName)) {
-            return false; // Alte Collection existiert nicht oder neue Name bereits verwendet
-        }
-
-        // Datei umbenennen
-        String oldFilePath = userDirectoryPath + "/" + oldName + ".yaml";
-        String newFilePath = userDirectoryPath + "/" + newName + ".yaml";
-
-        File oldFile = new File(oldFilePath);
-        File newFile = new File(newFilePath);
-
-        if (oldFile.exists()) {
-            boolean renamed = oldFile.renameTo(newFile);
-            if (!renamed) {
-                return false;
-            }
-        }
-
-        // Namen in der Liste aktualisieren
-        collectionNames.remove(oldName);
-        collectionNames.add(newName);
-        saveCollectionNames("collections.yaml");
-
-        // Inhalte in der neuen YAML-Datei laden und speichern, falls die Datei umbenannt wurde
-        if (newFile.exists()) {
-            Collection collection = loadBooksForCollection(newName);
-            saveBooksForCollection(collection);
-        }
-
-        System.out.println("Renamed collection from '" + oldName + "' to '" + newName + "'.");
-        return true;
-    }
-
-    /**
-     * Methode zum Löschen einer Collection.
-     *
-     * @param collectionName Der Name der zu löschenden Collection.
-     * @return true, wenn die Löschung erfolgreich war, sonst false.
-     */
-    public boolean deleteCollection(String collectionName) {
-        if (!collectionNames.contains(collectionName)) {
-            return false; // Collection existiert nicht
-        }
-
-        // Datei löschen
-        File file = new File("collections/" + collectionName + ".yaml");
-        if (file.exists()) {
-            boolean deleted = file.delete();
-            if (!deleted) {
-                return false; // Datei konnte nicht gelöscht werden
-            }
-        }
-
-        // Namen aus der Liste entfernen
-        collectionNames.remove(collectionName);
-        saveCollectionNames("collections.yaml");
-
-        System.out.println("Deleted collection '" + collectionName + "'.");
-        return true;
     }
 
     /**
@@ -334,13 +333,7 @@ public class CollectionManager {
         }
     }
 
-    /**
-     * Exportiert alle Collections als XLSX (Excel) in die angegebene Datei.
-     * Jede Collection wird in einem separaten Arbeitsblatt dargestellt.
-     *
-     * @return
-     */
-
+    // Methode um eine bestehende Liste aus einem Yaml-File zu importieren - aktuell ohne Funktion
     public boolean importFromYaml(String filePath, String collectionName) {
         try {
             List<Book> books = fileHandler.loadBooksFromYaml(filePath);
@@ -357,6 +350,7 @@ public class CollectionManager {
         }
     }
 
+    // Methode um eine bestehende Liste aus einem Xlsx-File zu importieren - aktuell ohne Funktion
     public boolean importFromXlsx(String filePath, String collectionName) {
         try {
             List<Book> books = fileHandler.loadBooksFromXlsx(filePath);
@@ -373,6 +367,7 @@ public class CollectionManager {
         }
     }
 
+    //Methode zum Export einer Liste in ein xlsx-File
         public boolean exportToXlsx(String filePath) {
             try {
                 List<Book> allBooks = getAllBooks();
@@ -383,7 +378,7 @@ public class CollectionManager {
                 return false;
             }
         }
-
+    //Methode zum Export einer Liste in ein yaml-File
         public boolean exportToYaml(String filePath) {
             try {
                 List<Book> allBooks = getAllBooks();
@@ -407,6 +402,7 @@ public class CollectionManager {
             }
         }
 
+    // Methode zum Abrufen aller Bücher aus allen Sammlungen
     private List<Book> getAllBooks() {
         List<Book> allBooks = new ArrayList<>(); // Liste für alle Bücher
 

@@ -42,10 +42,10 @@ public class BookManagerApp extends Application {
     public static final double WINDOW_HEIGHT = 600;
 
     private CollectionManager collectionManager = new CollectionManager();
-    private ObservableList<Book> bookListData = FXCollections.observableArrayList();
+    private final ObservableList<Book> bookListData = FXCollections.observableArrayList();
     private String collectionsFilePath = "collections.yaml"; // Pfad zu collections.yaml
 
-    private TableView<Book> bookTableView = new TableView<>();
+    private final TableView<Book> bookTableView = new TableView<>();
 
     private Collection currentCollection; // Aktuell ausgewählte Sammlung
     private ComboBox<String> collectionComboBox; // Klassenvariable für die ComboBox
@@ -83,9 +83,7 @@ public class BookManagerApp extends Application {
 
         // Verbindung zwischen Collection und UI-Benachrichtigung herstellen
         if (currentCollection != null) { // Sicherstellen, dass currentCollection gesetzt ist
-            currentCollection.setNotificationCallback(message -> {
-                showAlert("Duplicate Book", message);
-            });
+            currentCollection.setNotificationCallback(message -> showAlert("Duplicate Book", message));
         } else {
             System.err.println("Error: currentCollection is null");
         }
@@ -106,7 +104,7 @@ public class BookManagerApp extends Application {
 
         // Wähle standardmäßig die erste Collection aus (z. B. Default)
         if (!collectionsObservableList.isEmpty()) {
-            String firstCollection = collectionsObservableList.get(0); // Nimm die erste Collection
+            String firstCollection = collectionsObservableList.getFirst(); // Nimm die erste Collection
             collectionComboBox.getSelectionModel().select(firstCollection); // Setze die Auswahl in der ComboBox
             currentCollection = collectionManager.loadBooksForCollection(firstCollection); // Lade Bücher der ersten Collection
             bookListData.setAll(currentCollection.getBooks()); // Aktualisiere die Buch-Liste (Tabelle)
@@ -1045,36 +1043,5 @@ public class BookManagerApp extends Application {
                 commentArea.requestFocus(); // Springe zur Kommentarbox
             }
         });
-
-        // Anordnung
-        grid.add(titleLabel, 0, 0);
-        grid.add(titleField, 1, 0, 3, 1);
-
-        grid.add(firstNameLabel, 0, 1);
-        grid.add(firstNameField, 1, 1);
-        grid.add(lastNameLabel, 2, 1);
-        grid.add(lastNameField, 3, 1);
-
-        grid.add(yearLabel, 0, 2);
-        grid.add(yearField, 1, 2);
-        grid.add(isbnLabel, 2, 2);
-        grid.add(isbnField, 3, 2);
-
-        grid.add(genreLabel, 0,3);
-        grid.add(genreField, 1,3);
-
-        grid.add(readLabel, 0, 4);
-        grid.add(readCheckBox, 1, 4);
-        grid.add(ratingLabel, 2, 4);
-        grid.add(ratingComboBox, 3, 4);
-
-        grid.add(commentLabel, 0, 5);
-        grid.add(commentArea, 1, 5, 3, 1);
-
-        grid.add(closeButton, 0, 6, 4, 1);
-
-        Scene scene = new Scene(grid, 500, 400);
-        stage.setScene(scene);
-        stage.showAndWait();
     }
 }
