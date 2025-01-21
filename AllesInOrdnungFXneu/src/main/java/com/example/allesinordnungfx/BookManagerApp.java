@@ -777,6 +777,9 @@ public class BookManagerApp extends Application {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(content);
+        Image bookIcon = new Image(getClass().getResource("/icons/book.png").toExternalForm());
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(bookIcon);
         alert.showAndWait();
     }
 
@@ -788,6 +791,9 @@ public class BookManagerApp extends Application {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(content);
+        Image bookIcon = new Image(getClass().getResource("/icons/book.png").toExternalForm());
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(bookIcon);
         alert.showAndWait();
     }
 
